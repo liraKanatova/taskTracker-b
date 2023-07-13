@@ -21,6 +21,7 @@ public class SwaggerConfig {
                 .info(new Info().title("Task Tracker"))
                 .security(Collections.singletonList(new SecurityRequirement().addList(API_KEY)));
     }
+
     public SecurityScheme apiKeySecuritySchema() {
         return new SecurityScheme()
                 .name("Auth API")
