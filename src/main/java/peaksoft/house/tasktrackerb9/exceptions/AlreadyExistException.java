@@ -1,6 +1,6 @@
 package peaksoft.house.tasktrackerb9.exceptions;
 
-public class AlreadyExistException extends RuntimeException{
+public class AlreadyExistException extends RuntimeException {
     public AlreadyExistException() {
     }
 

@@ -10,13 +10,11 @@ import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.ExceptionResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionResponse handleNotFoundException(NotFoundException e){
+    public ExceptionResponse handleNotFoundException(NotFoundException e) {
         return ExceptionResponse.builder()
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .exceptionClassName(e.getClass().getSimpleName())
@@ -25,10 +23,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionResponse alreadyExistException(AlreadyExistException e){
+    @ResponseStatus(HttpStatus.ALREADY_REPORTED)
+    public ExceptionResponse alreadyExistException(AlreadyExistException e) {
         return ExceptionResponse.builder()
-                .httpStatus(HttpStatus.CONFLICT)
+                .httpStatus(HttpStatus.ALREADY_REPORTED)
                 .exceptionClassName(e.getClass().getSimpleName())
                 .message(e.getMessage())
                 .build();
@@ -36,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpClientErrorException.BadRequest.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse badRequest(HttpClientErrorException.BadRequest e){
+    public ExceptionResponse badRequest(HttpClientErrorException.BadRequest e) {
         return ExceptionResponse.builder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .exceptionClassName(e.getClass().getSimpleName())
@@ -46,13 +44,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionResponse badCredentialException(BadCredentialException e){
+    public ExceptionResponse badCredentialException(BadCredentialException e) {
         return ExceptionResponse.builder()
                 .httpStatus(HttpStatus.FORBIDDEN)
                 .exceptionClassName(e.getClass().getSimpleName())
                 .message(e.getMessage())
                 .build();
-
     }
-
 }
