@@ -44,17 +44,14 @@ public class S3Service {
 
     public Map<String, String> delete(String fileLink) {
 
-        System.err.println("in service");
         log.info("deleted file");
 
         try {
             String key = fileLink.substring(bucketPath.length());
 
             log.info("key is " + key);
-            System.err.println("key is " + key);
             s3Client.deleteObject(dor -> dor.bucket(bucketName).key(key).build());
             log.info("deleted object: {}", key);
-            System.err.println("after deleted");
         } catch (S3Exception e) {
             throw new IllegalStateException(e.awsErrorDetails().errorMessage());
         } catch (Exception e) {
