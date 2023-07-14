@@ -20,45 +20,44 @@ import peaksoft.house.tasktrackerb9.repository.UserRepository;
 
 import java.io.IOException;
 
+@Component
+@RequiredArgsConstructor
+public class JwtFilter extends OncePerRequestFilter {
 
-    @Component
-    @RequiredArgsConstructor
-    public class JwtFilter extends OncePerRequestFilter {
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
 
-        private final JwtService jwtService;
-        private final UserRepository userRepository;
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        @Override
-        protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                        @NonNull HttpServletResponse response,
-                                        @NonNull FilterChain filterChain) throws ServletException, IOException {
+        String tokenHeader = request.getHeader("Authorization");
+        if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
+            String token = tokenHeader.substring(7);
+            if (StringUtils.hasText(token)) {
+                try {
+                    String username = jwtService.validateToken(token);
+                    User user = userRepository.getUserByEmail(username)
+                            .orElseThrow(() ->
+                                    new EntityNotFoundException("user with email: " + username + " not found"));
 
-            String tokenHeader = request.getHeader("Authorization");
-            if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
-                String token = tokenHeader.substring(7);
-                if (StringUtils.hasText(token)) {
-                    try {
-                        String username = jwtService.validateToken(token);
-                        User user = userRepository.getUserByEmail(username)
-                                .orElseThrow(() ->
-                                        new EntityNotFoundException("user with email: " + username + " not found"));
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(
+                                    new UsernamePasswordAuthenticationToken(
+                                            user.getEmail(),
+                                            null,
+                                            user.getAuthorities()));
 
-                        SecurityContextHolder.getContext()
-                                .setAuthentication(
-                                        new UsernamePasswordAuthenticationToken(
-                                                user.getEmail(),
-                                                null,
-                                                user.getAuthorities()));
-
-                    } catch (JWTVerificationException e) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                                "Invalid Token");
-                    }
+                } catch (JWTVerificationException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                            "Invalid Token");
                 }
-
             }
-            filterChain.doFilter(request, response);
-            return;
+
         }
+        filterChain.doFilter(request, response);
+
     }
+}
 

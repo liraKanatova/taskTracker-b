@@ -13,32 +13,32 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import peaksoft.house.tasktrackerb9.repository.UserRepository;
 
-
 @EnableWebSecurity
-    @Configuration
-    @RequiredArgsConstructor
-    @EnableMethodSecurity
-    public class ApplicationConfig {
-        private final UserRepository userRepository;
+@Configuration
+@RequiredArgsConstructor
+@EnableMethodSecurity
+public class ApplicationConfig {
+    private final UserRepository userRepository;
 
-        @Bean
-        public UserDetailsService userDetailsService() {
-            return email -> userRepository.getUserByEmail(email).orElseThrow(
-                    () -> new UsernameNotFoundException("Username :" + email + " is not found")
-            );
-        }
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
-        }
-
-
-        @Bean
-        public AuthenticationProvider authenticationProvider() {
-            DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-            daoAuthenticationProvider.setUserDetailsService(userDetailsService());
-            daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-            return daoAuthenticationProvider;
-        }
-
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return email -> userRepository.getUserByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("Username :" + email + " is not found")
+        );
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
+    }
+
+}
