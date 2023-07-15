@@ -1,7 +1,5 @@
 package peaksoft.house.tasktrackerb9.s3Config;
-
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,12 +7,10 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
-
 import java.io.IOException;
 import java.util.Map;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class S3Service {
 
@@ -43,15 +39,9 @@ public class S3Service {
     }
 
     public Map<String, String> delete(String fileLink) {
-
-        log.info("deleted file");
-
         try {
             String key = fileLink.substring(bucketPath.length());
-
-            log.info("key is " + key);
             s3Client.deleteObject(dor -> dor.bucket(bucketName).key(key).build());
-            log.info("deleted object: {}", key);
         } catch (S3Exception e) {
             throw new IllegalStateException(e.awsErrorDetails().errorMessage());
         } catch (Exception e) {

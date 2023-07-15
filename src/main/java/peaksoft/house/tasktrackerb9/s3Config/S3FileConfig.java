@@ -1,5 +1,4 @@
 package peaksoft.house.tasktrackerb9.s3Config;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

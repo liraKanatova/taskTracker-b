@@ -1,19 +1,16 @@
 package peaksoft.house.tasktrackerb9.api;
-
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import peaksoft.house.tasktrackerb9.s3Config.S3Service;
-
 import java.io.IOException;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/s3")
-@CrossOrigin
 public class S3Api {
     private final S3Service s3Service;
 
