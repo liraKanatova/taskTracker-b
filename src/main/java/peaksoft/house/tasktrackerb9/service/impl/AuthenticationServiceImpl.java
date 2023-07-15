@@ -50,8 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse signIn(SignInRequest signInRequest) {
       if(signInRequest.email().isBlank()){
-
-          throw new BadCredentialException("Email doesn't exist!");
+          throw new BadCredentialException("User with email: " + signInRequest.email() + " not found");
       }
         User user=userRepository.getUserByEmail(signInRequest.email()).orElseThrow(()->
         new NotFoundException("User with email: " + signInRequest.email() + " not found"));
