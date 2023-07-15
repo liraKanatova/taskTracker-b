@@ -15,6 +15,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+    
     @Value("${aws_bucket_name}")
     private String bucketName;
     @Value("${aws_bucket_path}")
