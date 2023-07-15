@@ -23,7 +23,7 @@ public class Favorite {
     @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private Board board;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH},mappedBy = "favorite")
+    @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private WorkSpace workSpace;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})

@@ -33,7 +33,7 @@ public class WorkSpace {
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
     private List<Board>boards;
 
-    @OneToOne(cascade = {ALL})
+    @OneToOne(cascade = {ALL},mappedBy = "workSpace")
     private Favorite favorite;
 
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
