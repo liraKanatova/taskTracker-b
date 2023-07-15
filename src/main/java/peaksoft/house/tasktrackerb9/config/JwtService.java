@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.config;
 
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,7 +15,6 @@ import peaksoft.house.tasktrackerb9.entity.User;
 import peaksoft.house.tasktrackerb9.repository.UserRepository;
 import java.time.ZonedDateTime;
 import java.util.Date;
-
 
 @Component
 @RequiredArgsConstructor

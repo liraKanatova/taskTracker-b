@@ -8,6 +8,7 @@ import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
 public interface AuthenticationService {
 
     AuthenticationResponse signUp(SignUpRequest signUpRequest);
+
     AuthenticationResponse signIn(SignInRequest signInRequest);
 
 }

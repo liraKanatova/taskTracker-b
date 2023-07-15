@@ -3,7 +3,6 @@ package peaksoft.house.tasktrackerb9.service.impl;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.JwtService;
@@ -20,7 +19,6 @@ import peaksoft.house.tasktrackerb9.service.AuthenticationService;
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
@@ -30,7 +28,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse signUp(SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.email())) {
-            log.error(String.format("User with email: %s already exist!", signUpRequest.email()));
             throw new EntityExistsException(String.format("User with email: %s already exist!", signUpRequest.email()));
         }
         User user = new User();
@@ -56,10 +53,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
           throw new BadCredentialException("Email doesn't exist!");
       }
-        User user=userRepository.getUserByEmail(signInRequest.email()).orElseThrow(()->{
-        log.error("User with email: " + signInRequest.email() + " not found");
-      return   new NotFoundException("User with email: " + signInRequest.email() + " not found");
-    });
+        User user=userRepository.getUserByEmail(signInRequest.email()).orElseThrow(()->
+        new NotFoundException("User with email: " + signInRequest.email() + " not found"));
+
 
     if(!passwordEncoder.matches(signInRequest.password(),user.getPassword())){
         throw new BadCredentialException("Incorrect password !");
