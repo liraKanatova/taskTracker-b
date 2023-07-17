@@ -6,5 +6,4 @@ public enum ReminderType {
     TEN_MINUTE,
     FIFTEEN_MINUTE,
     THIRD_MINUTE;
-
 }

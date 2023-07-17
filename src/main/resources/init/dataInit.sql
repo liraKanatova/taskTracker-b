@@ -26,7 +26,6 @@ values (1,5,5,5),
        (4,2,2,2),
        (5,1,1,1);
 
-
 insert into user_work_space_roles(id,role,user_id,work_space_id)
 values (1,'ADMIN',5,5),
        (2,'MEMBER',4,4),

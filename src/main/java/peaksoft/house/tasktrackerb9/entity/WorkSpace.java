@@ -3,9 +3,7 @@ package peaksoft.house.tasktrackerb9.entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
-
 import java.util.List;
-
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
@@ -38,7 +36,5 @@ public class WorkSpace {
 
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
     private List<UserWorkSpaceRole>roles;
-
-
 
 }
