@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface UserService {
 
-    SimpleResponse userUpdating(Long id, UserRequest userRequest);
+    SimpleResponse updateUserById(Long id, UserRequest userRequest);
 
-    SimpleResponse updatingImage(Long id, UserRequestImage image);
+    SimpleResponse updateImageUserId(Long id, UserRequestImage image);
 
-    UserResponse getByIdUser(Long id);
+    UserResponse getUserById(Long id);
 
     List<WorkSpace> userGetAllWorkSpace();
 

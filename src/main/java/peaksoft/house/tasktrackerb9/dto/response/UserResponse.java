@@ -1,8 +1,12 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @Builder
 public class UserResponse {
@@ -13,7 +17,6 @@ public class UserResponse {
     private String email;
     private String password;
     private String image;
-
 
     public UserResponse(Long id, String firstName, String lastName , String email, String password, String image) {
         this.id = id;

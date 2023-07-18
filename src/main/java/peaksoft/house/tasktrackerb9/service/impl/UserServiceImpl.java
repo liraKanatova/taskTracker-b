@@ -1,11 +1,8 @@
 package peaksoft.house.tasktrackerb9.service.impl;
 
-
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +19,6 @@ import peaksoft.house.tasktrackerb9.repository.UserRepository;
 import peaksoft.house.tasktrackerb9.repository.WorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.service.UserService;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,19 +34,18 @@ public class UserServiceImpl implements UserService {
     private final WorkSpaceRepository workSpaceRepository;
 
 
-
-    public User getAuthentication(){
+    public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.getUserByEmail(email).orElseThrow(() ->
-                new EntityNotFoundException("User not found!"));
+                new NotFoundException("User not found!"));
     }
 
     @Override
-    public SimpleResponse userUpdating(Long id, UserRequest userRequest) {
+    public SimpleResponse updateUserById(Long id, UserRequest userRequest) {
 
         User user = getAuthentication();
-        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found id :" + id));
+        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
         users.setFirstName(userRequest.firstName());
         users.setLastName(userRequest.lastName());
         users.setEmail(userRequest.email());
@@ -67,10 +62,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleResponse updatingImage(Long id, UserRequestImage image) {
+    public SimpleResponse updateImageUserId(Long id, UserRequestImage image) {
 
-        User user =getAuthentication();
-        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found id: " + id));
+        User user = getAuthentication();
+        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
         users.setImage(image.image());
         if (user.getImage().equals(users.getImage())) {
             userRepository.save(users);
@@ -79,17 +74,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getByIdUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("With id not found : " + id));
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
         return UserResponse.builder().id(user.getId()).firstName(user.getFirstName()).lastName(user.getLastName()).email(user.getEmail()).password(user.getPassword()).image(user.getImage()).build();
     }
 
     @Override
     public List<WorkSpace> userGetAllWorkSpace() {
 
-        User user =getAuthentication();
+        User user = getAuthentication();
         List<WorkSpace> workSpaces = new ArrayList<>();
-        for (WorkSpace w :workSpaceRepository.findAll() ) {
+        for (WorkSpace w : workSpaceRepository.findAll()) {
             for (User u : w.getUsers()) {
                 if (u.equals(user)) {
                     workSpaces.add(w);
@@ -102,7 +97,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SimpleResponse deleteProfileUser(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("With id not found: " + id));
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
         userRepository.delete(user);
         return SimpleResponse.builder().message("Successfully deleted").status(HttpStatus.OK).build();
     }

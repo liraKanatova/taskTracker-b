@@ -4,54 +4,62 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
-import peaksoft.exceptions.AlreadyExistException;
-import peaksoft.exceptions.BadCredentialException;
-import peaksoft.exceptions.ExceptionResponse;
-import peaksoft.exceptions.NotFoundException;
+import org.webjars.NotFoundException;
+import peaksoft.house.tasktrackerb9.exception.AlreadyExistException;
+import peaksoft.house.tasktrackerb9.exception.BadCredentialException;
+import peaksoft.house.tasktrackerb9.exception.BadRequestException;
+import peaksoft.house.tasktrackerb9.exception.ExceptionResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionResponse handleNotFoundException(NotFoundException e){
-        return ExceptionResponse.builder()
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .exceptionClassName(e.getClass().getSimpleName())
-                .message(e.getMessage())
-                .build();
+
+        @ExceptionHandler(NotFoundException.class)
+        @ResponseStatus(HttpStatus.NOT_FOUND)
+        public ExceptionResponse handleNotFoundException(NotFoundException e){
+            return  new ExceptionResponse(
+                    HttpStatus.NOT_FOUND,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+        }
+        @ExceptionHandler(AlreadyExistException.class)
+        @ResponseStatus(HttpStatus.CONFLICT)
+        public ExceptionResponse handleNotAlreadyExist(AlreadyExistException e){
+            return  new ExceptionResponse(
+                    HttpStatus.CONFLICT,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+
+            );
+        }
+        @ExceptionHandler(BadCredentialException.class)
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        public ExceptionResponse handleBadRequest(BadRequestException e){
+            return  new ExceptionResponse(
+                    HttpStatus.BAD_REQUEST,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+        }
+        @ExceptionHandler(BadCredentialException.class)
+        @ResponseStatus(HttpStatus.FORBIDDEN)
+        public ExceptionResponse handleBadCredentialException(BadCredentialException e){
+            return  new ExceptionResponse(
+                    HttpStatus.FORBIDDEN,
+                    e.getClass().getSimpleName(),
+                    e.getMessage()
+            );
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
-
-    @ExceptionHandler(AlreadyExistException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionResponse alreadyExistException(AlreadyExistException e){
-        return ExceptionResponse.builder()
-                .httpStatus(HttpStatus.CONFLICT)
-                .exceptionClassName(e.getClass().getSimpleName())
-                .message(e.getMessage())
-                .build();
-    }
-
-    @ExceptionHandler(HttpClientErrorException.BadRequest.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionResponse badRequest(HttpClientErrorException.BadRequest e){
-        return ExceptionResponse.builder()
-                .httpStatus(HttpStatus.BAD_REQUEST)
-                .exceptionClassName(e.getClass().getSimpleName())
-                .message(e.getMessage())
-                .build();
-    }
-
-    @ExceptionHandler(BadCredentialException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionResponse badCredentialException(BadCredentialException e){
-        return ExceptionResponse.builder()
-                .httpStatus(HttpStatus.FORBIDDEN)
-                .exceptionClassName(e.getClass().getSimpleName())
-                .message(e.getMessage())
-                .build();
-
-    }
-
-}
