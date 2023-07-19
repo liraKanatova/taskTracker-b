@@ -1,22 +1,19 @@
 package peaksoft.house.tasktrackerb9.service;
 
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
-import peaksoft.house.tasktrackerb9.dto.request.UserRequestImage;
+import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
-import peaksoft.house.tasktrackerb9.entity.WorkSpace;
-
-import java.util.List;
 
 public interface UserService {
 
-    SimpleResponse updateUserById(Long id, UserRequest userRequest);
+    SimpleResponse updateUserById(UserRequest userRequest);
 
-    SimpleResponse updateImageUserId(Long id, UserRequestImage image);
+    SimpleResponse updateImageUserId(Long id, String image);
 
     UserResponse getUserById(Long id);
 
-    List<WorkSpace> userGetAllWorkSpace();
+    ProfileResponse getProfileById(Long id);
 
     SimpleResponse deleteProfileUser(Long id);
 

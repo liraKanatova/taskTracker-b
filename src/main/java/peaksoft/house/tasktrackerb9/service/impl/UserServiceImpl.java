@@ -2,18 +2,20 @@ package peaksoft.house.tasktrackerb9.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
-import peaksoft.house.tasktrackerb9.dto.request.UserRequestImage;
+import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.entity.User;
 import peaksoft.house.tasktrackerb9.entity.WorkSpace;
-import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exception.NotFoundException;
 import peaksoft.house.tasktrackerb9.repository.UserRepository;
 import peaksoft.house.tasktrackerb9.repository.WorkSpaceRepository;
@@ -25,6 +27,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -35,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
 
     public User getAuthentication() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.getUserByEmail(email).orElseThrow(() ->
@@ -42,47 +46,65 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleResponse updateUserById(Long id, UserRequest userRequest) {
+    public SimpleResponse updateUserById(UserRequest userRequest) {
 
         User user = getAuthentication();
-        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
-        users.setFirstName(userRequest.firstName());
-        users.setLastName(userRequest.lastName());
-        users.setEmail(userRequest.email());
+        user.setFirstName(userRequest.firstName());
+        user.setLastName(userRequest.lastName());
+        user.setEmail(userRequest.email());
         if (userRequest.password().equals(userRequest.repeatPassword())) {
-            users.setPassword(passwordEncoder.encode(userRequest.password()));
+            user.setPassword(passwordEncoder.encode(userRequest.password()));
+            userRepository.save(user);
+        } else {
+            throw new NotFoundException("Password do not match");
         }
-        if (user.getRole().equals(Role.ADMIN)) {
-            userRepository.save(users);
-            return SimpleResponse.builder().message("Ok").status(HttpStatus.OK).build();
-        } else if (users.equals(user)) {
-            userRepository.save(users);
-        }
-        return SimpleResponse.builder().message("Updated").status(HttpStatus.OK).build();
+        return SimpleResponse
+                .builder()
+                .message("Updated")
+                .status(HttpStatus.OK)
+                .build();
+
     }
 
+
     @Override
-    public SimpleResponse updateImageUserId(Long id, UserRequestImage image) {
+    public SimpleResponse updateImageUserId(Long id, String image) {
 
         User user = getAuthentication();
-        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
-        users.setImage(image.image());
+        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        users.setImage(image);
         if (user.getImage().equals(users.getImage())) {
             userRepository.save(users);
         }
-        return SimpleResponse.builder().message("Save entity").status(HttpStatus.OK).build();
+        return
+                SimpleResponse
+                        .builder()
+                        .message("Save entity")
+                        .status(HttpStatus.OK)
+                        .build();
     }
 
     @Override
     public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
-        return UserResponse.builder().id(user.getId()).firstName(user.getFirstName()).lastName(user.getLastName()).email(user.getEmail()).password(user.getPassword()).image(user.getImage()).build();
+
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        return
+                UserResponse
+                        .builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .image(user.getImage())
+                        .build();
     }
 
     @Override
-    public List<WorkSpace> userGetAllWorkSpace() {
+    public ProfileResponse getProfileById(Long id) {
 
-        User user = getAuthentication();
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+
         List<WorkSpace> workSpaces = new ArrayList<>();
         for (WorkSpace w : workSpaceRepository.findAll()) {
             for (User u : w.getUsers()) {
@@ -91,14 +113,30 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
-        return workSpaces;
+        return
+                ProfileResponse
+                        .builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .image(user.getImage())
+                        .workSpaceResponse(workSpaces.stream().map(x -> new WorkSpaceResponse(x.getId(), x.getName())).toList())
+                        .build();
     }
 
     @Override
     public SimpleResponse deleteProfileUser(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: "+id+" not found"));
-        userRepository.delete(user);
-        return SimpleResponse.builder().message("Successfully deleted").status(HttpStatus.OK).build();
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        user.setImage(null);
+        userRepository.save(user);
+
+        return
+                SimpleResponse
+                        .builder()
+                        .message("Successfully deleted")
+                        .status(HttpStatus.OK)
+                        .build();
     }
 }
