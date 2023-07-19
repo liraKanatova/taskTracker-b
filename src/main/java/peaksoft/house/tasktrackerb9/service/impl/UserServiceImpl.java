@@ -71,14 +71,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public SimpleResponse updateImageUserId(Long id, String image) {
 
-        User user = getAuthentication();
+
         User users = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
 
         users.setImage(image);
-        if (user.getImage().equals(users.getImage())) {
-            userRepository.save(users);
-        }
+        userRepository.save(users);
+
         return
                 SimpleResponse
                         .builder()
@@ -109,7 +108,7 @@ public class UserServiceImpl implements UserService {
     public ProfileResponse getProfileById(Long id) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("User with id: " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
 
         List<WorkSpace> workSpaces = new ArrayList<>();
         for (WorkSpace w : workSpaceRepository.findAll()) {
@@ -137,7 +136,7 @@ public class UserServiceImpl implements UserService {
     public SimpleResponse removeProfileUser(Long id) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("User with id: " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
 
         user.setImage(null);
         userRepository.save(user);
