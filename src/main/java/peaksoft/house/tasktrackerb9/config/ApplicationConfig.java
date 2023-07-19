@@ -26,6 +26,7 @@ public class ApplicationConfig {
                 () -> new UsernameNotFoundException("User with email :" + email + " is not found")
         );
     }
+    
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,5 +41,4 @@ public class ApplicationConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
-
 }

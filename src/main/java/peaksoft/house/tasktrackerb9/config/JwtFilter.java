@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import peaksoft.house.tasktrackerb9.entity.User;
 import peaksoft.house.tasktrackerb9.repository.UserRepository;
 
-
 import java.io.IOException;
 
 @Component
