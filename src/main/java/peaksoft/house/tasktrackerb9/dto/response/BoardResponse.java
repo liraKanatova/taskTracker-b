@@ -8,9 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardResponse {
+
     private Long id;
+
     private String title;
+
     private String backGround;
+
     private boolean isFavorite;
 
 }

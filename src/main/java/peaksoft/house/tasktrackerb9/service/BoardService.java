@@ -6,6 +6,7 @@ import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import java.util.List;
 
 public interface BoardService {
+
     List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId);
 
     SimpleResponse saveBoard(BoardRequest boardRequest, Long workSpaceId);

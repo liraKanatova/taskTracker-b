@@ -16,6 +16,7 @@ import java.util.List;
 @Tag(name = "Board Api")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BoardApi {
+
     private final BoardService boardService;
 
     @Operation(summary = "save board", description = "save board with workSpace id")

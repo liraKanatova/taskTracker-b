@@ -23,17 +23,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class BoardServiceImpl implements BoardService {
+
     private final BoardRepository boardRepository;
+
     private final WorkSpaceRepository workspaceRepository;
+
     private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
+
     private final JwtService jwtService;
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workspaceRepository.findById(workSpaceId)
-                .orElseThrow(() ->
-                        new NotFoundException("WorkSpace id not found!"));
+                .orElseThrow(() -> {
+                    log.error("WorkSpace id not found!");
+                    throw new NotFoundException("WorkSpace id not found!");
+                });
         if (workSpace.getRoles().contains(userWorkSpaceRoleRepository.getUserIdAndWorkSpaceId(user.getId(), workSpaceId))) {
             List<Board> list = boardRepository.getAllByBoards(workSpaceId);
             List<BoardResponse> boardsList = new ArrayList<>();
@@ -85,11 +91,15 @@ public class BoardServiceImpl implements BoardService {
     public SimpleResponse updateBoard(BoardRequest boardRequest, Long boardId) {
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() ->
-                        new NotFoundException("Board id not found"));
+                .orElseThrow(() -> {
+                            log.error("Board id not found");
+                            throw new NotFoundException("Board id not found");
+                        });
         WorkSpace workSpace = workspaceRepository.findById(boardRequest.workspaceId())
-                .orElseThrow(() ->
-                        new NotFoundException("WorkSpace id not found"));
+                .orElseThrow(() -> {
+                    log.error("WorkSpace id not found");
+                    throw new NotFoundException("WorkSpace id not found");
+                });
         if (workSpace.getRoles().contains(userWorkSpaceRoleRepository.getUserIdAndWorkSpaceId(user.getId(), workSpace.getId()))) {
             board.setTitle(boardRequest.getTitle());
             board.setBackGround(boardRequest.getBackGround());
@@ -113,6 +123,7 @@ public class BoardServiceImpl implements BoardService {
                 });
         WorkSpace workSpace = board.getWorkSpace();
         if (!workSpace.getBoards().contains(board)) {
+            log.error("In workSpace not found board");
             throw new NotFoundException("In workSpace not found board");
         }
         if (workSpace.getRoles().contains(userWorkSpaceRoleRepository.getUserIdAndWorkSpaceId(user.getId(), workSpace.getId()))) {
@@ -131,8 +142,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponse getBoardById(Long boardId) {
         User user = jwtService.getAuthentication();
-        Board board = boardRepository.findById(boardId).orElseThrow(() ->
-                new NotFoundException("Board id not found"));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> {
+                    log.error("Board id not found");
+                   throw  new NotFoundException("Board id not found");
+                });
         boolean isFavorite = false;
         if (board.getFavorite() != null) {
             for (Favorite favorite : user.getFavorites()) {
