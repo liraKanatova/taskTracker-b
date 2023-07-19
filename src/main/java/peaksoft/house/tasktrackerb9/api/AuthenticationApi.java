@@ -9,6 +9,7 @@ import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
 import peaksoft.house.tasktrackerb9.service.AuthenticationService;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
