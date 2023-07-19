@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.config;
 
-
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
