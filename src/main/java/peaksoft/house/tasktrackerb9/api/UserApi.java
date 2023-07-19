@@ -29,7 +29,7 @@ public class UserApi {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @PutMapping("{id}")
+    @PutMapping("update/{id}")
     @Operation(summary = "Update user", description = "token")
     public SimpleResponse updateUserById(@PathVariable Long id, @RequestBody UserRequest userRequest) {
         return userService.updateUserById(id, userRequest);
