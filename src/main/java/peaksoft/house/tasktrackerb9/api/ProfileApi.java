@@ -13,7 +13,7 @@ import peaksoft.house.tasktrackerb9.service.impl.UserServiceImpl;
 @RestController
 @RequestMapping("/profile/users")
 @RequiredArgsConstructor
-@Tag(name = "Profile Api",description = "")
+@Tag(name = "Profile Api",description = "Api Profile to management")
 @CrossOrigin(value = "*",maxAge = 3600)
 public class ProfileApi {
 
@@ -22,8 +22,8 @@ public class ProfileApi {
 
     @PutMapping("/updated")
     @Operation(summary = "Update user", description = "token")
-    public SimpleResponse updateUserById(@RequestBody UserRequest userRequest) {
-        return userService.updateUserById( userRequest);
+    public SimpleResponse updateUserBy(@RequestBody UserRequest userRequest) {
+        return userService.updateUserBy( userRequest);
     }
 
     @PutMapping("/image/{id}")
@@ -47,7 +47,7 @@ public class ProfileApi {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete user by id",description = "token")
-    public SimpleResponse deleteUserById(@PathVariable Long id){
-        return userService.deleteProfileUser(id);
+    public SimpleResponse removeUserById(@PathVariable Long id){
+        return userService.removeProfileUser(id);
     }
 }

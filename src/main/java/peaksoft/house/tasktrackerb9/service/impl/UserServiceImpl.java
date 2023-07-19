@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SimpleResponse updateUserById(UserRequest userRequest) {
+    public SimpleResponse updateUserBy(UserRequest userRequest) {
 
         User user = getAuthentication();
         user.setFirstName(userRequest.firstName());
@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
         if (userRequest.password().equals(userRequest.repeatPassword())) {
             user.setPassword(passwordEncoder.encode(userRequest.password()));
             userRepository.save(user);
+
         } else {
             throw new NotFoundException("Password do not match");
         }
@@ -71,7 +72,9 @@ public class UserServiceImpl implements UserService {
     public SimpleResponse updateImageUserId(Long id, String image) {
 
         User user = getAuthentication();
-        User users = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        User users = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+
         users.setImage(image);
         if (user.getImage().equals(users.getImage())) {
             userRepository.save(users);
@@ -87,7 +90,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserById(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+
         return
                 UserResponse
                         .builder()
@@ -103,7 +108,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProfileResponse getProfileById(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("User with id: " + id + " not found"));
 
         List<WorkSpace> workSpaces = new ArrayList<>();
         for (WorkSpace w : workSpaceRepository.findAll()) {
@@ -121,14 +127,18 @@ public class UserServiceImpl implements UserService {
                         .lastName(user.getLastName())
                         .email(user.getEmail())
                         .image(user.getImage())
-                        .workSpaceResponse(workSpaces.stream().map(x -> new WorkSpaceResponse(x.getId(), x.getName())).toList())
+                        .workSpaceResponse(workSpaces.stream()
+                                .map(x -> new WorkSpaceResponse(x.getId(), x.getName()))
+                                .toList())
                         .build();
     }
 
     @Override
-    public SimpleResponse deleteProfileUser(Long id) {
+    public SimpleResponse removeProfileUser(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("User with id: " + id + " not found"));
+
         user.setImage(null);
         userRepository.save(user);
 

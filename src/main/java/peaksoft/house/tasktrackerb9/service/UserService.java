@@ -7,7 +7,7 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 
 public interface UserService {
 
-    SimpleResponse updateUserById(UserRequest userRequest);
+    SimpleResponse updateUserBy(UserRequest userRequest);
 
     SimpleResponse updateImageUserId(Long id, String image);
 
@@ -15,6 +15,6 @@ public interface UserService {
 
     ProfileResponse getProfileById(Long id);
 
-    SimpleResponse deleteProfileUser(Long id);
+    SimpleResponse removeProfileUser(Long id);
 
 }
