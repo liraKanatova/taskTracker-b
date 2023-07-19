@@ -9,6 +9,7 @@ public record SignInRequest(
         @Column(unique = true)
         @EmailValid
         String email,
+        
         @PasswordValid
         String password
 ) {
