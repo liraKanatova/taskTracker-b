@@ -5,6 +5,7 @@ import peaksoft.house.tasktrackerb9.validation.EmailValid;
 import peaksoft.house.tasktrackerb9.validation.PasswordValid;
 
 public record SignInRequest(
+        
         @Column(unique = true)
         @EmailValid
         String email,

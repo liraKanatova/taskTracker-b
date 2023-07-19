@@ -3,6 +3,7 @@ package peaksoft.house.tasktrackerb9.service.impl;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.JwtService;
@@ -19,6 +20,7 @@ import peaksoft.house.tasktrackerb9.service.AuthenticationService;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
@@ -28,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public AuthenticationResponse signUp(SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.email())) {
+            log.error(String.format("User with email: %s already exist!", signUpRequest.email()));
             throw new EntityExistsException(String.format("User with email: %s already exist!", signUpRequest.email()));
         }
         User user = new User();
@@ -39,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setRole(Role.ADMIN);
         userRepository.save(user);
 
-        String jwtToken= jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .email(user.getEmail())
@@ -49,24 +52,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse signIn(SignInRequest signInRequest) {
-      if(signInRequest.email().isBlank()){
-          throw new BadCredentialException("User with email: " + signInRequest.email() + " not found");
-      }
-        User user=userRepository.getUserByEmail(signInRequest.email()).orElseThrow(()->
-        new NotFoundException("User with email: " + signInRequest.email() + " not found"));
+        if (signInRequest.email().isBlank()) {
+            log.error("User with email: " + signInRequest.email() + " not found");
+            throw new BadCredentialException("User with email: " + signInRequest.email() + " not found");
+        }
+        User user = userRepository.getUserByEmail(signInRequest.email()).orElseThrow(() -> {
+            log.error("User with email: " + signInRequest.email() + " not found");
+            return new NotFoundException("User with email: " + signInRequest.email() + " not found");
 
+        });
+        if (!passwordEncoder.matches(signInRequest.password(), user.getPassword())) {
+            log.error("Incorrect password !");
+            throw new BadCredentialException("Incorrect password !");
+        }
 
-    if(!passwordEncoder.matches(signInRequest.password(),user.getPassword())){
-        throw new BadCredentialException("Incorrect password !");
-    }
+        String jwtToken = jwtService.generateToken(user);
 
-    String jwtToken=jwtService.generateToken(user);
-
-    return AuthenticationResponse.builder()
-            .email(user.getEmail())
-            .role(user.getRole())
-            .token(jwtToken)
-            .build();
+        return AuthenticationResponse.builder()
+                .email(user.getEmail())
+                .role(user.getRole())
+                .token(jwtToken)
+                .build();
 
     }
 }
