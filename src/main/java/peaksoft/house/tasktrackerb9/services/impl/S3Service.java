@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.s3Config;
+package peaksoft.house.tasktrackerb9.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
