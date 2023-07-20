@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.services.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.dto.response.FavoriteBoardResponse;
@@ -16,7 +17,7 @@ import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,7 +37,10 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new NotFoundException("board id not found"));
+                .orElseThrow(() -> {
+                    log.error("board id not found");
+                    new NotFoundException("board with id: "+boardId+" not found");
+                });
         if (user.getFavorites() != null) {
             for (Favorite favorite : user.getFavorites()) {
                 if (favorite.getBoard().equals(board)) {
@@ -65,7 +69,10 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
-                .orElseThrow(() -> new NotFoundException("workSpace id not found"));
+                .orElseThrow(() -> {
+                    log.error("WorkSpace id not found");
+                    new NotFoundException("workSpace with id: "+workSpaceId+" not found");
+                });
         if (user.getFavorites() != null) {
             for (Favorite favorite : user.getFavorites()) {
                 user.getFavorites().remove(favorite);
