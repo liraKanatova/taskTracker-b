@@ -1,5 +1,6 @@
 package peaksoft.house.tasktrackerb9.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,13 +19,13 @@ public class AuthenticationApi {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
-    public AuthenticationResponse signUp(@RequestBody SignUpRequest signUpRequest){
+    public AuthenticationResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest){
         return authenticationService.signUp(signUpRequest);
     }
 
 
     @PostMapping("/signIn")
-    public  AuthenticationResponse signIn(@RequestBody SignInRequest signInRequest){
+    public  AuthenticationResponse signIn(@RequestBody @Valid SignInRequest signInRequest){
         return authenticationService.signIn(signInRequest);
     }
 }

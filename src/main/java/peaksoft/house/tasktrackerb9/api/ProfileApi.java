@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
@@ -22,13 +23,13 @@ public class ProfileApi {
 
     @PutMapping("/updated")
     @Operation(summary = "Update user", description = "User updating profile")
-    public SimpleResponse updateUserBy(@RequestBody UserRequest userRequest) {
+    public SimpleResponse updateUserBy(@RequestBody @Valid UserRequest userRequest) {
         return userService.updateUserBy( userRequest);
     }
 
     @PutMapping("/image/{id}")
     @Operation(summary = "Update image", description = "User updating profile image")
-    public SimpleResponse updateImage(@PathVariable Long id, @RequestBody String userRequestImage) {
+    public SimpleResponse updateImage(@PathVariable  Long id, @RequestBody String userRequestImage) {
         return userService.updateImageUserId(id,userRequestImage);
     }
 
@@ -41,13 +42,13 @@ public class ProfileApi {
 
     @GetMapping("/profile/{id}")
     @Operation(summary = "Get by profile id",description = "User profile get by id")
-    public ProfileResponse getProfileById(@PathVariable Long id){
+    public ProfileResponse getProfileById(@PathVariable  Long id){
         return userService.getProfileById(id);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete user by id",description = "Remove user profile image")
-    public SimpleResponse removeUserById(@PathVariable Long id){
+    public SimpleResponse removeUserById(@PathVariable  Long id){
         return userService.removeProfileUser(id);
     }
 }

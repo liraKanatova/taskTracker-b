@@ -1,16 +1,24 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class SimpleResponse {
-    private HttpStatus status;
+
     private String message;
 
+    private HttpStatus status;
 
+
+    public SimpleResponse(String message, HttpStatus status) {
+        this.message = message;
+        this.status = status;
+    }
 }
