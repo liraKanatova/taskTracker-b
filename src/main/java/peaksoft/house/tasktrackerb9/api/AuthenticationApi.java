@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
-import peaksoft.house.tasktrackerb9.service.AuthenticationService;
+import peaksoft.house.tasktrackerb9.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")

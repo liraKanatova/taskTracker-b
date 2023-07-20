@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.config;
+package peaksoft.house.tasktrackerb9.config.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -11,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import peaksoft.house.tasktrackerb9.entity.User;
-import peaksoft.house.tasktrackerb9.repository.UserRepository;
+import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import java.time.ZonedDateTime;
 import java.util.Date;
 

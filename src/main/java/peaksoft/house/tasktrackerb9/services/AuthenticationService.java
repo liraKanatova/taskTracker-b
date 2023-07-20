@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service;
+package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
