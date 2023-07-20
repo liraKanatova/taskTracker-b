@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
-import peaksoft.house.tasktrackerb9.service.BoardService;
+import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service.serviceImpl;
+package peaksoft.house.tasktrackerb9.services.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +11,9 @@ import peaksoft.house.tasktrackerb9.entity.Board;
 import peaksoft.house.tasktrackerb9.entity.Favorite;
 import peaksoft.house.tasktrackerb9.entity.User;
 import peaksoft.house.tasktrackerb9.entity.WorkSpace;
-import peaksoft.house.tasktrackerb9.repository.BoardRepository;
-import peaksoft.house.tasktrackerb9.repository.UserWorkSpaceRoleRepository;
-import peaksoft.house.tasktrackerb9.service.BoardService;
+import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
+import peaksoft.house.tasktrackerb9.repositories.UserWorkSpaceRoleRepository;
+import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
                     throw new NotFoundException("WorkSpace id not found!");
                 });
         if (workSpace.getRoles().contains(userWorkSpaceRoleRepository.getUserIdAndWorkSpaceId(user.getId(), workSpaceId))) {
-            List<Board> list = boardRepository.getAllByBoards(workSpaceId);
+           List<Board> list = boardRepository.getAllByBoards(workSpaceId);
             List<BoardResponse> boardsList = new ArrayList<>();
             for (Board board : list) {
                 boolean isFavorite = false;

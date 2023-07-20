@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service;
+package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
