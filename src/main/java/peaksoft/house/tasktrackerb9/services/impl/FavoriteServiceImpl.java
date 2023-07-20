@@ -17,6 +17,7 @@ import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @Service
 @Transactional
@@ -38,8 +39,8 @@ public class FavoriteServiceImpl implements FavoriteService {
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
-                    log.error("board id not found");
-                    new NotFoundException("board with id: "+boardId+" not found");
+                    log.error("Board with id: " + boardId + " not found");
+                    new NotFoundException("Board with id: " + boardId + " not found");
                 });
         if (user.getFavorites() != null) {
             for (Favorite favorite : user.getFavorites()) {
@@ -70,8 +71,8 @@ public class FavoriteServiceImpl implements FavoriteService {
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> {
-                    log.error("WorkSpace id not found");
-                    new NotFoundException("workSpace with id: "+workSpaceId+" not found");
+                    log.error("WorkSpace with id: " + workSpaceId + " not found");
+                    new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
                 });
         if (user.getFavorites() != null) {
             for (Favorite favorite : user.getFavorites()) {
