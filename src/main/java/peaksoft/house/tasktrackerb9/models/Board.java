@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.entity;
+package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +18,6 @@ public class Board {
     @GeneratedValue(generator = "board_gen",strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "board_gen",sequenceName = "board_seq",allocationSize = 1)
     private Long id;
-
     private String title;
 
     @jakarta.persistence.Column(name = "back_ground")

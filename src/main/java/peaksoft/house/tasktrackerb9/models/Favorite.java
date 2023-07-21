@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.entity;
+package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +23,7 @@ public class Favorite {
     @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private Board board;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH},mappedBy = "favorite")
+    @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private WorkSpace workSpace;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
