@@ -135,7 +135,6 @@ public class BoardServiceImpl implements BoardService {
                     break;
                 }
             }
-
         }
         return BoardResponse.builder()
                 .boardId(boardId)
