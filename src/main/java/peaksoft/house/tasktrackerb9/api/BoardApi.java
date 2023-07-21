@@ -19,34 +19,33 @@ public class BoardApi {
 
     private final BoardService boardService;
 
-    @Operation(summary = "save board", description = "save board with workSpace id")
-    @PostMapping("/save/{workSpaceId}")
-    public SimpleResponse saveBoard(@RequestBody BoardRequest boardRequest,@PathVariable Long workSpaceId){
-        return boardService.saveBoard(boardRequest,workSpaceId);
+    @PostMapping("/{workSpaceId}")
+    @Operation(summary = "Save board", description = "Save board by workSpace id")
+    public SimpleResponse saveBoard(@RequestBody BoardRequest boardRequest, @PathVariable Long workSpaceId) {
+        return boardService.saveBoard(boardRequest, workSpaceId);
     }
 
-    @Operation(summary = "all boards", description = "with workSpace id get all boards")
     @GetMapping("/allBoards/{workSpaceId}")
-    public List<BoardResponse>getAllBoarsByWorkSpace(@PathVariable Long workSpaceId){
+    @Operation(summary = "Get all boards", description = "Get all boards by workSpace id")
+    public List<BoardResponse> getAllBoarsByWorkSpace(@PathVariable Long workSpaceId) {
         return boardService.getAllBoardsByWorkspaceId(workSpaceId);
     }
 
-    @Operation(summary = "get board", description = "get board with id")
     @GetMapping("/{boardId}")
+    @Operation(summary = "Get board", description = "Get board with id")
     public BoardResponse getById(@PathVariable Long boardId) {
         return boardService.getBoardById(boardId);
     }
 
-    @Operation(summary = "update board", description = "update board with id")
     @PutMapping("/{boardId}")
-    public SimpleResponse update(@RequestBody BoardRequest boardRequest,@PathVariable Long boardId) {
+    @Operation(summary = "Update board", description = "Update board with id")
+    public SimpleResponse update(@RequestBody BoardRequest boardRequest, @PathVariable Long boardId) {
         return boardService.updateBoard(boardRequest, boardId);
     }
 
-    @Operation(summary = "delete board", description = "delete board with id")
     @DeleteMapping("/{boardId}")
+    @Operation(summary = "Delete board", description = "Delete board with id")
     public SimpleResponse deleteBoard(@PathVariable Long boardId) {
         return boardService.deleteBoard(boardId);
     }
-
 }
