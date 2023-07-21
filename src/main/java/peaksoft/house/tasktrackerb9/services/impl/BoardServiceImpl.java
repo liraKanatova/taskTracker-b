@@ -40,8 +40,11 @@ public class BoardServiceImpl implements BoardService {
                     log.error("WorkSpace with id: "+workSpaceId+" not found");
                     throw new NotFoundException("WorkSpace with id: "+workSpaceId+" not found");
                 });
-           List<Board> boardList = boardRepository.getAllByBoards(workSpaceId);
-            for (Board board : boardList) {
+        if(workSpace.getBoards() ==null){
+            log.error("This is board not found in this workSpace");
+            throw new NotFoundException("This is board not found in this workSpace");
+        }
+            for (Board board : workSpace.getBoards()) {
                 boolean isFavorite = false;
                 if (board.getFavorite() != null) {
                     for (Favorite favorite : user.getFavorites()) {
@@ -64,7 +67,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public SimpleResponse saveBoard(BoardRequest boardRequest, Long workSpaceId) {
-        WorkSpace workSpace = workspaceRepository.findById(boardRequest.getWorkspaceId())
+        WorkSpace workSpace = workspaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> {
                     log.error("WorkSpace with id: "+workSpaceId+" not found");
                    throw  new NotFoundException("WorkSpace with id: "+workSpaceId+" not found");
@@ -106,12 +109,7 @@ public class BoardServiceImpl implements BoardService {
                     throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
         WorkSpace workSpace = board.getWorkSpace();
-        if (workSpace !=null) {
             workSpace.getBoards().remove(board);
-        }else {
-            log.error("In workSpace not found board");
-            throw new NotFoundException("In workSpace not found board");
-        }
             boardRepository.deleteById(boardId);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
