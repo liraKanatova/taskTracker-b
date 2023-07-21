@@ -11,7 +11,6 @@ public record UserRequest(
         @Column(unique = true)
         @EmailValid
         String email,
-        String password,
-        String repeatPassword) {
+        String password) {
 
 }

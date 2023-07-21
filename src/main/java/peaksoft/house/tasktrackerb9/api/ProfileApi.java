@@ -12,7 +12,7 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.service.impl.UserServiceImpl;
 
 @RestController
-@RequestMapping("/profile/users")
+@RequestMapping("/api/profile")
 @RequiredArgsConstructor
 @Tag(name = "Profile Api",description = "Api Profile to management")
 @CrossOrigin(origins = "*",maxAge = 3600)
@@ -21,34 +21,22 @@ public class ProfileApi {
     private final UserServiceImpl userService;
 
 
-    @PutMapping("/updated")
-    @Operation(summary = "Update user", description = "User updating profile")
+    @PutMapping
+    @Operation(summary = "Update", description = "User updating profile user")
     public SimpleResponse updateUserBy(@RequestBody @Valid UserRequest userRequest) {
         return userService.updateUserBy( userRequest);
     }
 
-    @PutMapping("/image/{id}")
+    @PutMapping("/avatar/{userId}")
     @Operation(summary = "Update image", description = "User updating profile image")
-    public SimpleResponse updateImage(@PathVariable  Long id, @RequestBody String userRequestImage) {
-        return userService.updateImageUserId(id,userRequestImage);
+    public SimpleResponse updateImage(@PathVariable  Long userId, @RequestBody String userRequestImage) {
+        return userService.updateImageUserId(userId,userRequestImage);
     }
 
-
-    @GetMapping("/{id}")
-    @Operation(summary = "Get by id user",description = "User get by id")
-    public UserResponse getById(@PathVariable Long id){
-        return userService.getUserById(id);
+    @GetMapping("/profile/{userId}")
+    @Operation(summary = "Profile",description = "User profile get by id")
+    public ProfileResponse getProfileById(@PathVariable  Long userId){
+        return userService.getProfileById(userId);
     }
 
-    @GetMapping("/profile/{id}")
-    @Operation(summary = "Get by profile id",description = "User profile get by id")
-    public ProfileResponse getProfileById(@PathVariable  Long id){
-        return userService.getProfileById(id);
-    }
-
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete user by id",description = "Remove user profile image")
-    public SimpleResponse removeUserById(@PathVariable  Long id){
-        return userService.removeProfileUser(id);
-    }
 }

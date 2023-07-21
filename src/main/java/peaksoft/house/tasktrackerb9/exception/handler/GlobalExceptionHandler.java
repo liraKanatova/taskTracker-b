@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
                     e.getMessage());
         }
 
-        @ExceptionHandler(BadCredentialException.class)
+        @ExceptionHandler(BadRequestException.class)
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         public ExceptionResponse handleBadRequest(BadRequestException e){
             return  new ExceptionResponse(

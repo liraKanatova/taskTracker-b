@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
 
 
-
     @Override
     public SimpleResponse updateUserBy(UserRequest userRequest) {
 
@@ -46,13 +45,9 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userRequest.firstName());
         user.setLastName(userRequest.lastName());
         user.setEmail(userRequest.email());
-        if (userRequest.password().equals(userRequest.repeatPassword())) {
             user.setPassword(passwordEncoder.encode(userRequest.password()));
             userRepository.save(user);
-
-        } else {
-            throw new NotFoundException("Password do not match");
-        }
+            log.info("Updated user");
         return SimpleResponse
                 .builder()
                 .message("Updated")
@@ -61,40 +56,21 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
     @Override
-    public SimpleResponse updateImageUserId(Long id, String image) {
+    public SimpleResponse updateImageUserId(Long userId, String image) {
 
-
-        User users = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
-
+        User users = userRepository.findById(userId).orElseThrow(() -> {
+            log.error("User with id: " + userId + " not found");
+            return new NotFoundException("User with id: " + userId + " not found");
+        });
         users.setImage(image);
         userRepository.save(users);
 
         return
                 SimpleResponse
                         .builder()
-                        .message("Save entity")
+                        .message("Update avatar")
                         .status(HttpStatus.OK)
-                        .build();
-    }
-
-    @Override
-    public UserResponse getUserById(Long id) {
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
-
-        return
-                UserResponse
-                        .builder()
-                        .id(user.getId())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .image(user.getImage())
                         .build();
     }
 
@@ -123,23 +99,6 @@ public class UserServiceImpl implements UserService {
                         .workSpaceResponse(workSpaces.stream()
                                 .map(x -> new WorkSpaceResponse(x.getId(), x.getName()))
                                 .toList())
-                        .build();
-    }
-
-    @Override
-    public SimpleResponse removeProfileUser(Long id) {
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with id: " + id + " not found"));
-
-        user.setImage(null);
-        userRepository.save(user);
-
-        return
-                SimpleResponse
-                        .builder()
-                        .message("Successfully deleted")
-                        .status(HttpStatus.OK)
                         .build();
     }
 }
