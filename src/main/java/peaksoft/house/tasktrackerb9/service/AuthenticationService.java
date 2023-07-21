@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.service;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import jakarta.mail.MessagingException;
+import peaksoft.house.tasktrackerb9.dto.request.ResetPasswordRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
@@ -14,7 +15,7 @@ public interface AuthenticationService {
 
     AuthenticationResponse signIn(SignInRequest signInRequest);
 
-    ResetPasswordResponse resetPassword(Long userId, String newPassword, String repeatPassword);
+    ResetPasswordResponse resetPassword(ResetPasswordRequest passwordRequest);
 
     SimpleResponse forgotPassword(String email, String link) throws MessagingException;
 

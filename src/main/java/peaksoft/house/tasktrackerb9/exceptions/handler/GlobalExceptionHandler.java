@@ -49,14 +49,5 @@ public class GlobalExceptionHandler {
                 .message(e.getMessage())
                 .build();
     }
-
-    @ExceptionHandler(IllegalArgumentExceptionn.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionResponse doesNotMatch(IllegalArgumentExceptionn e){
-        return ExceptionResponse.builder()
-                .httpStatus(HttpStatus.CONFLICT)
-                .exceptionClassName(e.getClass().getSimpleName())
-                .message(e.getMessage())
-                .build();
-    }
+    
 }

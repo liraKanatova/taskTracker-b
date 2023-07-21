@@ -20,6 +20,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.JwtService;
+import peaksoft.house.tasktrackerb9.dto.request.ResetPasswordRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
@@ -28,7 +29,6 @@ import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.entity.User;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
-import peaksoft.house.tasktrackerb9.exceptions.IllegalArgumentExceptionn;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.repository.UserRepository;
 import peaksoft.house.tasktrackerb9.service.AuthenticationService;
@@ -96,20 +96,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResetPasswordResponse resetPassword(Long userId, String newPassword, String repeatPassword) {
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest repeatPassword) {
 
-        User user = userRepository.findById(userId).orElseThrow(
+        User user = userRepository.findById(repeatPassword.userId()).orElseThrow(
                 () -> {
-                    log.error("User with id: " + userId + " not found!");
-                    return new NotFoundException("User with id: " + userId + " not found!");
+                    log.error("User with id: " + repeatPassword.userId() + " not found!");
+                    return new NotFoundException("User with id: " + repeatPassword.userId() + " not found!");
                 }
         );
-        if (!newPassword.equals(repeatPassword)) {
-            throw new IllegalArgumentExceptionn("Passwords do not match");
+        if (!repeatPassword.newPassword().equals(repeatPassword.repeatPassword())) {
+            log.error("Passwords do not match");
+            throw new BadCredentialException("Passwords do not match");
         }
 
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(repeatPassword.newPassword()));
         userRepository.save(user);
+        log.info("Password updated!");
         String jwt = jwtService.generateToken(user);
 
         return new ResetPasswordResponse(
@@ -133,7 +135,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true,"UTF-8");
         helper.setSubject("Task Tracker");
         helper.setFrom("rusi.studio.kgz@gmail.com");
         helper.setTo(email);
@@ -159,7 +161,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void initFireBaseForAuthGoogle() throws IOException {
 
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
-                new ClassPathResource("tasktracker.json").getInputStream());
+                new ClassPathResource("from JS json.file").getInputStream());
         FirebaseOptions firebaseOptions = FirebaseOptions.builder()
                 .setCredentials(googleCredentials).build();
         FirebaseApp.initializeApp(firebaseOptions);
