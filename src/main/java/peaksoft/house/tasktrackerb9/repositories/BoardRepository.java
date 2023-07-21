@@ -3,9 +3,10 @@ package peaksoft.house.tasktrackerb9.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import peaksoft.house.tasktrackerb9.entity.Board;
+import peaksoft.house.tasktrackerb9.models.Board;
 
 import java.util.List;
+
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {

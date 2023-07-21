@@ -5,14 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
-import peaksoft.house.tasktrackerb9.entity.Board;
-import peaksoft.house.tasktrackerb9.entity.Favorite;
-import peaksoft.house.tasktrackerb9.entity.User;
-import peaksoft.house.tasktrackerb9.entity.WorkSpace;
+import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
+import peaksoft.house.tasktrackerb9.models.Board;
+import peaksoft.house.tasktrackerb9.models.Favorite;
+import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
-import peaksoft.house.tasktrackerb9.repositories.UserWorkSpaceRoleRepository;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.ArrayList;
@@ -28,22 +29,19 @@ public class BoardServiceImpl implements BoardService {
 
     private final WorkSpaceRepository workspaceRepository;
 
-    private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
-
     private final JwtService jwtService;
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
+        List<BoardResponse> boardsList = new ArrayList<>();
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workspaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> {
                     log.error("WorkSpace with id: "+workSpaceId+" not found");
                     throw new NotFoundException("WorkSpace with id: "+workSpaceId+" not found");
                 });
-        if (workSpace.getUserWorkSpaceRoles().contains(userWorkSpaceRoleRepository.getUserIdAndWorkSpaceId(user.getId(), workSpaceId))) {
-           List<Board> list = boardRepository.getAllByBoards(workSpaceId);
-            List<BoardResponse> boardsList = new ArrayList<>();
-            for (Board board : list) {
+           List<Board> boardList = boardRepository.getAllByBoards(workSpaceId);
+            for (Board board : boardList) {
                 boolean isFavorite = false;
                 if (board.getFavorite() != null) {
                     for (Favorite favorite : user.getFavorites()) {
@@ -62,15 +60,14 @@ public class BoardServiceImpl implements BoardService {
                 boardsList.add(boardResponse);
             }
             return boardsList;
-        } else throw new BadRequestException("In this workSpace not found user");
     }
 
     @Override
     public SimpleResponse saveBoard(BoardRequest boardRequest, Long workSpaceId) {
         WorkSpace workSpace = workspaceRepository.findById(boardRequest.getWorkspaceId())
                 .orElseThrow(() -> {
-                    log.error("WorkSpace id not found");
-                    new NotFoundException("WorkSpace id not found!");
+                    log.error("WorkSpace with id: "+workSpaceId+" not found");
+                   throw  new NotFoundException("WorkSpace with id: "+workSpaceId+" not found");
                 });
             Board board = new Board();
             board.setTitle(boardRequest.title());
@@ -88,14 +85,9 @@ public class BoardServiceImpl implements BoardService {
     public SimpleResponse updateBoard(BoardRequest boardRequest, Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
-                            log.error("Board id not found");
-                            throw new NotFoundException("Board id not found");
+                            log.error("Board with id: " + boardId + " not found");
+                            throw new NotFoundException("Board with id: " + boardId + " not found");
                         });
-        WorkSpace workSpace = workspaceRepository.findById(board.getWorkSpace().getId())
-                .orElseThrow(() -> {
-                    log.error("WorkSpace id not found");
-                    throw new NotFoundException("WorkSpace id not found");
-                });
             board.setTitle(boardRequest.title());
             board.setBackGround(boardRequest.backGround());
             boardRepository.save(board);
@@ -110,8 +102,8 @@ public class BoardServiceImpl implements BoardService {
     public SimpleResponse deleteBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
-                    log.error("board id not found");
-                    throw new NotFoundException("Board id not found");
+                    log.error("Board with id: " + boardId + " not found");
+                    throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
         WorkSpace workSpace = board.getWorkSpace();
         if (workSpace !=null) {
@@ -120,7 +112,6 @@ public class BoardServiceImpl implements BoardService {
             log.error("In workSpace not found board");
             throw new NotFoundException("In workSpace not found board");
         }
-
             boardRepository.deleteById(boardId);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
@@ -130,15 +121,27 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardResponse getBoardById(Long boardId) {
+        User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
-                    log.error("Board id not found");
-                   throw  new NotFoundException("Board id not found");
+                    log.error("Board with id: " + boardId + " not found");
+                   throw  new NotFoundException("Board with id: " + boardId + " not found");
                 });
+        boolean isFavorite = false;
+        if (board.getFavorite() != null) {
+            for (Favorite favorite : user.getFavorites()) {
+                if(board.getFavorite().equals(favorite)){
+                    isFavorite =true;
+                    break;
+                }
+            }
+
+        }
         return BoardResponse.builder()
                 .boardId(boardId)
                 .title(board.getTitle())
                 .backGround(board.getBackGround())
+                .isFavorite(isFavorite)
                 .build();
     }
 }
