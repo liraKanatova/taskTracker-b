@@ -3,12 +3,15 @@ package peaksoft.house.tasktrackerb9.service;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
+
+import java.util.List;
 
 public interface UserService {
 
-    SimpleResponse updateUserBy(UserRequest userRequest);
+    List<UserResponse> updateUser(UserRequest userRequest);
 
-    SimpleResponse updateImageUserId(Long userId, String image);
+     List<UserResponse>updateImageUserId(Long userId, String image);
 
     ProfileResponse getProfileById(Long userId);
 

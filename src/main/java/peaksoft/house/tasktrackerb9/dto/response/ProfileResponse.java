@@ -11,11 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 public class ProfileResponse {
 
-    private Long id;
+    private Long userId;
     private String firstName;
     private String lastName;
     private String email;
-    private String image;
+    private String avatar;
     private List<WorkSpaceResponse> workSpaceResponse;
 
 

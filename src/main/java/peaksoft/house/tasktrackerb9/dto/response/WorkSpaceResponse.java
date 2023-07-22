@@ -11,12 +11,12 @@ import lombok.Setter;
 @Builder
 public class WorkSpaceResponse {
 
-    private Long id;
+    private Long workSpaceId;
 
     private String name;
 
-    public WorkSpaceResponse(Long id, String name) {
-        this.id = id;
+    public WorkSpaceResponse(Long workSpaceId, String name) {
+        this.workSpaceId = workSpaceId;
         this.name = name;
     }
 }

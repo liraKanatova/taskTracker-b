@@ -32,8 +32,8 @@ public class ProfileApi {
         return userService.updateImageUserId(userId,userRequestImage);
     }
 
-    @GetMapping("/profile/{userId}")
-    @Operation(summary = "Profile",description = "User profile get by id")
+    @GetMapping("/{userId}")
+    @Operation(summary = "Profile",description = "Profile user get by id")
     public ProfileResponse getProfileById(@PathVariable  Long userId){
         return userService.getProfileById(userId);
     }
