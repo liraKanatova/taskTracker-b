@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/boards")
-@Tag(name = "Board Api")
+@Tag(name = "Board Api", description = "Api methods for boards")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BoardApi {
 

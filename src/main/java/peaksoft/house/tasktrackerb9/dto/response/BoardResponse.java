@@ -17,4 +17,9 @@ public class BoardResponse {
 
     private boolean isFavorite;
 
+    public BoardResponse(Long boardId, String title, String backGround) {
+        this.boardId = boardId;
+        this.title = title;
+        this.backGround = backGround;
+    }
 }
