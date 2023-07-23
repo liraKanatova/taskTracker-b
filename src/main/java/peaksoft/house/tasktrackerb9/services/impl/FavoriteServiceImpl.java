@@ -57,7 +57,7 @@ public class FavoriteServiceImpl implements FavoriteService {
                     favoriteRepository.deleteById(favorite.getId());
                     return SimpleResponse.builder()
                             .status(HttpStatus.OK)
-                            .message("deleted")
+                            .message("Deleted")
                             .build();
                 }
             }
@@ -69,7 +69,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         user.getFavorites().add(favorite);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("saved")
+                .message("Saved")
                 .build();
     }
 
@@ -108,7 +108,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         user.getFavorites().add(favorite);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("saved")
+                .message("Saved")
                 .build();
 
     }
