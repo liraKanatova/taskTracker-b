@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class FavoriteBoardResponse {
 
-    private Long id;
+    private Long userId;
 
     private Long boardId;
 

@@ -12,19 +12,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/favorites")
-@Tag(name = "Favourite Api")
+@Tag(name = "Favourite Api",description = "Api methods for favorites")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class FavoriteApi {
 
     private final FavoriteService favoriteService;
 
-    @Operation(summary = "Save favorite",description = "Save favorite by board")
+    @Operation(summary = "Save favorite",description = "Make and delete board favorites")
     @PostMapping("/board/{boardId}")
     public SimpleResponse saveBoardFavorite(@PathVariable Long boardId){
         return favoriteService.saveBoardFavorite(boardId);
     }
 
-    @Operation(summary = "Save favorite",description = "Save favorite by workSpace")
+    @Operation(summary = "Save favorite",description = "Make and delete workSpace favorites")
     @PostMapping("/work-Space/{workSpaceId}")
     public SimpleResponse saveWorkSpaceFavorite(@PathVariable Long workSpaceId){
         return favoriteService.saveWorkSpaceFavorite(workSpaceId);

@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class FavoriteWorkSpaceResponse {
 
-    private Long id;
+    private Long userId;
 
     private Long workSpaceId;
 
