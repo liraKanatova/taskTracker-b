@@ -17,26 +17,26 @@ import peaksoft.house.tasktrackerb9.service.AuthenticationService;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication Api",description = "Authorization for all users")
+@Tag(name = "Authentication Api",description = "API - Handles user authentication and access control")
 @CrossOrigin(origins = "*",maxAge = 3600)
 public class AuthenticationApi {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
-    @Operation(summary = "SignUp",description = "User can register with signUp")
+    @Operation(summary = "SignUp",description = "Register new users")
     public AuthenticationResponse signUp(@RequestBody SignUpRequest signUpRequest){
         return authenticationService.signUp(signUpRequest);
     }
 
     @PostMapping("/signIn")
-    @Operation(summary = "SignIn",description = "Only registers users can login")
+    @Operation(summary = "SignIn",description = "Only registered users can login")
     public  AuthenticationResponse signIn(@RequestBody SignInRequest signInRequest){
         return authenticationService.signIn(signInRequest);
     }
 
     @PostMapping("/forgot-password")
-    @Operation(summary = "Forgot password", description = "If you have forgotten your password, enter gmail here")
+    @Operation(summary = "Forgot password", description = "Enables password recovery for forgotten accounts via email verification")
     public SimpleResponse forgotPassword(@RequestParam String email, @RequestParam String link) throws MessagingException {
         return authenticationService.forgotPassword(email, link);
     }
