@@ -114,14 +114,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         log.info("Password updated!");
         String jwt = jwtService.generateToken(user);
 
-        return new ResetPasswordResponse(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getRole(),
-                jwt,
-                "Password updated!");
+        return ResetPasswordResponse.builder()
+                .userId(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .jwtToken(jwt)
+                .message("Password updated!")
+                .build();
     }
 
     @Override
