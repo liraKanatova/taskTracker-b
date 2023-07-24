@@ -16,5 +16,8 @@ public class SimpleResponse {
 
     private HttpStatus status;
 
-
+    public SimpleResponse(String message, HttpStatus status) {
+        this.message = message;
+        this.status = status;
+    }
 }

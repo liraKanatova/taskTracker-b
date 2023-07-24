@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
-import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.service.impl.UserServiceImpl;
 
 @RestController
@@ -22,20 +22,26 @@ public class ProfileApi {
 
     @PutMapping
     @Operation(summary = "Update", description = "User updating profile user")
-    public SimpleResponse updateUserBy(@RequestBody @Valid UserRequest userRequest) {
-        return userService.updateUserBy( userRequest);
+    public UserResponse updateUserBy(@RequestBody @Valid UserRequest userRequest) {
+        return userService.updateUser(userRequest);
     }
 
-    @PutMapping("/avatar/{userId}")
+    @PutMapping("/avatar")
     @Operation(summary = "Update image", description = "User updating profile image")
-    public SimpleResponse updateImage(@PathVariable  Long userId, @RequestBody String userRequestImage) {
-        return userService.updateImageUserId(userId,userRequestImage);
+    public UserResponse updateImage( @RequestBody String userRequestImage) {
+        return userService.updateImageUserId(userRequestImage);
     }
 
     @GetMapping("/{userId}")
     @Operation(summary = "Profile",description = "Profile user get by id")
     public ProfileResponse getProfileById(@PathVariable  Long userId){
         return userService.getProfileById(userId);
+    }
+
+    @GetMapping
+    @Operation(summary ="My Profile",description = "Get by authentication")
+    public UserResponse getMyProfile(){
+        return userService.getMyProfile();
     }
 
 }
