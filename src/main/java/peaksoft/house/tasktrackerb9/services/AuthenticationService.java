@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service;
+package peaksoft.house.tasktrackerb9.services;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import jakarta.mail.MessagingException;

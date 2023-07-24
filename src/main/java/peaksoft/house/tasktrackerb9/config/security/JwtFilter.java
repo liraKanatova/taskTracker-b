@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.config;
+package peaksoft.house.tasktrackerb9.config.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,8 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import peaksoft.house.tasktrackerb9.entity.User;
-import peaksoft.house.tasktrackerb9.repository.UserRepository;
+import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 
 import java.io.IOException;
 

@@ -1,7 +1,7 @@
-package peaksoft.house.tasktrackerb9.repository;
+package peaksoft.house.tasktrackerb9.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import peaksoft.house.tasktrackerb9.entity.User;
+import peaksoft.house.tasktrackerb9.models.User;
 
 import java.util.Optional;
 

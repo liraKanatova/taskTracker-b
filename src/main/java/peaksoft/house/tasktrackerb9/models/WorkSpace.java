@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.entity;
+package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Column;

@@ -12,7 +12,7 @@ import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ResetPasswordResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.service.AuthenticationService;
+import peaksoft.house.tasktrackerb9.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
