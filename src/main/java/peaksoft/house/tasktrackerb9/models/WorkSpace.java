@@ -38,4 +38,8 @@ public class WorkSpace {
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
     private List<UserWorkSpaceRole>roles;
 
+    public WorkSpace(String name, Long adminId) {
+        this.name = name;
+        this.adminId = adminId;
+    }
 }

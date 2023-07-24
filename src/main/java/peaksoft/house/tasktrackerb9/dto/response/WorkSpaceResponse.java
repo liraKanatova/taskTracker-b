@@ -10,11 +10,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkSpaceResponse {
-    private Long id;
-    private String name;
+    private Long workSpaceId;
+    private String workSpaceName;
     private Long adminId;
-    private String fullName;
-    private String image;
+    private String adminFullName;
+    private String adminImage;
+    private Boolean isFavorite;
 
 
 }

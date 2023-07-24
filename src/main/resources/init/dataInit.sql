@@ -6,7 +6,7 @@ values (1,'Abdumalik','Turatbek uulu','asanbekovmalik2@gmail.com', '$2a$12$6RFdM
        (5,'Manas','Abdugani uulu','manas@gmail.com', '$2a$12$egcK6uZ5RlHPgEzEEczyM.VVX33yCsgyH2Kdw4m.lJk7Bl2pnE39.',  'https://kai.kg/public/images/2021/12/1638521287.png','ADMIN');
 
 insert into work_spaces(id,name,admin_id)
-values (1,'Taigan',1),
+values (6,'Taigan',1),
        (2,'LMS',2),
        (3,'Gadgetarium',3),
        (4,'AirBnb',4),
@@ -24,14 +24,14 @@ values (1,5,5,5),
        (2,4,4,4),
        (3,3,3,3),
        (4,2,2,2),
-       (5,1,1,1);
+       (5,1,1,6);
 
 insert into user_work_space_roles(id,role,user_id,work_space_id)
 values (1,'ADMIN',5,5),
        (2,'MEMBER',4,4),
        (3,'ADMIN',3,3),
        (4,'ADMIN',2,2),
-       (5,'MEMBER',1,1);
+       (5,'MEMBER',1,6);
 
 insert into columns(id,title,is_archive,board_id)
 values (1,'Done',false,1),
@@ -97,7 +97,7 @@ values (1,now(),'link',1),
        (5,now(),'link',5);
 
 insert into users_work_spaces(work_spaces_id,users_id)
-values (1,1),
+values (1,6),
        (2,2),
        (3,3),
        (4,4),

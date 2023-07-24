@@ -1,7 +1,13 @@
 package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService;
 
-public interface WorkSpaceJdbcTemplateService {
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 
-     String getAllWorkSpaces();
-     String getAllWorkSpaceInnerPage();
+import java.util.List;
+
+public interface WorkSpaceJdbcTemplateService {
+    List<WorkSpaceResponse> getAllWorkSpaces();
+
+    WorkSpaceResponse getWorkSpaceById(Long workSpaceId);
+
+
 }

@@ -4,18 +4,20 @@ package peaksoft.house.tasktrackerb9.services;
 import jakarta.mail.MessagingException;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 
 import java.util.List;
 
 public interface WorkSpaceService {
 
-
     List<WorkSpaceResponse> getAllWorkSpaces();
+
     SimpleResponse saveWorkSpace(WorkSpaceRequest workSpaceRequest) throws MessagingException;
-    WorkSpaceInnerPageResponse getWorkSpaceById(Long id);
+
+    WorkSpaceResponse getWorkSpaceById(Long id);
+
     SimpleResponse updateWorkSpaceById(Long id,WorkSpaceRequest workSpaceRequest);
+
     SimpleResponse deleteWorkSpaceById(Long id);
 
 

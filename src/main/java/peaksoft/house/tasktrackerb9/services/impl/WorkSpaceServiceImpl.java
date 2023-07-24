@@ -7,15 +7,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
-import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -28,7 +25,6 @@ import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.WorkSpaceJdbcTemplateService;
 import peaksoft.house.tasktrackerb9.services.WorkSpaceService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,60 +33,40 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class WorkSpaceServiceImpl implements WorkSpaceService {
+
     private final WorkSpaceRepository workSpaceRepository;
     private final JwtService jwtService;
     private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
-    private final JdbcTemplate jdbcTemplate;
     private final WorkSpaceJdbcTemplateService workSpaceJdbcTemplateService;
+
 
     @Override
     public List<WorkSpaceResponse> getAllWorkSpaces() {
-        User user = jwtService.getAuthentication();
-        String getAllWorkSpaces = workSpaceJdbcTemplateService.getAllWorkSpaces();
-        List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(getAllWorkSpaces,
-                new Object[]{user.getId()}, (rs, rowNum) -> {
-                    WorkSpaceResponse workSpaceResponse = new WorkSpaceResponse();
-                    workSpaceResponse.setId(rs.getLong("id"));
-                    workSpaceResponse.setName(rs.getString("workSpaceName"));
-                    workSpaceResponse.setAdminId(rs.getLong("userId"));
-                    workSpaceResponse.setFullName(rs.getString("fullName"));
-                    workSpaceResponse.setImage(rs.getString("image"));
-                    return workSpaceResponse;
-                }
-        );
-        return workSpaceResponses;
+     return   workSpaceJdbcTemplateService.getAllWorkSpaces();
     }
-
 
     @Override
     public SimpleResponse saveWorkSpace(WorkSpaceRequest request) throws MessagingException {
         User user = jwtService.getAuthentication();
-        WorkSpace workspace = new WorkSpace();
-        workspace.setName(request.getName());
-        workspace.setAdminId(user.getId());
-        UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole();
-        userWorkSpace.setUser(user);
-        userWorkSpace.setWorkSpace(workspace);
-        userWorkSpace.setRole(Role.ADMIN);
+        WorkSpace workspace = new WorkSpace(request.getName(),user.getId());
+        UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole(Role.ADMIN,user,workspace);
         user.setRoles(List.of(userWorkSpace));
         workspace.setRoles(List.of(userWorkSpace));
         user.setWorkSpaces(List.of(workspace));
         workspace.setUsers(List.of(user));
         workSpaceRepository.save(workspace);
-        userWorkSpaceRoleRepository.save(userWorkSpace);
         List<String> invitationEmails = request.getEmails();
         if (!invitationEmails.isEmpty() && !invitationEmails.get(0).isBlank()) {
             for (String email : invitationEmails) {
                 if (!userRepository.existsByEmail(email)) {
-                    String inviteLink = "http://localhost:8080/swagger-ui/index.html#/invite-registration-api/registerUser";
                     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
                     MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
                     helper.setSubject(" Welcome to my workspace");
-                    helper.setFrom("abduvohobuulumatmusa@gmail.com");
+                    helper.setFrom("tasktrackerjava9@gmail.com");
                     helper.setTo(email);
-                    helper.setText("/workspaceId/" + workspace.getId() + "   " + inviteLink);
+                    helper.setText("/workspaceId/" + workspace.getId());
                     javaMailSender.send(mimeMessage);
                     log.info(String.format("WorkSpace with name %s successfully saved!", workspace.getName()));
                     return SimpleResponse.builder()
@@ -108,33 +84,8 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     }
 
     @Override
-    public WorkSpaceInnerPageResponse getWorkSpaceById(Long id) {
-        User user = jwtService.getAuthentication();
-        String getWorkSpaceInnerPage = workSpaceJdbcTemplateService.getAllWorkSpaceInnerPage();
-        WorkSpaceInnerPageResponse workSpaceInnerPageResponse = jdbcTemplate.query(getWorkSpaceInnerPage, new Object[]{user.getId(), id}, (rs) -> {
-            WorkSpaceResponse workSpaceResponse = new WorkSpaceResponse();
-            List<BoardResponse> boardResponses = new ArrayList<>();
-            while (rs.next()) {
-                if (workSpaceResponse.getId() == null) {
-                    workSpaceResponse.setId(rs.getLong("id"));
-                    workSpaceResponse.setName(rs.getString("workSpaceName"));
-                    workSpaceResponse.setAdminId(rs.getLong("userId"));
-                    workSpaceResponse.setFullName(rs.getString("fullName"));
-                    workSpaceResponse.setImage(rs.getString("image"));
-                }
-                BoardResponse boardResponse = new BoardResponse();
-                boardResponse.setId(rs.getLong("boardId"));
-                boardResponse.setTitle(rs.getString("title"));
-                boardResponse.setBackGround(rs.getString("back_ground"));
-                boardResponses.add(boardResponse);
-            }
-            WorkSpaceInnerPageResponse workSpaceInnerPageResponse1 = new WorkSpaceInnerPageResponse();
-            workSpaceInnerPageResponse1.setWorkSpaceResponse(workSpaceResponse);
-            workSpaceInnerPageResponse1.setBoardResponses(boardResponses);
-            return workSpaceInnerPageResponse1;
-        });
-
-        return workSpaceInnerPageResponse;
+    public WorkSpaceResponse getWorkSpaceById(Long id) {
+     return workSpaceJdbcTemplateService.getWorkSpaceById(id);
     }
 
     @Override
