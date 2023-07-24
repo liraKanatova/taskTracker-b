@@ -1,19 +1,20 @@
-package peaksoft.house.tasktrackerb9.service;
+package peaksoft.house.tasktrackerb9.repository.jdbcTemplate;
 
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 
-import java.util.List;
 
-public interface UserService {
+public interface ProfileRepository {
 
-    UserResponse  updateUser(UserRequest userRequest);
+    UserResponse updateUser(UserRequest userRequest);
 
-     UserResponse updateImageUserId( String image);
+    UserResponse updateImageUserId (String image);
 
     ProfileResponse getProfileById(Long userId);
 
     UserResponse getMyProfile();
+
+
 
 }
