@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repository.jdbcTemplate;
+package peaksoft.house.tasktrackerb9.repositories.jdbcTemplate;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -6,12 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import peaksoft.house.tasktrackerb9.config.JwtService;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
-import peaksoft.house.tasktrackerb9.entity.User;
+import peaksoft.house.tasktrackerb9.models.User;
 
 import java.util.List;
 
