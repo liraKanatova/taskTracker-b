@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
-import peaksoft.house.tasktrackerb9.services.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -17,7 +16,7 @@ import peaksoft.house.tasktrackerb9.services.impl.UserServiceImpl;
 @CrossOrigin(origins = "*",maxAge = 3600)
 public class ProfileApi {
 
-    private final UserServiceImpl userService;
+    private final peaksoft.house.tasktrackerb9.service.impl.UserServiceImpl userService;
 
 
     @PutMapping
