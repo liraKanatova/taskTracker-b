@@ -1,17 +1,18 @@
-package peaksoft.house.tasktrackerb9.service.impl;
+package peaksoft.house.tasktrackerb9.services.impl;
 
-import jakarta.persistence.SequenceGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import peaksoft.house.tasktrackerb9.config.JwtService;
+
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
-import peaksoft.house.tasktrackerb9.entity.User;
-import peaksoft.house.tasktrackerb9.repository.UserRepository;
-import peaksoft.house.tasktrackerb9.repository.jdbcTemplate.ProfileImpl;
+
+import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.repositories.UserRepository;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplate.ProfileImpl;
 import peaksoft.house.tasktrackerb9.service.UserService;
 
 
