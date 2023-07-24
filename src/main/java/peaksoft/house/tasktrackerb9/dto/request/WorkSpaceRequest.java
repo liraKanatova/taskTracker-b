@@ -13,4 +13,5 @@ public class WorkSpaceRequest {
 
     String name;
     List<String> emails;
+    String link;
 }

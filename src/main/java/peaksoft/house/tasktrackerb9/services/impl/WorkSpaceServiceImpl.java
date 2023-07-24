@@ -66,7 +66,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                     helper.setSubject(" Welcome to my workspace");
                     helper.setFrom("tasktrackerjava9@gmail.com");
                     helper.setTo(email);
-                    helper.setText("/workspaceId/" + workspace.getId());
+                    helper.setText("/workspaceId/" + workspace.getId()+" Click link to register :"+request.getLink());
                     javaMailSender.send(mimeMessage);
                     log.info(String.format("WorkSpace with name %s successfully saved!", workspace.getName()));
                     return SimpleResponse.builder()
