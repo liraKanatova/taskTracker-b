@@ -4,7 +4,7 @@ import lombok.Builder;
 import peaksoft.house.tasktrackerb9.enums.Role;
 
 @Builder
-public record ResetPasswordResponse(Long id,
+public record ResetPasswordResponse(Long userId,
                                     String firstName,
                                     String lastName,
                                     String email,
