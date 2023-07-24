@@ -16,7 +16,7 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 @CrossOrigin(origins = "*",maxAge = 3600)
 public class ProfileApi {
 
-    private final peaksoft.house.tasktrackerb9.service.impl.UserServiceImpl userService;
+    private final peaksoft.house.tasktrackerb9.services.impl.UserServiceImpl userService;
 
 
     @PutMapping
