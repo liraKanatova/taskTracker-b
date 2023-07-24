@@ -40,12 +40,11 @@ public class User implements UserDetails {
     private String image;
 
 
-    public User(Long id, String firstName, String lastName, String email, String password, String image) {
+    public User(Long id, String firstName, String lastName, String email, String image) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.image = image;
     }
 

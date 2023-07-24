@@ -13,6 +13,6 @@ public interface UserService {
 
     ProfileResponse getProfileById(Long userId);
 
-    UserResponse getMyProfile();
+
 
 }

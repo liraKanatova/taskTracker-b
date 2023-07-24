@@ -8,7 +8,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
 public class ProfileResponse {
 
     private Long userId;
@@ -19,4 +18,12 @@ public class ProfileResponse {
     private List<WorkSpaceResponse> workSpaceResponse;
 
 
+    public ProfileResponse(Long userId, String firstName, String lastName, String email, String avatar, List<WorkSpaceResponse> workSpaceResponse) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.avatar = avatar;
+        this.workSpaceResponse = workSpaceResponse;
+    }
 }

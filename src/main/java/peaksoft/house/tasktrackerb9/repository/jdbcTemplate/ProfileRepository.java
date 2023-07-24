@@ -9,11 +9,10 @@ public interface ProfileRepository {
 
     UserResponse updateUser(UserRequest userRequest);
 
-    UserResponse updateImageUserId (String image);
 
     ProfileResponse getProfileById(Long userId);
 
-    UserResponse getMyProfile();
+
 
 
 

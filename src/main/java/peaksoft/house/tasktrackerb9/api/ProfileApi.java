@@ -38,10 +38,5 @@ public class ProfileApi {
         return userService.getProfileById(userId);
     }
 
-    @GetMapping
-    @Operation(summary ="My Profile",description = "Get by authentication")
-    public UserResponse getMyProfile(){
-        return userService.getMyProfile();
-    }
 
 }
