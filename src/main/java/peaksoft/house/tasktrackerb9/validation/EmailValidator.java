@@ -1,12 +1,11 @@
 package peaksoft.house.tasktrackerb9.validation;
 
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class EmailValidatorses implements ConstraintValidator<EmailValid, String> {
+public class EmailValidator implements ConstraintValidator<EmailValid, String> {
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
@@ -26,3 +25,4 @@ public class EmailValidatorses implements ConstraintValidator<EmailValid, String
     }
 
 }
+

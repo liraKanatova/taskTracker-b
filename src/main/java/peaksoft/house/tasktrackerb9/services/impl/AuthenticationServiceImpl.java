@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service.impl;
+package peaksoft.house.tasktrackerb9.services.impl;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
@@ -6,16 +6,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import peaksoft.house.tasktrackerb9.config.JwtService;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
-import peaksoft.house.tasktrackerb9.entity.User;
+import peaksoft.house.tasktrackerb9.exception.BadCredentialException;
+import peaksoft.house.tasktrackerb9.exception.NotFoundException;
+import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.enums.Role;
-import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
-import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
-import peaksoft.house.tasktrackerb9.repository.UserRepository;
-import peaksoft.house.tasktrackerb9.service.AuthenticationService;
+import peaksoft.house.tasktrackerb9.repositories.UserRepository;
+import peaksoft.house.tasktrackerb9.services.AuthenticationService;
 
 @Service
 @Transactional
