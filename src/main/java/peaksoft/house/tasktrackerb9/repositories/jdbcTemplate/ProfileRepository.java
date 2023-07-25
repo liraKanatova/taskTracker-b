@@ -9,11 +9,5 @@ public interface ProfileRepository {
 
     UserResponse updateUser(UserRequest userRequest);
 
-
     ProfileResponse getProfileById(Long userId);
-
-
-
-
-
 }
