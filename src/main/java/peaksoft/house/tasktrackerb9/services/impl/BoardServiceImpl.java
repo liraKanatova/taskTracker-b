@@ -9,12 +9,14 @@ import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Board;
 import peaksoft.house.tasktrackerb9.models.Favorite;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
+import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplate.BoardJdbcTemplateIml;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 

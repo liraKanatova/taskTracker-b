@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service.impl;
+package peaksoft.house.tasktrackerb9.services.impl;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -19,21 +19,22 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import peaksoft.house.tasktrackerb9.config.JwtService;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ResetPasswordRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ResetPasswordResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.entity.User;
+import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
-import peaksoft.house.tasktrackerb9.repository.UserRepository;
-import peaksoft.house.tasktrackerb9.service.AuthenticationService;
+import peaksoft.house.tasktrackerb9.repositories.UserRepository;
+import peaksoft.house.tasktrackerb9.services.AuthenticationService;
 
 import java.io.IOException;
+
 
 @Service
 @Transactional
@@ -97,7 +98,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResetPasswordResponse resetPassword(ResetPasswordRequest repeatPassword) {
-
         User user = userRepository.findById(repeatPassword.userId()).orElseThrow(
                 () -> {
                     log.error("User with id: " + repeatPassword.userId() + " not found!");
@@ -127,8 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SimpleResponse forgotPassword(String email, String link) throws MessagingException {
-
-        User user = userRepository.findUserByEmail(email).orElseThrow(
+        User user = userRepository.getUserByEmail(email).orElseThrow(
                 () -> {
                     log.error("User with email:" + email + "not found!");
                     return new NotFoundException("User with email:" + email + "not found!");
@@ -136,7 +135,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true,"UTF-8");
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         helper.setSubject("Task Tracker");
         helper.setFrom("rusi.studio.kgz@gmail.com");
         helper.setTo(email);
@@ -170,7 +169,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authWithGoogle(String tokenId) throws FirebaseAuthException {
-
         FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(tokenId);
         User user;
         if (!userRepository.existsByEmail(firebaseToken.getEmail())) {
@@ -189,7 +187,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             userRepository.save(user);
         }
 
-        user = userRepository.findUserByEmail(firebaseToken.getEmail()).orElseThrow(
+        user = userRepository.getUserByEmail(firebaseToken.getEmail()).orElseThrow(
                 () -> {
                     log.error("User with this email not found!");
                     return new NotFoundException("User with this email not found!");
