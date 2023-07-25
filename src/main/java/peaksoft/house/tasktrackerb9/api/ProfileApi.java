@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
+import peaksoft.house.tasktrackerb9.services.impl.ProfileServiceImpl;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -16,7 +17,7 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 @CrossOrigin(origins = "*",maxAge = 3600)
 public class ProfileApi {
 
-    private final peaksoft.house.tasktrackerb9.services.impl.UserServiceImpl userService;
+    private final ProfileServiceImpl userService;
 
     @PutMapping
     @Operation(summary = "Update", description = "User updating profile user")
@@ -36,5 +37,11 @@ public class ProfileApi {
         return userService.getProfileById(userId);
     }
 
+
+    @GetMapping("/me")
+    @Operation(summary = "My profile",description = "Get my profile")
+    public UserResponse getMyProfile(){
+        return userService.getMyProfile();
+    }
 
 }

@@ -11,13 +11,13 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplate.ProfileImpl;
-import peaksoft.house.tasktrackerb9.services.UserService;
+import peaksoft.house.tasktrackerb9.services.ProfileService;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileImpl queryJdbc;
 
@@ -53,12 +53,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getMyProfile() {
         User user = jwtService.getAuthentication();
-        UserResponse userResponse = new UserResponse();
-        userResponse.setUserId(user.getId());
-        userResponse.setFirstName(user.getFirstName());
-        userResponse.setLastName(user.getLastName());
-        userResponse.setEmail(user.getEmail());
-        userResponse.setAvatar(user.getImage());
+        UserResponse userResponse =
+                new UserResponse(
+                        user.getId()
+                        ,user.getFirstName()
+                        ,user.getLastName()
+                        ,user.getEmail()
+                        ,user.getImage());
         jwtService.generateToken(user);
         return userResponse;
     }
