@@ -22,17 +22,15 @@ import java.util.List;
 @Slf4j
 public class ProfileImpl implements ProfileRepository {
 
-    private final JwtService jwtService;
-
     private final JdbcTemplate jdbcTemplate;
 
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
 
     @Override
     public UserResponse updateUser(UserRequest userRequest) {
-
-        User user = jwtService.getAuthentication();
+        User user=jwtService.getAuthentication();
         String query = "UPDATE users AS u SET first_name=?,last_name=?,email=?,password=? WHERE u.id=?";
 
         jdbcTemplate.update(query,
@@ -49,27 +47,21 @@ public class ProfileImpl implements ProfileRepository {
                 .email(userRequest.email())
                 .avatar(user.getImage())
                 .build();
-
-
     }
-
 
     @Override
     public ProfileResponse getProfileById(Long userId) {
-
         String query = """
                 SELECT u.id, email, first_name, image, last_name
                 FROM users u
                 WHERE u.id = ?
                 """;
-
         User user = jdbcTemplate.queryForObject(query, (rs, rowNum) ->
                 new User(rs.getLong("id")
                         , rs.getString("first_name")
                         , rs.getString("last_name")
                         , rs.getString("email")
                         , rs.getString("image")), userId);
-
         String query1 = """
                 SELECT ws.*
                 FROM users u
@@ -82,17 +74,15 @@ public class ProfileImpl implements ProfileRepository {
                 rs.getString("name")
         ), userId);
         assert user != null;
-
         return ProfileResponse.builder()
                 .userId(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .avatar(user.getImage())
+                .workSpaceResponse(workSpaceResponses)
                 .build();
     }
-
-
 }
 
 

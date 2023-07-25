@@ -18,7 +18,6 @@ public class ProfileApi {
 
     private final peaksoft.house.tasktrackerb9.services.impl.UserServiceImpl userService;
 
-
     @PutMapping
     @Operation(summary = "Update", description = "User updating profile user")
     public UserResponse updateUserBy(@RequestBody @Valid UserRequest userRequest) {

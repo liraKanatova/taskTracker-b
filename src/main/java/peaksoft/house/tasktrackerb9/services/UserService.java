@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.service;
+package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
@@ -12,6 +12,8 @@ public interface UserService {
      UserResponse updateImageUserId( String image);
 
     ProfileResponse getProfileById(Long userId);
+
+    UserResponse getMyProfile();
 
 
 

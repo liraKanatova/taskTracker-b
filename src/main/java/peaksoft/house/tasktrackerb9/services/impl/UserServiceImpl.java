@@ -11,7 +11,7 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplate.ProfileImpl;
-import peaksoft.house.tasktrackerb9.service.UserService;
+import peaksoft.house.tasktrackerb9.services.UserService;
 
 @Service
 @Transactional
@@ -19,12 +19,11 @@ import peaksoft.house.tasktrackerb9.service.UserService;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-
     private final ProfileImpl queryJdbc;
 
-    private final JwtService jwtService;
-
     private final UserRepository userRepository;
+
+    private final JwtService jwtService;
 
     @Override
     public UserResponse updateUser(UserRequest userRequest) {
@@ -33,11 +32,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse updateImageUserId(String image) {
-        User user = jwtService.getAuthentication();
+        User user =jwtService.getAuthentication();
         user.setImage(image);
         userRepository.save(user);
         log.info("Updated image user");
-
         return UserResponse.builder()
                 .userId(user.getId())
                 .firstName(user.getFirstName())
@@ -52,5 +50,16 @@ public class UserServiceImpl implements UserService {
         return queryJdbc.getProfileById(userId);
     }
 
-
+    @Override
+    public UserResponse getMyProfile() {
+        User user = jwtService.getAuthentication();
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserId(user.getId());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setAvatar(user.getImage());
+        jwtService.generateToken(user);
+        return userResponse;
+    }
 }
