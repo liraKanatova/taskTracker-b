@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,8 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/file")
+@Tag(name = "S3 file API")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class S3Api {
     private final S3Service s3Service;
 

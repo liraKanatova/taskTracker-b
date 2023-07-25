@@ -14,9 +14,10 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/work_spaces")
+@RequestMapping("/api/work_spaces")
 @RequiredArgsConstructor
 @Tag(name = "Workspace API", description = "All workspace endpoints")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class WorkSpaceApi {
 
     private final WorkSpaceService workSpaceService;
@@ -50,6 +51,4 @@ public class WorkSpaceApi {
     public SimpleResponse deleteWorkSpaceById(@PathVariable Long workSpaceId) {
         return workSpaceService.deleteWorkSpaceById(workSpaceId);
     }
-
-
 }
