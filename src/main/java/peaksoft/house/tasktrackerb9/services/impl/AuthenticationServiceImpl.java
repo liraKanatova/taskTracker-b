@@ -161,7 +161,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void initFireBaseForAuthGoogle() throws IOException {
 
         GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
-                new ClassPathResource("from JS json.file").getInputStream());
+                new ClassPathResource("tasktracker.json").getInputStream());
         FirebaseOptions firebaseOptions = FirebaseOptions.builder()
                 .setCredentials(googleCredentials).build();
         FirebaseApp.initializeApp(firebaseOptions);

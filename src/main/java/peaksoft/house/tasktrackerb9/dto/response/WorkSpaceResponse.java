@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,5 +16,8 @@ public class WorkSpaceResponse {
     private String adminImage;
     private Boolean isFavorite;
 
-
+    public WorkSpaceResponse(Long workSpaceId, String workSpaceName) {
+        this.workSpaceId = workSpaceId;
+        this.workSpaceName = workSpaceName;
+    }
 }
