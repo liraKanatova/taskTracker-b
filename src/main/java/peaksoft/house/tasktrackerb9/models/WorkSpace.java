@@ -36,7 +36,7 @@ public class WorkSpace {
     private Favorite favorite;
 
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
-    private List<UserWorkSpaceRole>roles;
+    private List<UserWorkSpaceRole> userWorkSpaceRoles;
 
     public WorkSpace(String name, Long adminId) {
         this.name = name;
