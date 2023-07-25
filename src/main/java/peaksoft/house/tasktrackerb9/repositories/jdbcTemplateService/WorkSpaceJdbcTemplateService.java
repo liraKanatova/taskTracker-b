@@ -8,6 +8,4 @@ public interface WorkSpaceJdbcTemplateService {
     List<WorkSpaceResponse> getAllWorkSpaces();
 
     WorkSpaceResponse getWorkSpaceById(Long workSpaceId);
-
-
 }
