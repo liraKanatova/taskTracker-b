@@ -4,8 +4,8 @@ package peaksoft.house.tasktrackerb9.dto.response;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class WorkSpaceResponse {
     private Long workSpaceId;

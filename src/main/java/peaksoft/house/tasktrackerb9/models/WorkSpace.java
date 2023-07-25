@@ -42,4 +42,5 @@ public class WorkSpace {
         this.name = name;
         this.adminId = adminId;
     }
+
 }

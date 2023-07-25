@@ -127,7 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public SimpleResponse forgotPassword(String email, String link) throws MessagingException {
-        User user = userRepository.findUserByEmail(email).orElseThrow(
+        User user = userRepository.getUserByEmail(email).orElseThrow(
                 () -> {
                     log.error("User with email:" + email + "not found!");
                     return new NotFoundException("User with email:" + email + "not found!");
@@ -187,7 +187,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             userRepository.save(user);
         }
 
-        user = userRepository.findUserByEmail(firebaseToken.getEmail()).orElseThrow(
+        user = userRepository.getUserByEmail(firebaseToken.getEmail()).orElseThrow(
                 () -> {
                     log.error("User with this email not found!");
                     return new NotFoundException("User with this email not found!");
