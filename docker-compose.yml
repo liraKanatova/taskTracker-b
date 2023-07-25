@@ -2,7 +2,7 @@ version: "3.9"
 services:
   backend:
     image: '#image'
-    container_name: taskTracker
+    container_name: task-tracker
     restart: always
     ports:
       - "80:2023"
