@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import peaksoft.house.tasktrackerb9.config.security.JwtFilter;
 
 @EnableWebSecurity
@@ -24,8 +25,16 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
+
+        http.cors(cors -> {
+                    cors.configurationSource(request -> {
+                        var corsConfiguration = new CorsConfiguration();
+                        corsConfiguration.addAllowedOrigin("*");
+                        corsConfiguration.addAllowedMethod("*");
+                        corsConfiguration.addAllowedHeader("*");
+                        return corsConfiguration;
+                    });
+                })  .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
                                 .requestMatchers(
