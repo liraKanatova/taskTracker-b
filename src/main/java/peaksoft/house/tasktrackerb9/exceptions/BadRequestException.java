@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.exception;
+package peaksoft.house.tasktrackerb9.exceptions;
 
 public class BadRequestException extends RuntimeException{
 
