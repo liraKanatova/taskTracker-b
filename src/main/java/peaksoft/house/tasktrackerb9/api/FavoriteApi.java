@@ -24,8 +24,8 @@ public class FavoriteApi {
         return favoriteService.saveBoardFavorite(boardId);
     }
 
-    @Operation(summary = "Save favorite",description = "Make and delete workSpace favorites")
-    @PostMapping("/work-Space/{workSpaceId}")
+    @Operation(summary = "Save favorite",description = "Make and delete work_space favorites")
+    @PostMapping("/work_space/{workSpaceId}")
     public SimpleResponse saveWorkSpaceFavorite(@PathVariable Long workSpaceId){
         return favoriteService.saveWorkSpaceFavorite(workSpaceId);
     }

@@ -15,4 +15,11 @@ public class FavoriteWorkSpaceResponse {
 
     private String name;
 
+    private boolean isFavorite;
+
+    public FavoriteWorkSpaceResponse(Long userId, Long workSpaceId, String name) {
+        this.userId = userId;
+        this.workSpaceId = workSpaceId;
+        this.name = name;
+    }
 }
