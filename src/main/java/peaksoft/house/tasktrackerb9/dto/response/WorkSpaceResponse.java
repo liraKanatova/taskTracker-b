@@ -1,22 +1,19 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
-import lombok.Builder;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class WorkSpaceResponse {
-
     private Long workSpaceId;
+    private String workSpaceName;
+    private Long adminId;
+    private String adminFullName;
+    private String adminImage;
+    private Boolean isFavorite;
 
-    private String name;
 
-    public WorkSpaceResponse(Long workSpaceId, String name) {
-        this.workSpaceId = workSpaceId;
-        this.name = name;
-    }
 }
