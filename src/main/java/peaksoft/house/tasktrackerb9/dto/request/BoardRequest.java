@@ -8,6 +8,8 @@ public record BoardRequest (
 
         String title,
 
-        String backGround
+        String backGround,
+
+        Long workSpaceId
 ){
 }

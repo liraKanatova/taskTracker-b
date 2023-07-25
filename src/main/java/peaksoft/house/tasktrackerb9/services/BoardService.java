@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
+import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 
 import java.util.List;
@@ -9,9 +10,9 @@ public interface BoardService {
 
     List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId);
 
-    SimpleResponse saveBoard(BoardRequest boardRequest, Long workSpaceId);
+    BoardResponse saveBoard(BoardRequest boardRequest);
 
-    SimpleResponse updateBoard(BoardRequest boardRequest, Long boardId);
+    SimpleResponse updateBoard(BoardUpdateRequest boardUpdateRequest);
 
     SimpleResponse deleteBoard(Long boardId);
 

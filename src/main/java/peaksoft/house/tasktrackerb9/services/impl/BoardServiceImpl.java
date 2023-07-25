@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
+import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Board;
@@ -39,12 +40,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public SimpleResponse saveBoard(BoardRequest boardRequest, Long workSpaceId) {
+    public BoardResponse saveBoard(BoardRequest boardRequest) {
 
-        WorkSpace workSpace = workspaceRepository.findById(workSpaceId)
+        User user = jwtService.getAuthentication();
+        WorkSpace workSpace = workspaceRepository.findById(boardRequest.workSpaceId())
                 .orElseThrow(() -> {
-                    log.error("WorkSpace with id: " + workSpaceId + " not found");
-                    throw new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
+                    log.error("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
+                    throw new NotFoundException("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
                 });
         Board board = new Board();
         board.setTitle(boardRequest.title());
@@ -52,22 +54,33 @@ public class BoardServiceImpl implements BoardService {
         board.setWorkSpace(workSpace);
         workSpace.getBoards().add(board);
         boardRepository.save(board);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Board successfully saved")
+        boolean isFavorite = false;
+        if(board.getFavorite() !=null){
+            for (Favorite favorite : user.getFavorites()) {
+                if(board.getFavorite().equals(favorite)){
+                    isFavorite = true;
+                    break;
+                }
+            }
+        }
+        return BoardResponse.builder()
+                .boardId(board.getId())
+                .title(board.getTitle())
+                .backGround(board.getBackGround())
+                .isFavorite(isFavorite)
                 .build();
     }
 
     @Override
-    public SimpleResponse updateBoard(BoardRequest boardRequest, Long boardId) {
+    public SimpleResponse updateBoard(BoardUpdateRequest boardUpdateRequest) {
 
-        Board board = boardRepository.findById(boardId)
+        Board board = boardRepository.findById(boardUpdateRequest.boardI())
                 .orElseThrow(() -> {
-                    log.error("Board with id: " + boardId + " not found");
-                    throw new NotFoundException("Board with id: " + boardId + " not found");
+                    log.error("Board with id: " + boardUpdateRequest.boardI() + " not found");
+                    throw new NotFoundException("Board with id: " + boardUpdateRequest.boardI() + " not found");
                 });
-        board.setTitle(boardRequest.title());
-        board.setBackGround(boardRequest.backGround());
+        board.setTitle(boardUpdateRequest.title());
+        board.setBackGround(boardUpdateRequest.backGround());
         boardRepository.save(board);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
