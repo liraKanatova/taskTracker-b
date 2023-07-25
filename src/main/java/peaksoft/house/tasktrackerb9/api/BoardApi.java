@@ -39,15 +39,15 @@ public class BoardApi {
         return boardService.getBoardById(boardId);
     }
 
-    @PutMapping
-    @Operation(summary = "Update board", description = "Update board with id")
-    public SimpleResponse update(@RequestBody BoardUpdateRequest boardUpdateRequest) {
-        return boardService.updateBoard(boardUpdateRequest);
-    }
-
-    @DeleteMapping("/{boardId}")
-    @Operation(summary = "Delete board", description = "Delete board with id")
-    public SimpleResponse deleteBoard(@PathVariable Long boardId) {
-        return boardService.deleteBoard(boardId);
-    }
+//    @PutMapping
+//    @Operation(summary = "Update board", description = "Update board with id")
+//    public SimpleResponse update(@RequestBody BoardUpdateRequest boardUpdateRequest) {
+//        return boardService.updateBoard(boardUpdateRequest);
+//    }
+//
+//    @DeleteMapping("/{boardId}")
+//    @Operation(summary = "Delete board", description = "Delete board with id")
+//    public SimpleResponse deleteBoard(@PathVariable Long boardId) {
+//        return boardService.deleteBoard(boardId);
+//    }
 }
