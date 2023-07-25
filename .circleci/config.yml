@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   docker-container:
     type: string
-    default: "task-tracker"
+    default: "taskTracker"
 
 jobs:
   install-docker-if-not-exists:
