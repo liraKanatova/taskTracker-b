@@ -16,7 +16,8 @@ public class Column {
 
     @Id
     @GeneratedValue(generator = "column_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "column_gen", sequenceName = "column_seq", allocationSize = 1)
+    @SequenceGenerator(name = "column_gen", sequenceName = "column_seq", allocationSize = 1,
+    initialValue = 6)
     private Long id;
 
     private String title;

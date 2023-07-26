@@ -18,7 +18,8 @@ public class CheckList {
 
     @Id
     @GeneratedValue(generator = "checkList_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "checkList_gen", sequenceName = "checkList_seq", allocationSize = 1)
+    @SequenceGenerator(name = "checkList_gen", sequenceName = "checkList_seq", allocationSize = 1,
+    initialValue = 6)
     private Long id;
 
     private String description;

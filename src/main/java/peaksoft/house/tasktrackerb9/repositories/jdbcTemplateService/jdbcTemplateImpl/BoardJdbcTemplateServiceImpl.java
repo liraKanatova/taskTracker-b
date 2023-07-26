@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplate;
+package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -7,20 +7,21 @@ import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.BoardJdbcTemplateService;
 
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 @Transactional
-public class BoardJdbcTemplateIml {
+public class BoardJdbcTemplateServiceImpl implements BoardJdbcTemplateService {
 
     private final JwtService jwtService;
 
     private final JdbcTemplate jdbcTemplate;
 
+    @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
-
         User user = jwtService.getAuthentication();
         String sql = "SELECT b.id, b.title, b.back_ground " +
                 "FROM boards b " +
@@ -37,3 +38,4 @@ public class BoardJdbcTemplateIml {
         );
     }
 }
+
