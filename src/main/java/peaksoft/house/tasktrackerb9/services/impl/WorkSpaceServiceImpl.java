@@ -53,7 +53,6 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
         WorkSpace workspace = new WorkSpace(request.getName(),user.getId());
         UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole(Role.ADMIN,user,workspace);
         user.setRoles(List.of(userWorkSpace));
-        workspace.setRoles(List.of(userWorkSpace));
         user.setWorkSpaces(List.of(workspace));
         workspace.setUsers(List.of(user));
         workSpaceRepository.save(workspace);

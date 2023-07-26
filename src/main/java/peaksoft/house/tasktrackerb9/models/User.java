@@ -41,6 +41,14 @@ public class User implements UserDetails {
     private String image;
 
 
+    public User(Long id, String firstName, String lastName, String email, String image) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.image = image;
+    }
+
     @ManyToMany(cascade = {MERGE,DETACH,REFRESH})
     private List<WorkSpace> workSpaces;
 
@@ -67,7 +75,6 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = {ALL}, mappedBy = "user")
     private List<UserWorkSpaceRole> roles;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

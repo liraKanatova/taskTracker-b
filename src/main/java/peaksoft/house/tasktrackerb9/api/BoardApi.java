@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
@@ -38,15 +39,15 @@ public class BoardApi {
         return boardService.getBoardById(boardId);
     }
 
-    @PutMapping
-    @Operation(summary = "Update board", description = "Update board with id")
-    public SimpleResponse update(@RequestBody BoardUpdateRequest boardUpdateRequest) {
-        return boardService.updateBoard(boardUpdateRequest);
-    }
-
-    @DeleteMapping("/{boardId}")
-    @Operation(summary = "Delete board", description = "Delete board with id")
-    public SimpleResponse deleteBoard(@PathVariable Long boardId) {
-        return boardService.deleteBoard(boardId);
-    }
+//    @PutMapping
+//    @Operation(summary = "Update board", description = "Update board with id")
+//    public SimpleResponse update(@RequestBody BoardUpdateRequest boardUpdateRequest) {
+//        return boardService.updateBoard(boardUpdateRequest);
+//    }
+//
+//    @DeleteMapping("/{boardId}")
+//    @Operation(summary = "Delete board", description = "Delete board with id")
+//    public SimpleResponse deleteBoard(@PathVariable Long boardId) {
+//        return boardService.deleteBoard(boardId);
+//    }
 }
