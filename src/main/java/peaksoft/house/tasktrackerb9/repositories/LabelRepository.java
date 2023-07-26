@@ -6,5 +6,4 @@ import peaksoft.house.tasktrackerb9.models.Label;
 
 public interface LabelRepository extends JpaRepository<Label,Long> {
 
-
 }

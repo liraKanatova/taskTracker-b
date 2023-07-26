@@ -77,5 +77,4 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
                 "      l JOIN labels_cards lc on l.id = lc.labels_id where lc.cards_id=?";
         return sql;
     }
-
 }

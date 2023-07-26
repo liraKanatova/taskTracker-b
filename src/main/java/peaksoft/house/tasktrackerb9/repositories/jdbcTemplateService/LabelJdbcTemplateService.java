@@ -8,6 +8,4 @@ public interface LabelJdbcTemplateService {
     List<LabelResponse> getAllLabels();
     List<LabelResponse> getAllLabelsByCardId(Long cardId);
     LabelResponse getLabelById(Long labelId);
-
-
 }
