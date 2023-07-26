@@ -10,7 +10,7 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplate.ProfileImpl;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ProfileImpl;
 import peaksoft.house.tasktrackerb9.services.ProfileService;
 
 @Service

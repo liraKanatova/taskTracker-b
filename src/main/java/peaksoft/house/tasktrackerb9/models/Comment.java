@@ -3,7 +3,9 @@ package peaksoft.house.tasktrackerb9.models;
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
+
 import java.time.ZonedDateTime;
+
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
@@ -17,7 +19,7 @@ public class Comment {
 
     @Id
     @GeneratedValue(generator = "comment_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "comment_gen", sequenceName = "comment_seq", allocationSize = 1)
+    @SequenceGenerator(name = "comment_gen", sequenceName = "comment_seq", allocationSize = 1,initialValue = 6)
     private Long id;
 
     private String comment;
@@ -25,11 +27,16 @@ public class Comment {
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
-    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private Card card;
 
-     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private User user;
 
-
+    public Comment(String comment, ZonedDateTime createdDate, Card card, User user) {
+        this.comment = comment;
+        this.createdDate = createdDate;
+        this.card = card;
+        this.user = user;
+    }
 }
