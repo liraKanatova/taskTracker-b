@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplate;
+package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
 
 
 import jakarta.transaction.Transactional;
@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.ColumnsJdbcTemplateService;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class ColumnsImpl implements ColumnsRepositories {
+public class ColumnsJdbcTemplateServiceImpl implements ColumnsJdbcTemplateService {
 
     private final JdbcTemplate jdbcTemplate;
 

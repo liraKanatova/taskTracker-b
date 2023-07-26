@@ -16,7 +16,7 @@ import peaksoft.house.tasktrackerb9.models.Column;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.ColumnsRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplate.ColumnsImpl;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ColumnsJdbcTemplateServiceImpl;
 import peaksoft.house.tasktrackerb9.services.ColumnService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class ColumnServiceImpl implements ColumnService {
 
     private final BoardRepository boardRepository;
 
-    private final ColumnsImpl columns;
+    private final ColumnsJdbcTemplateServiceImpl columns;
 
     private final JwtService jwtService;
 
