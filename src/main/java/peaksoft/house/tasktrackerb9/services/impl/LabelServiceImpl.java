@@ -31,24 +31,30 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public List<LabelResponse> getAllLabels() {
-       return labelJdbcTemplateService.getAllLabels();
+        return labelJdbcTemplateService.getAllLabels();
     }
 
     @Override
     public SimpleResponse saveLabels(LabelRequest labelRequest) {
         Label label = new Label(labelRequest.labelName(), labelRequest.color());
         labelRepository.save(label);
+        log.info(String.format("Label with name : %s  successfully saved!", label.getLabelName()));
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message(String.format("Label with name : %s  successfully saved!", label.getLabelName()))
                 .build();
     }
+
     @Override
-    public SimpleResponse addLabelsToCard(Long cardId,Long labelId) {
-        Card card = cardRepository.findById(cardId).orElseThrow(() ->
-                new NotFoundException(String.format("Card with id : %s doesn't exist!", cardId)));
-        Label label=labelRepository.findById(labelId).orElseThrow(() ->
-                new NotFoundException(String.format("Label with id : %s doesn't exist!", labelId)));
+    public SimpleResponse addLabelsToCard(Long cardId, Long labelId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(() -> {
+            log.error(String.format("Card with id : %s doesn't exist!", cardId));
+            return new NotFoundException(String.format("Card with id : %s doesn't exist!", cardId));
+        });
+        Label label = labelRepository.findById(labelId).orElseThrow(() -> {
+            log.error(String.format("Label with id : %s doesn't exist!", labelId));
+            return new NotFoundException(String.format("Label with id : %s doesn't exist!", labelId));
+        });
         List<Card> cards = label.getCards();
         if (cards == null) {
             cards = new ArrayList<>();
@@ -63,20 +69,25 @@ public class LabelServiceImpl implements LabelService {
         card.setLabels(labels);
         labelRepository.save(label);
         cardRepository.save(card);
-
-         return SimpleResponse.builder()
+        log.info(String.format("Label with name : %s  successfully added to card with name %s ", label.getLabelName(), card.getTitle()));
+        return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message(String.format("Label with name : %s  successfully added to card with name %s ", label.getLabelName(),card.getTitle()))
+                .message(String.format("Label with name : %s  successfully added to card with name %s ", label.getLabelName(), card.getTitle()))
                 .build();
     }
+
     @Override
     public LabelResponse getLabelById(Long labelId) {
         return labelJdbcTemplateService.getLabelById(labelId);
     }
+
     @Override
-    public SimpleResponse updateLabelDeleteById(Long labelId,LabelRequest labelRequest) {
-        Label label=labelRepository.findById(labelId).orElseThrow(()->
-                new NotFoundException(String.format("Label with id: %s doesn't exist !", labelId)));
+    public SimpleResponse updateLabelDeleteById(Long labelId, LabelRequest labelRequest) {
+        Label label = labelRepository.findById(labelId).orElseThrow(() ->{
+            log.error(String.format("Label with id: %s doesn't exist !", labelId));
+              return   new NotFoundException(String.format("Label with id: %s doesn't exist !", labelId));
+                });
+        log.info(String.format("Label with name : %s  successfully updated!", label.getLabelName()));
         label.setLabelName(labelRequest.labelName());
         label.setColor(labelRequest.color());
         return SimpleResponse.builder()
@@ -84,11 +95,15 @@ public class LabelServiceImpl implements LabelService {
                 .message(String.format("Label with name : %s  successfully updated!", label.getLabelName()))
                 .build();
     }
+
     @Override
     public SimpleResponse deleteLabelById(Long labelId) {
-        Label label=labelRepository.findById(labelId).orElseThrow(()->
-                new NotFoundException(String.format("Label with id: %s doesn't exist !", labelId)));
+        Label label = labelRepository.findById(labelId).orElseThrow(() ->{
+            log.error(String.format("Label with id: %s doesn't exist !", labelId));
+               return new NotFoundException(String.format("Label with id: %s doesn't exist !", labelId));
+                });
         labelRepository.delete(label);
+        log.info(String.format("Label with name : %s  successfully deleted!", label.getLabelName()));
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message(String.format("Label with name : %s  successfully deleted!", label.getLabelName()))

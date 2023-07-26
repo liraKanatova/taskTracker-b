@@ -3,6 +3,7 @@ package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTempla
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.LabelResponse;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
 
     private final JdbcTemplate jdbcTemplate;
@@ -43,7 +45,8 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
                     return labelResponse;
                 });
         if (labelResponses.isEmpty()) {
-            throw new NotFoundException(String.format("Card with id: %s doesn't exist ",cardId));
+            log.error(String.format("Card with id: %s doesn't exist ", cardId));
+            throw new NotFoundException(String.format("Card with id: %s doesn't exist ", cardId));
         }
         return labelResponses;
     }
@@ -58,10 +61,11 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
                     labelResponse1.setLabelColor(rs.getString("labelColor"));
                     return labelResponse1;
                 })));
-        return optionalLabelResponse.orElseThrow(() ->
-                new NotFoundException(String.format("Label with id :%s doesn't exist !", labelId)));
+        return optionalLabelResponse.orElseThrow(() -> {
+            log.error(String.format("Label with id :%s doesn't exist !", labelId));
+            return new NotFoundException(String.format("Label with id :%s doesn't exist !", labelId));
+        });
     }
-
     private String getAllLabelsQuery() {
         String sql = "SELECT l.id AS id,l.label_name AS labelName,l.color AS labelColor FROM labels AS l";
         return sql;
