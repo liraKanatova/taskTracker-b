@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.services.impl;
 
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,12 +71,12 @@ public class ColumnServiceImpl implements ColumnService {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column not found!");
+            return new NotFoundException("Column with id: "+columnId+" not found");
         });
         if (user != null) {
             column.setTitle(columnRequest.title());
             columnsRepository.save(column);
-            log.info("Column successfully updated");
+             log.info("Column successfully updated");
         } else {
             throw new BadCredentialException("You are not member");
         }
@@ -89,7 +88,7 @@ public class ColumnServiceImpl implements ColumnService {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column not found!");
+            return new NotFoundException("Column with id: "+columnId+" not found");
         });
         if (user != null) {
             columnsRepository.delete(column);

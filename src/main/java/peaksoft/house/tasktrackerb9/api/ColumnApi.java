@@ -21,7 +21,7 @@ public class ColumnApi {
 
     private final ColumnServiceImpl columnService;
 
-    @PostMapping("createColumn/{boardId}")
+    @PostMapping("create-column/{boardId}")
     @Operation(summary = "Create Column",description = "Create column with board id")
     public SimpleResponse createColumn(@PathVariable Long boardId, @RequestBody ColumnRequest columnRequest){
         return columnService.createColumn(boardId, columnRequest);
