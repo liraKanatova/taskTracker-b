@@ -6,7 +6,6 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 
 
 public interface ProfileService {
-
     UserResponse  updateUser(UserRequest userRequest);
 
      UserResponse updateImageUserId( String image);
