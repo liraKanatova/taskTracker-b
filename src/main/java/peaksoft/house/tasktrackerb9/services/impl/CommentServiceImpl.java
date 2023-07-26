@@ -73,6 +73,7 @@ public class CommentServiceImpl implements CommentService {
                 .message(String.format("Comment with id: %s successfully updated !", comment.getId()))
                 .build();
     }
+
     @Override
     public SimpleResponse deleteCommentById(Long commentId) {
         User user = jwtService.getAuthentication();
