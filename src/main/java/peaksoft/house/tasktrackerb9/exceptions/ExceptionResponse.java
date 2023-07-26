@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 public class ExceptionResponse {
 
     private HttpStatus httpStatus;
+
     private String exceptionClassName;
+
     private String message;
+
 }
