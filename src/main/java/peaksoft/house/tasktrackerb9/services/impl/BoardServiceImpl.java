@@ -55,6 +55,7 @@ public class BoardServiceImpl implements BoardService {
         board.setBackGround(boardRequest.backGround());
         board.setWorkSpace(workSpace);
         workSpace.getBoards().add(board);
+        board.setUsers(List.of(user));
         boardRepository.save(board);
         boolean isFavorite = false;
         if(board.getFavorite() !=null){
