@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.response.FavoriteResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class FavoriteApi {
 
     @Operation(summary = "All favorites",description = "All favorites in board and workSpace")
     @GetMapping
-    public List<FavoriteResponse> getAllFavorites(){
+    public FavoriteResponse getAllFavorites(){
         return favoriteService.getAllFavorites();
     }
 }

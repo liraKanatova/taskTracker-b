@@ -1,14 +1,15 @@
 package peaksoft.house.tasktrackerb9.services;
 
+import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.FavoriteResponse;
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceFavoriteResponse;
 
-import java.util.List;
 
 public interface FavoriteService {
 
-    SimpleResponse saveBoardFavorite(Long boardId);
+    BoardResponse saveBoardFavorite(Long boardId);
 
-    SimpleResponse saveWorkSpaceFavorite(Long workSpaceId);
+    WorkSpaceFavoriteResponse saveWorkSpaceFavorite(Long workSpaceId);
 
-    List<FavoriteResponse> getAllFavorites();
+    FavoriteResponse getAllFavorites();
 }

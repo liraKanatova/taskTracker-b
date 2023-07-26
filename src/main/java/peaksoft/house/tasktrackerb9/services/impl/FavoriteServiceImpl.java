@@ -3,23 +3,21 @@ package peaksoft.house.tasktrackerb9.services.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
-import peaksoft.house.tasktrackerb9.dto.response.FavoriteBoardResponse;
-import peaksoft.house.tasktrackerb9.dto.response.FavoriteResponse;
-import peaksoft.house.tasktrackerb9.dto.response.FavoriteWorkSpaceResponse;
+import peaksoft.house.tasktrackerb9.dto.response.*;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Board;
 import peaksoft.house.tasktrackerb9.models.Favorite;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
+import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.FavoriteRepository;
+import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,7 +40,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public SimpleResponse saveBoardFavorite(Long boardId) {
+    public BoardResponse saveBoardFavorite(Long boardId) {
 
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
@@ -55,9 +53,11 @@ public class FavoriteServiceImpl implements FavoriteService {
                 if (favorite.getBoard().equals(board)) {
                     user.getFavorites().remove(favorite);
                     favoriteRepository.deleteById(favorite.getId());
-                    return SimpleResponse.builder()
-                            .status(HttpStatus.OK)
-                            .message("Deleted")
+                    return BoardResponse.builder()
+                            .boardId(board.getId())
+                            .title(board.getTitle())
+                            .backGround(board.getBackGround())
+                            .isFavorite(false)
                             .build();
                 }
             }
@@ -65,16 +65,18 @@ public class FavoriteServiceImpl implements FavoriteService {
         Favorite favorite = new Favorite();
         favorite.setBoard(board);
         favorite.setUser(user);
-        favoriteRepository.save(favorite);
         user.getFavorites().add(favorite);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Saved")
+        favoriteRepository.save(favorite);
+        return BoardResponse.builder()
+                .boardId(board.getId())
+                .title(board.getTitle())
+                .backGround(board.getBackGround())
+                .isFavorite(true)
                 .build();
     }
 
     @Override
-    public SimpleResponse saveWorkSpaceFavorite(Long workSpaceId) {
+    public WorkSpaceFavoriteResponse saveWorkSpaceFavorite(Long workSpaceId) {
 
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
@@ -87,7 +89,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         for (Favorite f : favorites) {
             if (f.getWorkSpace() != null) {
                 user.getFavorites().remove(f);
-                String sql = " DELETE FROM favorite WHERE id = ?";
+                String sql = " DELETE FROM favorites WHERE id = ?";
                 int s = jdbcTemplate.update(sql, f.getId());
                 log.warn(String.valueOf(s));
                 userRepository.save(user);
@@ -96,9 +98,10 @@ public class FavoriteServiceImpl implements FavoriteService {
             }
         }
         if (deleted) {
-            return SimpleResponse.builder()
-                    .status(HttpStatus.OK)
-                    .message("Deleted")
+            return WorkSpaceFavoriteResponse.builder()
+                    .workSpaceId(workSpaceId)
+                    .name(workSpace.getName())
+                    .isFavorite(false)
                     .build();
         }
         Favorite favorite = new Favorite();
@@ -106,25 +109,16 @@ public class FavoriteServiceImpl implements FavoriteService {
         favorite.setUser(user);
         favoriteRepository.save(favorite);
         user.getFavorites().add(favorite);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Saved")
+        return WorkSpaceFavoriteResponse.builder()
+                .workSpaceId(workSpaceId)
+                .name(workSpace.getName())
+                .isFavorite(true)
                 .build();
 
     }
 
     @Override
-    public List<FavoriteResponse> getAllFavorites() {
-
-        User user = jwtService.getAuthentication();
-        List<FavoriteBoardResponse> favoritesBoard = new ArrayList<>(List.of(favoriteRepository.getFavoriteByBoard(user.getId())));
-        List<FavoriteWorkSpaceResponse> favoriteWorkSpace = new ArrayList<>(List.of(favoriteRepository.getFavoriteByWorkSpace(user.getId())));
-        FavoriteResponse favorites = new FavoriteResponse();
-        favorites.setBoardResponses(favoritesBoard);
-        favorites.setWorkSpaceResponses(favoriteWorkSpace);
-        List<FavoriteResponse> favoriteResponseList = new ArrayList<>();
-        favoriteResponseList.add(favorites);
-        return favoriteResponseList;
-
+    public FavoriteResponse getAllFavorites() {
+    return
     }
 }
