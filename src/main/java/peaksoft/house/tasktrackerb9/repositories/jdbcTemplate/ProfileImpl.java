@@ -70,8 +70,8 @@ public class ProfileImpl implements ProfileRepository {
                 WHERE u.id = ?
                 """;
         List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(query1, (rs, rowNum) -> new WorkSpaceResponse(
-                rs.getLong("id"),
-                rs.getString("name")
+                rs.getLong("workSpaceId"),
+                rs.getString("workSpaceName")
         ), userId);
         assert user != null;
         return ProfileResponse.builder()
