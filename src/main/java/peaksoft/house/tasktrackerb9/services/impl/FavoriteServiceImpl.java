@@ -16,10 +16,10 @@ import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.FavoriteRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomFavoriteRepoImpl;
 import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.List;
-
 
 @Slf4j
 @Service
@@ -30,6 +30,8 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final UserRepository userRepository;
 
     private final FavoriteRepository favoriteRepository;
+
+    private final CustomFavoriteRepoImpl customFavoriteRepo;
 
     private final WorkSpaceRepository workSpaceRepository;
 
@@ -114,11 +116,10 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .name(workSpace.getName())
                 .isFavorite(true)
                 .build();
-
     }
 
     @Override
     public FavoriteResponse getAllFavorites() {
-    return
+        return customFavoriteRepo.getAll();
     }
 }
