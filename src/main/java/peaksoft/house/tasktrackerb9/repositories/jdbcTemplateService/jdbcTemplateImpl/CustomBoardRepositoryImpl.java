@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 @Transactional
-public class BoardJdbcTemplateServiceImpl {
+public class CustomBoardRepositoryImpl {
 
     private final JwtService jwtService;
 

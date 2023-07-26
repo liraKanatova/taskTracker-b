@@ -16,7 +16,7 @@ import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.BoardJdbcTemplateServiceImpl;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomBoardRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
 
-    private final BoardJdbcTemplateServiceImpl boardJdbcTemplateServiceImlIml;
+    private final CustomBoardRepositoryImpl customBoardRepository;
 
     private final WorkSpaceRepository workspaceRepository;
 
@@ -37,7 +37,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
-        return boardJdbcTemplateServiceImlIml.getAllBoardsByWorkspaceId(workSpaceId);
+        return customBoardRepository.getAllBoardsByWorkspaceId(workSpaceId);
     }
 
     @Override
