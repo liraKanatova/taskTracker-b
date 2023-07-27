@@ -6,8 +6,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class ProfileResponse {
 
     private Long userId;
@@ -15,15 +15,16 @@ public class ProfileResponse {
     private String lastName;
     private String email;
     private String avatar;
+    private int countWorkSpaces;
     private List<WorkSpaceResponse> workSpaceResponse;
 
-
-    public ProfileResponse(Long userId, String firstName, String lastName, String email, String avatar, List<WorkSpaceResponse> workSpaceResponse) {
+    public ProfileResponse(Long userId, String firstName, String lastName, String email, String avatar, int countWorkSpaces) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.avatar = avatar;
-        this.workSpaceResponse = workSpaceResponse;
+        this.countWorkSpaces = countWorkSpaces;
     }
 }
+
