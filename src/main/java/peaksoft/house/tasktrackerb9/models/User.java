@@ -20,6 +20,7 @@ import static jakarta.persistence.CascadeType.*;
 @Setter
 @NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class User implements UserDetails {
 
     @Id

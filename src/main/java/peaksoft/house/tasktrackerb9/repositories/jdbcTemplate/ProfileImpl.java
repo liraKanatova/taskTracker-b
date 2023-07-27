@@ -51,6 +51,7 @@ public class ProfileImpl implements ProfileRepository {
 
     @Override
     public ProfileResponse getProfileById(Long userId) {
+
         String query = """
                 SELECT u.id, email, first_name, image, last_name
                 FROM users u
@@ -63,16 +64,42 @@ public class ProfileImpl implements ProfileRepository {
                         , rs.getString("email")
                         , rs.getString("image")), userId);
         String query1 = """
-                SELECT ws.*
-                FROM users u
-                         JOIN users_spaces uws on u.id = uws.users_id
-                         JOIN work_spaces ws on uws.spaces_id = ws.id = ws.id
-                WHERE u.id = ?
-                """;
+               SELECT ws.*
+               FROM users u
+                        JOIN users_spaces uws ON u.id = uws.users_id
+                        JOIN work_spaces ws ON uws.spaces_id = ws.id
+               WHERE u.id = ?;
+                       """;
         List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(query1, (rs, rowNum) -> new WorkSpaceResponse(
-                rs.getLong("id"),
-                rs.getString("name")
+                rs.getLong("workSpaceId"),
+                rs.getString("workSpaceName")
         ), userId);
+        String sql = """
+              SELECT\s
+                  u.id AS userId,
+                  u.first_name AS firstName,
+                  u.last_name AS lastName,
+                  u.email AS email,
+                  u.image AS avatar,
+                  (SELECT COUNT(*)\s
+                   FROM users AS u2
+                   JOIN users_spaces uws ON u2.id = uws.users_id
+                   JOIN work_spaces ws ON ws.id = uws.spaces_id
+                   WHERE u2.id = u.id) AS countWorkSpaces
+              FROM users AS u
+              WHERE u.id = ?;
+               
+                                """;
+        ProfileResponse profileResponse = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new ProfileResponse(rs.getLong("userId")
+                , rs.getString("firstName")
+                , rs.getString("lastName")
+                , rs.getString("email")
+                , rs.getString("avatar")
+                , rs.getInt("countWorkSpaces")
+        ), userId);
+        assert profileResponse != null;
+        int count = profileResponse.getCountWorkSpaces();
+        profileResponse.setCountWorkSpaces(count);
         assert user != null;
         return ProfileResponse.builder()
                 .userId(user.getId())
@@ -80,6 +107,7 @@ public class ProfileImpl implements ProfileRepository {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .avatar(user.getImage())
+                .countWorkSpaces(count)
                 .workSpaceResponse(workSpaceResponses)
                 .build();
     }
