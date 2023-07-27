@@ -21,7 +21,6 @@ import static jakarta.persistence.CascadeType.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@AllArgsConstructor
 public class User implements UserDetails {
 
     @Id
