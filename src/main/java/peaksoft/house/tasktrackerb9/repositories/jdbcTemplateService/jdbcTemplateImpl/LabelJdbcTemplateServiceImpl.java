@@ -24,7 +24,13 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
 
     @Override
     public List<LabelResponse> getAllLabels() {
-        List<LabelResponse> labelResponses = jdbcTemplate.query(getAllLabelsQuery(), ((rs, rowNum) -> {
+        String query = """
+                SELECT  l.id AS  id,
+                l.label_name AS  labelName,
+                l.color   AS  labelColor
+                FROM labels AS l
+                """;
+        List<LabelResponse> labelResponses = jdbcTemplate.query(query, ((rs, rowNum) -> {
             LabelResponse labelResponse = new LabelResponse();
             labelResponse.setLabelId(rs.getLong("id"));
             labelResponse.setLabelName(rs.getString("labelName"));
@@ -36,12 +42,20 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
 
     @Override
     public List<LabelResponse> getAllLabelsByCardId(Long cardId) {
+        String query = """
+                SELECT   l.id AS id,
+                l.label_name AS labelName,
+                l.color AS labelColor
+                FROM labels AS
+                l JOIN labels_cards lc ON l.id = lc.labels_id 
+                WHERE lc.cards_id=?
+                """;
         List<LabelResponse> labelResponses =
-                jdbcTemplate.query(getLabelByCardIdQuery(), new Object[]{cardId}, (rs, rowNum) -> {
+                jdbcTemplate.query(query, new Object[]{cardId}, (rs, rowNum) -> {
                     LabelResponse labelResponse = new LabelResponse();
                     labelResponse.setLabelId(rs.getLong("id"));
-                    labelResponse.setLabelName(rs.getString("labelName"));
-                    labelResponse.setLabelColor(rs.getString("labelColor"));
+                    labelResponse.setDescription(rs.getString("labelName"));
+                    labelResponse.setColor(rs.getString("labelColor"));
                     return labelResponse;
                 });
         if (labelResponses.isEmpty()) {
@@ -53,32 +67,23 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
 
     @Override
     public LabelResponse getLabelById(Long labelId) {
+        String query = """
+                 SELECT   l.id AS  id,
+                 l.label_name AS  labelName,
+                 l.color AS  labelColor 
+                 FROM labels AS l where l.id=?
+                """;
         Optional<LabelResponse> optionalLabelResponse = Optional.ofNullable(
-                jdbcTemplate.queryForObject(getLabelByIdQuery(), new Object[]{labelId}, ((rs, rowNum) -> {
+                jdbcTemplate.queryForObject(query, new Object[]{labelId}, ((rs, rowNum) -> {
                     LabelResponse labelResponse1 = new LabelResponse();
                     labelResponse1.setLabelId(rs.getLong("id"));
-                    labelResponse1.setLabelName(rs.getString("labelName"));
-                    labelResponse1.setLabelColor(rs.getString("labelColor"));
+                    labelResponse1.setDescription(rs.getString("labelName"));
+                    labelResponse1.setColor(rs.getString("labelColor"));
                     return labelResponse1;
                 })));
         return optionalLabelResponse.orElseThrow(() -> {
             log.error(String.format("Label with id :%s doesn't exist !", labelId));
             return new NotFoundException(String.format("Label with id :%s doesn't exist !", labelId));
         });
-    }
-    private String getAllLabelsQuery() {
-        String sql = "SELECT l.id AS id,l.label_name AS labelName,l.color AS labelColor FROM labels AS l";
-        return sql;
-    }
-
-    private String getLabelByIdQuery() {
-        String sql = "  SELECT l.id AS id,l.label_name AS labelName,l.color AS labelColor FROM labels AS l where l.id=?";
-        return sql;
-    }
-
-    private String getLabelByCardIdQuery() {
-        String sql = "  SELECT l.id AS id,l.label_name AS labelName,l.color AS labelColor FROM labels AS\n" +
-                "      l JOIN labels_cards lc on l.id = lc.labels_id where lc.cards_id=?";
-        return sql;
     }
 }

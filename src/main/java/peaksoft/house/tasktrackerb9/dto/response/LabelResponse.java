@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LabelResponse {
     private Long labelId;
-    private String labelName;
-    private String labelColor;
+    private String description;
+    private String color;
 
 }
