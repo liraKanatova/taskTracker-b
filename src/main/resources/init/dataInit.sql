@@ -1,6 +1,6 @@
 insert into users(id,first_name,last_name,email,password,image,role)
 values (1,'Abdumalik','Turatbek uulu','asanbekovmalik2@gmail.com', '$2a$12$6RFdM5bwOFsWmbrD8Z4u5u/VcEyRTebNBbFcHbMEcOe1MupujUrPS',  'https://ichef.bbci.co.uk/news/976/cpsprodpb/3EE0/production/_121269061_getty.jpg','ADMIN'),
-       (2,'Matmusa','Abduvohob uulu','abduvohobuulu@gmail.com', '$2a$12$dlNyy3vwjDZ/ehV./7fPBu5Vy2hR4JuMei.PlyT33p1dcfdZOxPEe',  'https://www.brend.uz/upload_files/news/567135ea55997.jpg','ADMIN'),
+       (2,'Matmusa','Abduvohob uulu','admin@gmail.com', '$2a$12$sXb9HkBhXH8IpmYY05Dbm.UFYN1nPi8Gghye68nWreDd3iaeVGW9a',  'https://www.brend.uz/upload_files/news/567135ea55997.jpg','ADMIN'),
        (3,'Lira','Kanaatova','lira.kanaatova.ch@gmail.com', '$2a$12$N8/R3Q04xhEAhZ1vWcaQquLn3nDE5V8xwPApuBndhKNUUCr.mljf.',  'https://images.squarespace-cdn.com/content/v1/61b76cc1f6acc75c4a875e90/ad0f8b40-9936-4b7a-931b-f4f9b2da0b47/output-onlinepngtools.png','ADMIN'),
        (4,'Adilet','Islambek uulu','adilet@gmail.com', '$2a$12$xYXRx6kjHtxqb0sV1jLrh.WrcfmoVazuwqLY1YmVjHlGjcHroICVO',  'https://biogr.net/wp-content/uploads/2022/02/63463463.jpg','ADMIN'),
        (5,'Manas','Abdugani uulu','manas@gmail.com', '$2a$12$egcK6uZ5RlHPgEzEEczyM.VVX33yCsgyH2Kdw4m.lJk7Bl2pnE39.',  'https://kai.kg/public/images/2021/12/1638521287.png','ADMIN');
