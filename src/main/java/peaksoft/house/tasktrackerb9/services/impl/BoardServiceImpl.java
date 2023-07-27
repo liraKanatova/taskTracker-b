@@ -17,7 +17,6 @@ import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.BoardJdbcTemplateServiceImpl;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
@@ -30,6 +29,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
 
+    private final CustomBoardRepositoryImpl customBoardRepository;
     private final BoardJdbcTemplateServiceImpl boardJdbcTemplateIml;
 
     private final WorkSpaceRepository workspaceRepository;
