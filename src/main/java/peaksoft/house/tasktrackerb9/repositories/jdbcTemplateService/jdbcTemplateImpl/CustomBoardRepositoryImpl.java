@@ -25,7 +25,8 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
 
         User user = jwtService.getAuthentication();
-        String sql = " SELECT b.id, b.title, b.back_ground, "+
+        String sql = "" +
+                " SELECT b.id, b.title, b.back_ground, "+
                 " CASE WHEN f.board_id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite "+
                 " FROM boards b "+
                 " JOIN work_spaces ws ON b.work_space_id = ws.id "+

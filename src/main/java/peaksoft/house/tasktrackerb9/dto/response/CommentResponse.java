@@ -14,7 +14,7 @@ import java.util.Date;
 public class CommentResponse {
     private Long id;
     private String comment;
-    private Date createdDate;
+    private String createdDate;
 
 
 }

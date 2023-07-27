@@ -24,7 +24,7 @@ public class WorkSpaceJdbcTemplateServiceImpl implements WorkSpaceJdbcTemplateSe
 
     public List<WorkSpaceResponse> getAllWorkSpaces() {
         User user = jwtService.getAuthentication();
-        List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(getAllWorkSpacesQuery(),
+        return jdbcTemplate.query(getAllWorkSpacesQuery(),
                 new Object[]{user.getId(),user.getId()}, (rs, rowNum) -> {
                     WorkSpaceResponse workSpaceResponse = new WorkSpaceResponse();
                     workSpaceResponse.setWorkSpaceId(rs.getLong("id"));
@@ -36,14 +36,13 @@ public class WorkSpaceJdbcTemplateServiceImpl implements WorkSpaceJdbcTemplateSe
                     return workSpaceResponse;
                 }
         );
-        return workSpaceResponses;
     }
 
     @Override
     public WorkSpaceResponse getWorkSpaceById(Long workSpaceId) {
         User user = jwtService.getAuthentication();
         String getWorkSpaceByIdSql = getWorkSpaceByIdQuery();
-        WorkSpaceResponse workSpaceResponse = jdbcTemplate.queryForObject(
+        return jdbcTemplate.queryForObject(
                 getWorkSpaceByIdSql,
                 new Object[]{user.getId(),user.getId(), workSpaceId},
                 (rs, rowNum) -> {
@@ -57,7 +56,6 @@ public class WorkSpaceJdbcTemplateServiceImpl implements WorkSpaceJdbcTemplateSe
                     return response;
                 }
         );
-        return workSpaceResponse;
     }
 
     private String getAllWorkSpacesQuery() {

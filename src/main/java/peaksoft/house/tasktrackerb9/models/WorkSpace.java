@@ -3,6 +3,8 @@ package peaksoft.house.tasktrackerb9.models;
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
+
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -25,6 +27,7 @@ public class WorkSpace {
 
     @Column(name = "admin_id")
     private Long adminId;
+    private ZonedDateTime createdDate;
 
     @ManyToMany(mappedBy = "workSpaces",cascade ={DETACH,REFRESH,MERGE})
     private List<User>users;
