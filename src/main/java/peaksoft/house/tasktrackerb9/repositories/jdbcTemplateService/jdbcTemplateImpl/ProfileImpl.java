@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplate;
+package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,8 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.ProfileJdbcTemplate;
+
 import java.util.List;
 
 
@@ -19,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class ProfileImpl implements ProfileRepository {
+public class ProfileImpl implements ProfileJdbcTemplate {
 
     private final JdbcTemplate jdbcTemplate;
 
