@@ -17,11 +17,7 @@ import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-<<<<<<<<< Temporary merge branch 1
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomBoardRepositoryImpl;
-=========
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.BoardJdbcTemplateServiceImpl;
->>>>>>>>> Temporary merge branch 2
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
