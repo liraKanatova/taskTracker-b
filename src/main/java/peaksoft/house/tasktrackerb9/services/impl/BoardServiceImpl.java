@@ -17,6 +17,11 @@ import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
+<<<<<<<<< Temporary merge branch 1
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomBoardRepositoryImpl;
+=========
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.BoardJdbcTemplateServiceImpl;
+>>>>>>>>> Temporary merge branch 2
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
@@ -38,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
-        return boardJdbcTemplateIml.getAllBoardsByWorkspaceId(workSpaceId);
+        return customBoardRepository.getAllBoardsByWorkspaceId(workSpaceId);
     }
 
     @Override
@@ -55,6 +60,7 @@ public class BoardServiceImpl implements BoardService {
         board.setBackGround(boardRequest.backGround());
         board.setWorkSpace(workSpace);
         workSpace.getBoards().add(board);
+        board.setUsers(List.of(user));
         boardRepository.save(board);
         boolean isFavorite = false;
         if(board.getFavorite() !=null){
