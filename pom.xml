@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>peaksoft.house</groupId>
-	<artifactId>task-tracker-b9</artifactId>
+	<artifactId>taskTracker-b9</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>task-tracker-b9</name>
 	<description>task-tracker-b9</description>

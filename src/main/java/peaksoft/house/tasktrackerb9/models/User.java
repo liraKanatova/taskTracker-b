@@ -19,6 +19,7 @@ import static jakarta.persistence.CascadeType.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @AllArgsConstructor
 public class User implements UserDetails {
