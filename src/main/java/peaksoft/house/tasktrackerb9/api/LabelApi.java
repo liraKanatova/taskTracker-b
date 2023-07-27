@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/labels")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*",maxAge = 3600)
 @Tag(name = "Labels API", description = "All labels endpoints")
 public class LabelApi {
 

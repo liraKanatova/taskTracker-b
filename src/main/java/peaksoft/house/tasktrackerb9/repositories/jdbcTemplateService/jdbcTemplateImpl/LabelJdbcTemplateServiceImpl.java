@@ -33,8 +33,8 @@ public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
         List<LabelResponse> labelResponses = jdbcTemplate.query(query, ((rs, rowNum) -> {
             LabelResponse labelResponse = new LabelResponse();
             labelResponse.setLabelId(rs.getLong("id"));
-            labelResponse.setLabelName(rs.getString("labelName"));
-            labelResponse.setLabelColor(rs.getString("labelColor"));
+            labelResponse.setDescription(rs.getString("labelName"));
+            labelResponse.setColor(rs.getString("labelColor"));
             return labelResponse;
         }));
         return labelResponses;
