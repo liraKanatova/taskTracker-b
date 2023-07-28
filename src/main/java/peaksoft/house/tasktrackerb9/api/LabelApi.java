@@ -21,43 +21,43 @@ public class LabelApi {
     private final LabelService labelService;
 
     @Operation(summary = "Get all labels", description = "Get all labels ")
-    @GetMapping("labels")
-    List<LabelResponse> getAllLabels() {
+    @GetMapping("/labels")
+    public List<LabelResponse> getAllLabels() {
         return labelService.getAllLabels();
     }
 
     @Operation(summary = "Save label", description = "save label  ")
     @PostMapping
-    SimpleResponse saveLabels(@RequestBody LabelRequest labelRequest) {
+    public SimpleResponse saveLabels(@RequestBody LabelRequest labelRequest) {
         return labelService.saveLabels(labelRequest);
     }
 
     @Operation(summary = "Add label to card", description = "Find label and card and add label to card ")
-    @PutMapping("/{cardId}/{labelId}")
+    @PutMapping("/add-label-to-card/{cardId}/{labelId}")
     public SimpleResponse addLabelsToCard(@PathVariable Long cardId, @PathVariable Long labelId) {
         return labelService.addLabelsToCard(cardId, labelId);
     }
     @Operation(summary = "Get by id", description = "Get label by id ")
     @GetMapping("/{labelId}")
-    LabelResponse getLabelById(@PathVariable Long labelId) {
+    public LabelResponse getLabelById(@PathVariable Long labelId) {
         return labelService.getLabelById(labelId);
     }
 
     @Operation(summary = "Update labels", description = "Update labels by id ")
     @PutMapping("/{labelId}")
-    SimpleResponse updateLabelDeleteById(@PathVariable Long labelId, @RequestBody LabelRequest labelRequest) {
+    public SimpleResponse updateLabelDeleteById(@PathVariable Long labelId, @RequestBody LabelRequest labelRequest) {
         return labelService.updateLabelDeleteById(labelId, labelRequest);
     }
 
     @Operation(summary = "Delete label by id", description = "Delete label by id!    ")
     @DeleteMapping("/{labelId}")
-    SimpleResponse deleteLabelById(@PathVariable Long labelId) {
+    public SimpleResponse deleteLabelById(@PathVariable Long labelId) {
         return labelService.deleteLabelById(labelId);
     }
 
     @Operation(summary = "Get all label by card id", description = " Get all labels by card id")
     @GetMapping("/card-labels/{cardId}")
-    List<LabelResponse> getAllLabelsByCardId(@PathVariable Long cardId) {
+    public List<LabelResponse> getAllLabelsByCardId(@PathVariable Long cardId) {
         return labelService.getAllLabelsByCardId(cardId);
     }
 }
