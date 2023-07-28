@@ -26,7 +26,7 @@ public class Column {
     private Boolean isArchive;
 
     @ManyToMany(cascade = {DETACH, MERGE, REFRESH})
-    private List<User> users;
+    private List<User> members;
 
     @OneToMany(cascade = {ALL},mappedBy = "column")
     private List<Card> cards;

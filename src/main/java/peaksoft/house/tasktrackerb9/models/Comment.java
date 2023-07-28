@@ -30,7 +30,7 @@ public class Comment {
     private Card card;
 
      @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
-    private User user;
+    private User member;
 
 
 }

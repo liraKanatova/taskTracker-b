@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.LabelResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.LabelJdbcTemplateService;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomLabelRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Getter
 @Slf4j
-public class LabelJdbcTemplateServiceImpl implements LabelJdbcTemplateService {
+public class CustomLabelServiceImpl implements CustomLabelRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

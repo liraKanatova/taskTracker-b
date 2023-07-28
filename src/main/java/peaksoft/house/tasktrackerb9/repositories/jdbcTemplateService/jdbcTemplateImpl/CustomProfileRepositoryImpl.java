@@ -12,7 +12,7 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.models.User;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.ProfileJdbcTemplate;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomProfileRepository;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class CustomProfileRepositoryImpl implements ProfileJdbcTemplate {
+public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

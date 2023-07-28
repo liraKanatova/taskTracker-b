@@ -52,28 +52,28 @@ public class User implements UserDetails {
     @ManyToMany(cascade = {MERGE,DETACH,REFRESH})
     private List<WorkSpace> workSpaces;
 
-    @OneToMany(cascade = {ALL}, mappedBy = "user")
+    @OneToMany(cascade = {ALL}, mappedBy = "member")
     private List<Favorite> favorites;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "users")
+    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
     private List<Column> columns;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "users")
+    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
     private List<Card> cards;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "users")
+    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
     private List<Notification> notifications;
 
-    @OneToMany(cascade = {ALL}, mappedBy = "user")
+    @OneToMany(cascade = {ALL}, mappedBy = "member")
     private List<Comment> comments;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "users")
+    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
     private List<Board> boards;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(cascade = {ALL}, mappedBy = "user")
+    @OneToMany(cascade = {ALL}, mappedBy = "member")
     private List<UserWorkSpaceRole> roles;
 
     @Override

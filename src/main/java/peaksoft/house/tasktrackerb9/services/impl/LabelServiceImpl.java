@@ -14,7 +14,7 @@ import peaksoft.house.tasktrackerb9.models.Card;
 import peaksoft.house.tasktrackerb9.models.Label;
 import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.LabelRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.LabelJdbcTemplateService;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomLabelRepository;
 import peaksoft.house.tasktrackerb9.services.LabelService;
 
 
@@ -28,7 +28,7 @@ import java.util.List;
 public class LabelServiceImpl implements LabelService {
     private final LabelRepository labelRepository;
     private final CardRepository cardRepository;
-    private final LabelJdbcTemplateService labelJdbcTemplateService;
+    private final CustomLabelRepository labelJdbcTemplateService;
 
     @Override
     public List<LabelResponse> getAllLabels() {
@@ -37,7 +37,7 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public SimpleResponse saveLabels(LabelRequest labelRequest) {
-        Label label = new Label(labelRequest.labelName(), labelRequest.color());
+        Label label = new Label(labelRequest.description(), labelRequest.color());
         labelRepository.save(label);
         log.info(String.format("Label with name : %s  successfully saved!", label.getLabelName()));
         return SimpleResponse.builder()
@@ -100,7 +100,7 @@ public class LabelServiceImpl implements LabelService {
             return new NotFoundException(String.format("Label with id: %s doesn't exist !", labelId));
         });
         log.info(String.format("Label with name : %s  successfully updated!", label.getLabelName()));
-        label.setLabelName(labelRequest.labelName());
+        label.setLabelName(labelRequest.description());
         label.setColor(labelRequest.color());
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)

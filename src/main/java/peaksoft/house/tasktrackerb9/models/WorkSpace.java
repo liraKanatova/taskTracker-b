@@ -27,15 +27,15 @@ public class WorkSpace {
     private Long adminId;
 
     @ManyToMany(mappedBy = "workSpaces",cascade ={DETACH,REFRESH,MERGE})
-    private List<User>users;
+    private List<User>members;
 
-    @OneToMany(cascade = {ALL},mappedBy = "workSpace")
+    @OneToMany(cascade = {ALL},mappedBy = "workSpace",orphanRemoval = true)
     private List<Board>boards;
 
     @OneToOne(cascade = {ALL},mappedBy = "workSpace")
     private Favorite favorite;
 
-    @OneToMany(cascade = {ALL},mappedBy = "workSpace")
+    @OneToMany(cascade = {ALL},mappedBy = "workSpace",orphanRemoval = true)
     private List<UserWorkSpaceRole> userWorkSpaceRoles;
 
     public WorkSpace(String name, Long adminId) {

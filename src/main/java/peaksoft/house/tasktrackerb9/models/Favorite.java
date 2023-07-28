@@ -27,6 +27,6 @@ public class Favorite {
     private WorkSpace workSpace;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
-    private User user;
+    private User member;
 
 }

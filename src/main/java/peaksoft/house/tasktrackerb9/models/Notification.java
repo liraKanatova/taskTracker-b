@@ -38,7 +38,7 @@ public class Notification {
     private NotificationType type;
 
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH})
-    private List<User> users;
+    private List<User> members;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;

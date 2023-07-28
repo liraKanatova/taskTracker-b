@@ -24,14 +24,14 @@ public class UserWorkSpaceRole {
     private Role role;
 
     @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
-    private User user;
+    private User member;
 
     @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private WorkSpace workSpace;
 
-    public UserWorkSpaceRole(Role role, User user, WorkSpace workSpace) {
+    public UserWorkSpaceRole(Role role, User member, WorkSpace workSpace) {
         this.role = role;
-        this.user = user;
+        this.member =member;
         this.workSpace = workSpace;
     }
 }
