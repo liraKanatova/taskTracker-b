@@ -25,7 +25,7 @@ public class CommentJdbcTemplateServiceImpl implements CommentJdbcTemplateServic
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<CommentResponse> getAllComments(Long userId) {
+    public List<CommentResponse> getAllUserComments(Long userId) {
         String sqlQuery = """
                 SELECT c.id                                    AS id,
                        c.comment                               AS comment,
@@ -46,7 +46,7 @@ public class CommentJdbcTemplateServiceImpl implements CommentJdbcTemplateServic
         @Override
         public CommentResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
             CommentResponse commentResponse = new CommentResponse();
-            commentResponse.setId(rs.getLong("id"));
+            commentResponse.setCommentId(rs.getLong("id"));
             commentResponse.setComment(rs.getString("comment"));
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
@@ -62,8 +62,9 @@ public class CommentJdbcTemplateServiceImpl implements CommentJdbcTemplateServic
         }
     }
 
+
     @Override
-    public CommentResponse getCommentById(Long userId, Long commentId) {
+    public List<CommentResponse> getAllCommentByCardId(Long cardId) {
         String sqlQuery = """
                 SELECT c.id                                     AS id,
                        c.comment                                AS comment,
@@ -73,18 +74,61 @@ public class CommentJdbcTemplateServiceImpl implements CommentJdbcTemplateServic
                        u.image                                  AS image
                 FROM comments AS c
                          JOIN users u ON u.id = c.user_id
-                WHERE u.id = 1
-                  AND c.id = 1
+                              
+                  AND c.id = ?
+                  """;
+        return jdbcTemplate.query
+                (sqlQuery, new Object[]{cardId}, new CommentResponseRowMapperer());
+    }
+
+    private class CommentResponseRowMapperer implements RowMapper<CommentResponse> {
+        @Override
+        public CommentResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+            CommentResponse commentResponse = new CommentResponse();
+            commentResponse.setCommentId(rs.getLong("id"));
+            commentResponse.setComment(rs.getString("comment"));
+            commentResponse.setCreatorName(rs.getString("fullName"));
+            commentResponse.setCreatorId(rs.getLong("creatorId"));
+            commentResponse.setAvatar(rs.getString("image"));
+            java.sql.Timestamp timestamp = rs.getTimestamp("date");
+            if (timestamp != null) {
+                ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy / h:mma");
+                String formattedDateTime = zonedDateTime.format(formatter);
+                commentResponse.setCreatedDate(formattedDateTime);
+            }
+            return commentResponse;
+        }
+    }
+
+    @Override
+    public List<CommentResponse> getAllComments() {
+        return null;
+    }
+
+    @Override
+    public CommentResponse getCommentById(Long commentId) {
+        String sqlQuery = """
+                SELECT c.id                                     AS id,
+                       c.comment                                AS comment,
+                       c.created_date                           AS date,
+                       u.id                                     AS creatorId,
+                       concat(u.first_name, '   ', u.last_name) AS fullName,
+                       u.image                                  AS image
+                FROM comments AS c
+                         JOIN users u ON u.id = c.user_id
+                              
+                  AND c.id = ?
                   """;
         return jdbcTemplate.queryForObject
-                (sqlQuery, new Object[]{userId, commentId}, new CommentResponseRowMapper());
+                (sqlQuery, new Object[]{commentId}, new CommentResponseRowMapper());
     }
 
     private class CommentResponseRowMapper implements RowMapper<CommentResponse> {
         @Override
         public CommentResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
             CommentResponse commentResponse = new CommentResponse();
-            commentResponse.setId(rs.getLong("id"));
+            commentResponse.setCommentId(rs.getLong("id"));
             commentResponse.setComment(rs.getString("comment"));
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));

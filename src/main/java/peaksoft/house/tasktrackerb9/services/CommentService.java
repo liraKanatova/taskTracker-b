@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface CommentService {
 
-    List<CommentResponse> getAllComments();
+    List<CommentResponse> getAllUserComment();
+    List<CommentResponse> getAllCommentsFromCard(Long cardId);
 
-    SimpleResponse saveComment(Long cardId, CommentRequest commentRequest);
+    SimpleResponse saveComment(CommentRequest commentRequest);
 
     CommentResponse getCommentById(Long commentId);
 

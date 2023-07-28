@@ -9,7 +9,9 @@ import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.CommentRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CommentResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
+import peaksoft.house.tasktrackerb9.exceptions.UnauthorizedAccessException;
 import peaksoft.house.tasktrackerb9.models.Card;
 import peaksoft.house.tasktrackerb9.models.Comment;
 import peaksoft.house.tasktrackerb9.models.User;
@@ -33,16 +35,22 @@ public class CommentServiceImpl implements CommentService {
     private final CardRepository cardRepository;
 
     @Override
-    public List<CommentResponse> getAllComments() {
+    public List<CommentResponse> getAllUserComment() {
         User user = jwtService.getAuthentication();
         return commentJdbcTemplateService.getAllComments(user.getId());
     }
+
     @Override
-    public SimpleResponse saveComment(Long cardId, CommentRequest commentRequest) {
+    public List<CommentResponse> getAllCommentsFromCard(Long cardId) {
+        return null;
+    }
+
+    @Override
+    public SimpleResponse saveComment(CommentRequest commentRequest) {
         User user = jwtService.getAuthentication();
-        Card card = cardRepository.findById(cardId).orElseThrow(() -> {
-            log.error(String.format("Card with id: %s doesn't exist", cardId) );
-            return new NotFoundException(String.format("Card with id: %s doesn't exist", cardId));
+        Card card = cardRepository.findById(commentRequest.cardId()).orElseThrow(() -> {
+            log.error(String.format("Card with id: %s doesn't exist", commentRequest.cardId()));
+            return new NotFoundException(String.format("Card with id: %s doesn't exist", commentRequest.cardId()));
         });
         Comment comment = new Comment(commentRequest.comment(), ZonedDateTime.now(), card, user);
         commentRepository.save(comment);
@@ -52,40 +60,70 @@ public class CommentServiceImpl implements CommentService {
                 .message(String.format("Comment with id: %s successfully saved !", comment.getId()))
                 .build();
     }
+
     @Override
     public CommentResponse getCommentById(Long commentId) {
         User user = jwtService.getAuthentication();
-        return commentJdbcTemplateService.getCommentById(user.getId(), commentId);
+        Comment comment = commentRepository.getCommentById(commentId).orElseThrow(() -> {
+            log.error(String.format("Comment with id %s doesn't exist!", commentId));
+            return new NotFoundException(String.format("Comment with id %s doesn't exist!", commentId));
+        });
+        if (user.getId().equals(comment.getUser().getId()) || user.getRole() == Role.ADMIN) {
+            try {
+                return commentJdbcTemplateService.getCommentById(commentId);
+            } catch (NotFoundException e) {
+                log.error(String.format("Comment with id %s doesn't exist!", commentId));
+                throw  new NotFoundException(String.format("Comment with id %s doesn't exist!", commentId));
+            } catch (UnauthorizedAccessException e) {
+                log.error("Unauthorized to access the comment: " + e.getMessage());
+                throw new UnauthorizedAccessException("Unauthorized to access the comment");
+            }
+        } else {
+            log.error("Unauthorized to access the comment");
+            throw new UnauthorizedAccessException("Unauthorized to access the comment");
+        }
     }
+
     @Override
     public SimpleResponse updateCommentById(Long commentId, CommentRequest commentRequest) {
         User user = jwtService.getAuthentication();
-        Comment comment = commentRepository.getCommentByUserIdAndId(user.getId(), commentId).orElseThrow(() -> {
-            log.error(String.format("Card with id: %s or user with id %s doesn't exist", commentId,user.getId()));
-            return new NotFoundException(String.format("Card with id: %s or user with id %s doesn't exist", commentId,user.getId()));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
+            log.error(String.format("Comment with id: %s  doesn't exist", commentId));
+            return new NotFoundException(String.format("Comment with id: %s doesn't exist", commentId));
         });
-        comment.setComment(commentRequest.comment());
-        comment.setCreatedDate(ZonedDateTime.now());
-        commentRepository.save(comment);
-        log.info(String.format("Comment with id: %s successfully updated !", comment.getId()));
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message(String.format("Comment with id: %s successfully updated !", comment.getId()))
-                .build();
+        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getUser().getId())) {
+            comment.setComment(commentRequest.comment());
+            comment.setCreatedDate(ZonedDateTime.now());
+            commentRepository.save(comment);
+            log.info(String.format("Comment with id: %s successfully updated !", comment.getId()));
+            return SimpleResponse.builder()
+                    .status(HttpStatus.OK)
+                    .message(String.format("Comment with id: %s successfully updated !", comment.getId()))
+                    .build();
+        } else {
+            log.error("User is not authorized to update the comment");
+            throw new UnauthorizedAccessException("User is not authorized to update the comment");
+        }
+
     }
 
     @Override
     public SimpleResponse deleteCommentById(Long commentId) {
         User user = jwtService.getAuthentication();
-        Comment comment = commentRepository.getCommentByUserIdAndId(user.getId(), commentId).orElseThrow(() -> {
-            log.error(String.format("Card with id: %s or user with id %s doesn't exist", commentId,user.getId()));
-            return new NotFoundException(String.format("Card with id: %s or user with id %s doesn't exist", commentId,user.getId()));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> {
+            log.error(String.format("Comment with id: %s  doesn't exist", commentId));
+            return new NotFoundException(String.format("Comment with id: %s doesn't exist", commentId));
         });
-      commentRepository.delete(comment);
-      log.info(String.format("Comment with id: %s successfully deleted!", comment.getId()));
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message(String.format("Comment with id: %s successfully deleted!", comment.getId()))
-                .build();
+        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getUser().getId())) {
+            commentRepository.delete(comment);
+            log.info(String.format("Comment with id: %s successfully deleted !", comment.getId()));
+            return SimpleResponse.builder()
+                    .status(HttpStatus.OK)
+                    .message(String.format("Comment with id: %s successfully  deleted !", comment.getId()))
+                    .build();
+        } else {
+            log.error("User is not authorized to update the comment");
+            throw new UnauthorizedAccessException("User is not authorized to update the comment");
+        }
     }
 }

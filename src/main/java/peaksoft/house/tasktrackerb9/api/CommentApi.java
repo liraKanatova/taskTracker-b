@@ -15,19 +15,20 @@ import java.util.List;
 @RequestMapping("api/comments")
 @Tag(name = "Comments API", description = "All comments endpoints !")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*",maxAge = 3600)
 public class CommentApi {
     private final CommentService commentService;
 
-    @Operation(summary = "Get all", description = "Get all comments by user auth id")
+    @Operation(summary = "Get all comments user", description = "Get all comments by user auth id")
     @GetMapping
     List<CommentResponse> getAllComments() {
         return commentService.getAllComments();
     }
 
     @Operation(summary = "Save comment", description = "Save comment by card id and user auth id")
-    @PostMapping("/{cardId}")
-    SimpleResponse saveComment(@PathVariable Long cardId, @RequestBody CommentRequest commentRequest) {
-        return commentService.saveComment(cardId, commentRequest);
+    @PostMapping()
+    SimpleResponse saveComment( @RequestBody CommentRequest commentRequest) {
+        return commentService.saveComment(commentRequest);
     }
 
     @Operation(summary = "Get by Id", description = "Get comment by user auth id and own id")
