@@ -10,7 +10,11 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
+
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ProfileJdbcTemplateServiceImpl;
+
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomProfileRepositoryImpl;
+
 import peaksoft.house.tasktrackerb9.services.ProfileService;
 
 @Service
@@ -19,7 +23,10 @@ import peaksoft.house.tasktrackerb9.services.ProfileService;
 @Slf4j
 public class ProfileServiceImpl implements ProfileService {
 
+
     private final ProfileJdbcTemplateServiceImpl queryJdbc;
+
+    private final CustomProfileRepositoryImpl queryJdbc;
 
     private final UserRepository userRepository;
 

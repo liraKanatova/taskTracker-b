@@ -16,7 +16,7 @@ import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.FavoriteRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomFavoriteRepoImpl;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomFavoriteRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
 
-    private final CustomFavoriteRepoImpl customFavoriteRepo;
+    private final CustomFavoriteRepositoryImpl customFavoriteRepo;
 
     private final WorkSpaceRepository workSpaceRepository;
 
