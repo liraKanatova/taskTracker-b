@@ -21,7 +21,7 @@ public class LabelApi {
     private final LabelService labelService;
 
     @Operation(summary = "Get all labels", description = "Get all labels ")
-    @GetMapping
+    @GetMapping("labels")
     List<LabelResponse> getAllLabels() {
         return labelService.getAllLabels();
     }
@@ -33,7 +33,7 @@ public class LabelApi {
     }
 
     @Operation(summary = "Add label to card", description = "Find label and card and add label to card ")
-    @GetMapping("/{cardId}/{labelId}")
+    @PutMapping("/{cardId}/{labelId}")
     public SimpleResponse addLabelsToCard(@PathVariable Long cardId, @PathVariable Long labelId) {
         return labelService.addLabelsToCard(cardId, labelId);
     }

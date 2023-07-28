@@ -31,7 +31,6 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
     private final CustomBoardRepositoryImpl customBoardRepository;
-    private final BoardJdbcTemplateServiceImpl boardJdbcTemplateIml;
 
     private final WorkSpaceRepository workspaceRepository;
 
