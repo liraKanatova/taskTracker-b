@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
+public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
 
     private final JdbcTemplate jdbcTemplate;
 

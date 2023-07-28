@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Getter
-public class WorkSpaceJdbcTemplateServiceImpl implements WorkSpaceJdbcTemplateService {
+public class CustomWorkSpaceRepositoryImpl implements WorkSpaceJdbcTemplateService {
     private final JwtService jwtService;
     private final JdbcTemplate jdbcTemplate;
 
