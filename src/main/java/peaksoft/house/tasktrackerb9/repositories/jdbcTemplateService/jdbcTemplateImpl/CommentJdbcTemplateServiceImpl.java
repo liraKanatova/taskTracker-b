@@ -4,13 +4,17 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.CommentResponse;
-import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CommentJdbcTemplateService;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Transactional
@@ -20,45 +24,79 @@ public class CommentJdbcTemplateServiceImpl implements CommentJdbcTemplateServic
 
     private final JdbcTemplate jdbcTemplate;
 
-    private String getAllQuery() {
-        String sql = "SELECT c.id AS id ,c.comment AS comment,c.created_date AS date FROM comments AS c join users u on u.id = c.user_id\n" +
-                "    LEFT  JOIN cards_users cu on u.id = cu.users_id where user_id=?";
-        return sql;
-    }
-
     @Override
     public List<CommentResponse> getAllComments(Long userId) {
-        try {
-            List<CommentResponse> commentResponses = jdbcTemplate.query(getAllQuery(), new Object[]{userId}, ((rs, rowNum) -> {
-                CommentResponse commentResponse = new CommentResponse();
-                commentResponse.setId(rs.getLong("id"));
-                commentResponse.setComment(rs.getString("comment"));
-                commentResponse.setCreatedDate(rs.getDate("date"));
-                return commentResponse;
-            }));
-            return commentResponses;
-        } catch (NotFoundException e) {
-            log.error(String.format("User with id: %s not found !", userId));
-            throw new NotFoundException(String.format("User with id: %s not found !", userId));
-        }
+        String sqlQuery = """
+                SELECT c.id                                    AS id,
+                       c.comment                               AS comment,
+                       c.created_date                          AS date,
+                       u.id                                    AS creatorId,
+                       concat(u.first_name, '  ', u.last_name) AS fullName,
+                       u.image                                 AS avatar
+                FROM comments AS c
+                         JOIN users u ON u.id = c.user_id
+                         LEFT JOIN cards_users cu
+                                   ON u.id = cu.users_id
+                WHERE user_id=?
+                """;
+        return jdbcTemplate.query(sqlQuery, new Object[]{userId}, new CommentResponseRowMapperr());
     }
 
-    private String getCommentByIdQuery() {
-        String sql = "SELECT c.id AS id, c.comment AS comment,c.created_date AS date FROM comments AS c \n" +
-                "    JOIN users u ON u.id = c.user_id WHERE u.id=? AND c.id=?";
-        return sql;
+    private class CommentResponseRowMapperr implements RowMapper<CommentResponse> {
+        @Override
+        public CommentResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+            CommentResponse commentResponse = new CommentResponse();
+            commentResponse.setId(rs.getLong("id"));
+            commentResponse.setComment(rs.getString("comment"));
+            commentResponse.setCreatorName(rs.getString("fullName"));
+            commentResponse.setCreatorId(rs.getLong("creatorId"));
+            commentResponse.setAvatar(rs.getString("avatar"));
+            java.sql.Timestamp timestamp = rs.getTimestamp("date");
+            if (timestamp != null) {
+                ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy / h:mma");
+                String formattedDateTime = zonedDateTime.format(formatter);
+                commentResponse.setCreatedDate(formattedDateTime);
+            }
+            return commentResponse;
+        }
     }
 
     @Override
     public CommentResponse getCommentById(Long userId, Long commentId) {
-        Optional<CommentResponse> commentResponse = Optional.ofNullable(jdbcTemplate.queryForObject
-                (getCommentByIdQuery(), new Object[]{userId, commentId}, (rs, rowNum) -> {
-                    CommentResponse commentResponse1 = new CommentResponse();
-                    commentResponse1.setId(rs.getLong("id"));
-                    commentResponse1.setComment(rs.getString("comment"));
-                    commentResponse1.setCreatedDate(rs.getDate("date"));
-                    return commentResponse1;
-                }));
-        return commentResponse.orElseThrow(() -> new NotFoundException("User or comment doesnt exist!"));
+        String sqlQuery = """
+                SELECT c.id                                     AS id,
+                       c.comment                                AS comment,
+                       c.created_date                           AS date,
+                       u.id                                     AS creatorId,
+                       concat(u.first_name, '   ', u.last_name) AS fullName,
+                       u.image                                  AS image
+                FROM comments AS c
+                         JOIN users u ON u.id = c.user_id
+                WHERE u.id = 1
+                  AND c.id = 1
+                  """;
+        return jdbcTemplate.queryForObject
+                (sqlQuery, new Object[]{userId, commentId}, new CommentResponseRowMapper());
+    }
+
+    private class CommentResponseRowMapper implements RowMapper<CommentResponse> {
+        @Override
+        public CommentResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+            CommentResponse commentResponse = new CommentResponse();
+            commentResponse.setId(rs.getLong("id"));
+            commentResponse.setComment(rs.getString("comment"));
+            commentResponse.setCreatorName(rs.getString("fullName"));
+            commentResponse.setCreatorId(rs.getLong("creatorId"));
+            commentResponse.setAvatar(rs.getString("image"));
+            java.sql.Timestamp timestamp = rs.getTimestamp("date");
+            if (timestamp != null) {
+                ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy / h:mma");
+                String formattedDateTime = zonedDateTime.format(formatter);
+                commentResponse.setCreatedDate(formattedDateTime);
+            }
+            return commentResponse;
+        }
     }
 }

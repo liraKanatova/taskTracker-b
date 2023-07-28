@@ -12,9 +12,12 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentResponse {
-    private Long id;
+    private Long commentId;
     private String comment;
     private String createdDate;
+    private Long creatorId;
+    private String creatorName;
+    private String avatar;
 
 
 }
