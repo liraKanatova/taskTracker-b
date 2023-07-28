@@ -18,7 +18,7 @@ public class WorkSpace {
 
     @Id
     @GeneratedValue(generator = "workSpace_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "workSpace_gen",sequenceName = "workSpace_seq",allocationSize = 1)
+    @SequenceGenerator(name = "workSpace_gen",sequenceName = "workSpace_seq",allocationSize = 1,initialValue = 6)
     private Long id;
 
     private String name;

@@ -15,6 +15,4 @@ public interface ProfileService {
 
     UserResponse getMyProfile();
 
-
-
 }
