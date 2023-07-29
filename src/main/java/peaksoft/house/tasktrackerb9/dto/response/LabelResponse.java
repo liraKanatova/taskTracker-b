@@ -8,11 +8,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class LabelResponse {
 
     Long labelId;
     String description;
     String color;
 
+    public LabelResponse(Long labelId, String description, String color) {
+        this.labelId = labelId;
+        this.description = description;
+        this.color = color;
+    }
 }

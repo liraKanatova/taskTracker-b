@@ -27,69 +27,49 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Override
     public CardInnerPageResponse getAllCardInnerPage(Long cardId) {
+        String query = "SELECT c.id AS cardId," +
+                       "    c.title AS title," +
+                       "c.description AS description, " +
+                       "c.is_archive AS isArchive " +
+                       "FROM cards AS c WHERE c.id = ?";
 
-        String query = """
-                     SELECT c.id AS cardId,
-                            c.title AS title,
-                            c.description AS description,
-                            c.is_archive AS isArchive                          
-                            FROM cards AS c
-                            WHERE c.id = ?
-                                 """;
+        CardInnerPageResponse cardInnerPageResponse1 = jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+            CardInnerPageResponse response = new CardInnerPageResponse();
+            response.setCardId(rs.getLong("cardId"));
+            response.setTitle(rs.getString("title"));
+            response.setDescription(rs.getString("description"));
+            response.setIsArchive(rs.getBoolean("isArchive"));
+            response.setEstimationResponse(getEstimationByCardId(rs.getLong("cardId")));
+            response.setLabelResponses(getLabelResponsesByCardId(rs.getLong("cardId")));
+            response.setChecklistResponses(getCheckListResponsesByCardId(rs.getLong("cardId")));
+            response.setUserResponses(getMembersResponsesByCardId(rs.getLong("cardId")));
+            response.setCommentResponses(getCommentsResponsesByCardId(rs.getLong("cardId")));
+            return response;
+        }, cardId);
 
-        List<CardInnerPageResponse> cardInnerPageResponses = jdbcTemplate.query(query, new Object[]{cardId}, (rs, rowNum) -> {
-            CardInnerPageResponse cardInnerPageResponse1 = new CardInnerPageResponse();
-            cardInnerPageResponse1.setCardId(rs.getLong("cardId"));
-            cardInnerPageResponse1.setTitle(rs.getString("title"));
-            cardInnerPageResponse1.setDescription(rs.getString("description"));
-            cardInnerPageResponse1.setIsArchive(rs.getBoolean("isArchive"));
-
-            EstimationResponse estimationResponse = getEstimationByCardId(rs.getLong("cardId"));
-            cardInnerPageResponse1.setEstimationResponse(estimationResponse);
-
-            List<LabelResponse> labelResponses = getLabelResponsesByCardId(rs.getLong("cardId"));
-            cardInnerPageResponse1.setLabelResponses(labelResponses);
-
-            List<CheckListResponse> checkListResponses = getCheckListResponsesByCardId(rs.getLong("cardId"));
-            cardInnerPageResponse1.setChecklistResponses(checkListResponses);
-
-            List<UserResponse> userResponses = getMembersResponsesByCardId(rs.getLong("cardId"));
-            cardInnerPageResponse1.setUserResponses(userResponses);
-
-            List<CommentResponse> commentResponses = getCommentsResponsesByCardId(rs.getLong("cardId"));
-            cardInnerPageResponse1.setCommentResponses(commentResponses);
-
-            return cardInnerPageResponse1;
-
-        });
-
-
-
-        if (cardInnerPageResponses.isEmpty()) {
+        if (cardInnerPageResponse1 == null) {
             log.error("Card with id: " + cardId + " not found!");
             throw new NotFoundException("Card with id: " + cardId + " not found!");
         }
-        return cardInnerPageResponses.get(0);
-
+        return cardInnerPageResponse1;
     }
 
 
-    private EstimationResponse getEstimationByCardId(Long cardId) {
 
+    private EstimationResponse getEstimationByCardId(Long cardId) {
         String sql = """
-                        SELECT e.id AS estimationId,
-                               e.start_date AS startDate,
-                               e.due_date AS dueDate,
-                               e.time AS time,
-                               e.reminder_type AS reminderType
-                               FROM cards AS ca JOIN estimations AS e ON ca.id = e.card_id
-                               WHERE ca.id = ?
-                    """;
+                    SELECT e.id AS estimationId,
+                           e.start_date AS startDate,
+                           e.due_date AS dueDate,
+                           e.time AS time,
+                           e.reminder_type AS reminderType
+                           FROM cards AS ca JOIN estimations AS e ON ca.id = e.card_id
+                           WHERE ca.id = ?
+                """;
 
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{cardId}, (rs, rowNum) -> {
+            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
                 EstimationResponse estimationResponse = new EstimationResponse();
                 estimationResponse.setEstimationId(rs.getLong("estimationId"));
 
@@ -126,71 +106,63 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                     }
                 }
                 return estimationResponse;
-            });
+            }, cardId);
         } catch (NotFoundException e) {
             throw new NotFoundException("Estimation not found!");
         }
-
     }
 
+
     private List<LabelResponse> getLabelResponsesByCardId(Long cardId) {
-
         String sql = """
-                    SELECT l.id AS labelId,
-                    l.label_name AS label_name,
-                    l.color AS color
-                    FROM labels AS l
-                    JOIN labels_cards lc ON l.id = lc.labels_id
-                    WHERE lc.cards_id = ?
-                    """;
-
-        List<LabelResponse> labelResponses = jdbcTemplate.query(sql, new Object[]{cardId}, (rs, rowNum) -> {
+                SELECT l.id AS labelId,
+                       l.label_name AS label_name,
+                       l.color AS color
+                       FROM labels AS l
+                       JOIN labels_cards lc ON l.id = lc.labels_id
+                       WHERE lc.cards_id = ?
+                """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             LabelResponse labelResponse = new LabelResponse();
             labelResponse.setLabelId(rs.getLong("labelId"));
             labelResponse.setDescription(rs.getString("label_name"));
             labelResponse.setColor(rs.getString("color"));
 
             return labelResponse;
-        });
-        return labelResponses;
+        }, cardId);
     }
 
     private List<CheckListResponse> getCheckListResponsesByCardId(Long cardId) {
-
         String sql = """
-                    SELECT cl.id AS checkListId,
-                           cl.description AS description,
-                           cl.percent AS percent
-                           FROM check_lists AS cl
-                           JOIN cards c ON c.id = cl.card_id
-                           WHERE c.id = ?
-                    """;
-
-        List<CheckListResponse> checkListResponses = jdbcTemplate.query(sql, new Object[]{cardId}, (rs, rowNum) -> {
+                SELECT cl.id AS checkListId,
+                       cl.description AS description,
+                       cl.percent AS percent
+                       FROM check_lists AS cl
+                       JOIN cards c ON c.id = cl.card_id
+                       WHERE c.id = ?
+                """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             CheckListResponse checkListResponse = new CheckListResponse();
             checkListResponse.setCheckListId(rs.getLong("checkListId"));
             checkListResponse.setDescription(rs.getString("description"));
             checkListResponse.setPercent(rs.getInt("percent"));
 
             return checkListResponse;
-        });
-        return checkListResponses;
+        }, cardId);
     }
 
     private List<UserResponse> getMembersResponsesByCardId(Long cardId) {
-
         String sql = """
-              SELECT u.id AS memberId,
-                     u.first_name AS firstName,
-                     u.last_name AS lastName,
-                     u.email AS email,
-                     u.image AS image
-                     FROM users AS u 
-                     JOIN cards_users cu ON u.id = cu.users_id 
-                     WHERE cu.cards_id = ?
-              """;
-
-        List<UserResponse> userResponses = jdbcTemplate.query(sql, new Object[]{cardId}, (rs, rowNum) -> {
+            SELECT u.id AS memberId,
+                   u.first_name AS firstName,
+                   u.last_name AS lastName,
+                   u.email AS email,
+                   u.image AS image
+                   FROM users AS u 
+                   JOIN cards_users cu ON u.id = cu.users_id 
+                   WHERE cu.cards_id = ?
+            """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             UserResponse userResponse = new UserResponse();
             userResponse.setUserId(rs.getLong("memberId"));
             userResponse.setFirstName(rs.getString("firstName"));
@@ -199,27 +171,25 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             userResponse.setAvatar(rs.getString("image"));
 
             return userResponse;
-        });
-        return userResponses;
+        }, cardId);
     }
 
-    private List<CommentResponse> getCommentsResponsesByCardId(Long cardId){
-
+    private List<CommentResponse> getCommentsResponsesByCardId(Long cardId) {
         String sql = """
-                 SELECT co.id AS commentId,
-                        co.comment AS comment,
-                        co.created_date AS created_date,                       
-                        u.id AS user_id,
-                        u.first_name AS firstName,
-                        u.last_name AS lastName,
-                        u.image AS image
-                        FROM comments AS co
-                        JOIN cards c ON c.id = co.card_id
-                        JOIN users u ON co.user_id = u.id
-                        WHERE c.id = ?
-                 """;
+             SELECT co.id AS commentId,
+                    co.comment AS comment,
+                    co.created_date AS created_date,                       
+                    u.id AS user_id,
+                    u.first_name AS firstName,
+                    u.last_name AS lastName,
+                    u.image AS image
+             FROM comments AS co
+             JOIN cards c ON c.id = co.card_id
+             JOIN users u ON co.user_id = u.id
+             WHERE c.id = ?
+             """;
 
-        List<CommentResponse> commentResponses = jdbcTemplate.query(sql, new Object[]{cardId}, (rs, rowNum) -> {
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             CommentResponse commentResponse = new CommentResponse();
             commentResponse.setCommentId(rs.getLong("commentId"));
             commentResponse.setComment(rs.getString("comment"));
@@ -231,6 +201,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 String formattedDateTime = zonedDateTime.format(formatter);
                 commentResponse.setCreatedDate(formattedDateTime);
             }
+
             CommentUserResponse userResponse = new CommentUserResponse();
             userResponse.setUserId(rs.getLong("user_id"));
             userResponse.setFirstName(rs.getString("firstName"));
@@ -239,10 +210,9 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             commentResponse.setCommentUserResponse(userResponse);
 
             return commentResponse;
-        });
-
-        return commentResponses;
+        }, cardId);
     }
+
 
     @Override
     public List<CardResponse> getAllCardsByColumnId(Long columnId) {
@@ -306,45 +276,44 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     }
 
     private List<LabelResponse> getLabelResponsesForCard(Long cardId) {
-
         String sql = """
-                     SELECT l.id AS labelId,
-                            l.label_name AS name,
-                            l.color AS color 
-                            FROM labels AS l
-                            JOIN labels_cards lc ON l.id = lc.labels_id
-                            WHERE lc.cards_id = ?
-                     """;
-        List<LabelResponse> labelResponses = jdbcTemplate.query(sql, new Object[]{cardId}, (rs, rowNum) -> {
+                 SELECT l.id AS labelId,
+                        l.label_name AS name,
+                        l.color AS color 
+                 FROM labels AS l
+                 JOIN labels_cards lc ON l.id = lc.labels_id
+                 WHERE lc.cards_id = ?
+                 """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
             LabelResponse labelResponse = new LabelResponse();
             labelResponse.setLabelId(rs.getLong("labelId"));
             labelResponse.setDescription(rs.getString("name"));
             labelResponse.setColor(rs.getString("color"));
 
             return labelResponse;
-        });
-        return labelResponses;
+        }, cardId);
     }
 
     private List<CommentResponse> getCommentResponsesForCard(Long cardId) {
-
         String query = """
-                       SELECT co.id AS commentId,
-                              co.comment AS comment,
-                              co.created_date AS createdDate,
-                              u.id AS userId,
-                              u.first_name AS firstName,
-                              u.last_name AS lastName,
-                              u.image AS image
-                              FROM comments AS co
-                              JOIN cards c ON c.id = co.card_id
-                              JOIN users u ON co.user_id = u.id
-                              WHERE c.id = ?
-                       """;
-        List<CommentResponse> commentResponses = jdbcTemplate.query(query, new Object[]{cardId}, (rs, rowNum) -> {
+                   SELECT co.id AS commentId,
+                          co.comment AS comment,
+                          co.created_date AS createdDate,
+                          u.id AS userId,
+                          u.first_name AS firstName,
+                          u.last_name AS lastName,
+                          u.image AS image
+                   FROM comments AS co
+                   JOIN cards c ON c.id = co.card_id
+                   JOIN users u ON co.user_id = u.id
+                   WHERE c.id = ?
+                   """;
+
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
             CommentResponse commentResponse = new CommentResponse();
             commentResponse.setCommentId(rs.getLong("commentId"));
             commentResponse.setComment(rs.getString("comment"));
+
             Timestamp timestamp = rs.getTimestamp("createdDate");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -361,7 +330,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 commentResponse.setCommentUserResponse(userResponse);
             }
             return commentResponse;
-        });
-        return commentResponses;
+        }, cardId);
     }
+
 }

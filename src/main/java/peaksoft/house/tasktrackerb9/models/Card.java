@@ -33,7 +33,7 @@ public class Card {
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
     private List<User>users;
 
-    @ManyToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "cards")
+    @ManyToMany(cascade = {ALL},mappedBy = "cards")
     private List<Label>labels;
 
     @OneToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "card")

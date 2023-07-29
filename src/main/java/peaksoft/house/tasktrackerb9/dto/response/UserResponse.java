@@ -22,4 +22,7 @@ public class UserResponse {
         this.email = email;
         this.avatar = avatar;
     }
+
+    public UserResponse(Long id, String s, String email, String image) {
+    }
 }

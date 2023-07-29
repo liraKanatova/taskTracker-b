@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import peaksoft.house.tasktrackerb9.models.User;
+
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -21,4 +24,5 @@ public class CommentResponse {
         this.comment = comment;
         this.createdDate = createdDate;
     }
+
 }

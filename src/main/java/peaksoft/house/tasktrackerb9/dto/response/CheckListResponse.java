@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,5 +16,7 @@ public class CheckListResponse {
     private Long checkListId;
     private String description;
     private int percent;
+    private String counter;
+    private List<ItemResponse> itemResponseList;
 
 }
