@@ -27,7 +27,7 @@ public class WorkSpace {
     private Long adminId;
 
     @ManyToMany(mappedBy = "workSpaces",cascade ={DETACH,REFRESH,MERGE})
-    private List<User>users;
+    private List<User>members;
 
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
     private List<Board>boards;
