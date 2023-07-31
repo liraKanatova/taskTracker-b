@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import java.time.ZonedDateTime;
@@ -46,6 +47,6 @@ public class JwtService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.getUserByEmail(email).orElseThrow(() ->
-                new EntityNotFoundException("User not found!"));
+                new NotFoundException(String.format("User with email: %s  not found!",email)));
     }
 }

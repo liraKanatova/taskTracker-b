@@ -5,7 +5,7 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 
 
-public interface ProfileJdbcTemplate {
+public interface CustomProfileRepository {
 
     UserResponse updateUser(UserRequest userRequest);
 

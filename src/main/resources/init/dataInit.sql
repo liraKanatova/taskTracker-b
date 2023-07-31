@@ -19,14 +19,14 @@ values (1,'word','img',1),
        (4,'title','img',4),
        (5,'word','img',5);
 
-insert into favorites(id,user_id,board_id,work_space_id)
+insert into favorites(id,member_id,board_id,work_space_id)
 values (1,5,5,5),
        (2,4,4,4),
        (3,3,3,3),
        (4,2,2,2),
        (5,1,1,1);
 
-insert into user_work_space_roles(id,role,user_id,work_space_id)
+insert into user_work_space_roles(id,role,member_id,work_space_id)
 values (1,'ADMIN',5,5),
        (2,'MEMBER',4,4),
        (3,'ADMIN',3,3),
@@ -68,7 +68,7 @@ values (1,10,'writing',1),
        (4,40,'writing',4),
        (5,70,'task',5);
 
-insert into comments(id,comment,created_date,card_id,user_id)
+insert into comments(id,comment,created_date,card_id,member_id)
   values (1,'Kachan butot',now(),1,1),
          (2,'Tuura emesko brat',now(),2,2),
          (3,'tutorial please',now(),3,3),
@@ -96,14 +96,14 @@ values (1,now(),'link',1),
        (4,now(),'link',4),
        (5,now(),'link',5);
 
-insert into users_work_spaces(work_spaces_id,users_id)
+insert into users_work_spaces(work_spaces_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
        (5,5);
 
-insert into notifications_users(notifications_id,users_id)
+insert into notifications_members(notifications_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
@@ -117,21 +117,21 @@ values (1,1),
        (4,4),
        (5,5);
 
-insert into columns_users(columns_id,users_id)
+insert into columns_members(columns_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
        (5,5);
 
-insert into cards_users(cards_id,users_id)
+insert into cards_members(cards_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
        (5,5);
 
-insert into boards_users(boards_id,users_id)
+insert into boards_members(boards_id,members_id)
 values (1,1),
        (2,2),
        (3,3),

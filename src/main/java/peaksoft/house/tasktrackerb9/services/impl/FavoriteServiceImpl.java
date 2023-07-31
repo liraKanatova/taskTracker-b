@@ -66,7 +66,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
         Favorite favorite = new Favorite();
         favorite.setBoard(board);
-        favorite.setUser(user);
+        favorite.setMember(user);
         user.getFavorites().add(favorite);
         favoriteRepository.save(favorite);
         return BoardResponse.builder()
@@ -86,7 +86,7 @@ public class FavoriteServiceImpl implements FavoriteService {
                     log.error("WorkSpace with id: " + workSpaceId + " not found");
                     throw new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
                 });
-        List<Favorite> favorites = favoriteRepository.getFavoriteByUserId(user.getId());
+        List<Favorite> favorites = favoriteRepository.getFavoriteByMemberId(user.getId());
         boolean deleted = false;
         for (Favorite f : favorites) {
             if (f.getWorkSpace() != null) {
@@ -108,7 +108,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
         Favorite favorite = new Favorite();
         favorite.setWorkSpace(workSpace);
-        favorite.setUser(user);
+        favorite.setMember(user);
         favoriteRepository.save(favorite);
         user.getFavorites().add(favorite);
         return WorkSpaceFavoriteResponse.builder()

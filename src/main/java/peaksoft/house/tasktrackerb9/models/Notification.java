@@ -21,7 +21,7 @@ public class Notification {
 
     @Id
     @GeneratedValue(generator = "notification_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "notification_gen",sequenceName = "notification_seq",allocationSize = 1)
+    @SequenceGenerator(name = "notification_gen",sequenceName = "notification_seq",allocationSize = 1,initialValue = 6)
     private Long id;
 
     private String text;
@@ -38,7 +38,7 @@ public class Notification {
     private NotificationType type;
 
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH})
-    private List<User> users;
+    private List<User> members;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;

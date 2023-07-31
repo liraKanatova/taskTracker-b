@@ -21,7 +21,7 @@ public class Estimation {
 
     @Id
     @GeneratedValue(generator = "estimation_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "estimation_gen", sequenceName = "estimation_seq", allocationSize = 1)
+    @SequenceGenerator(name = "estimation_gen", sequenceName = "estimation_seq", allocationSize = 1,initialValue = 6)
     private Long id;
 
     @Enumerated(EnumType.STRING)
