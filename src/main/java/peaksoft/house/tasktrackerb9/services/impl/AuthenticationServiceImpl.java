@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseToken;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +25,7 @@ import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ResetPasswordResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
@@ -51,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse signUp(SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.email())) {
             log.error(String.format("User with email: %s already exist!", signUpRequest.email()));
-            throw new EntityExistsException(String.format("User with email: %s already exist!", signUpRequest.email()));
+            throw new NotFoundException(String.format("User with email: %s already exist!", signUpRequest.email()));
         }
         User user = new User();
         user.setFirstName(signUpRequest.firstName());

@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
+package peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,13 +8,13 @@ import peaksoft.house.tasktrackerb9.dto.response.FavoriteBoardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.FavoriteResponse;
 import peaksoft.house.tasktrackerb9.dto.response.FavoriteWorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.models.User;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomFavoriteRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomFavoriteRepository;
 
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
+public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -29,7 +29,7 @@ public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
                        b.title,
                        b.back_ground
                 FROM users u
-                         JOIN favorites f ON u.id = f.user_id
+                         JOIN favorites f ON u.id = f.member_id
                          JOIN boards b ON f.board_id = b.id
                 WHERE u.id = ?
                 """;
@@ -48,7 +48,7 @@ public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
                        ws.id AS work_space_id,
                        ws.name
                 FROM users u
-                         JOIN favorites f ON u.id = f.user_id
+                         JOIN favorites f ON u.id = f.member_id
                          JOIN work_spaces ws on f.work_space_id = ws.id
                 WHERE u.id = ?
                      """;
@@ -67,6 +67,5 @@ public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
                 .boardResponses(boardResponses)
                 .build();
     }
-
 
 }

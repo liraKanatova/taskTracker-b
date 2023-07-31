@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface CommentService {
 
-    List<CommentResponse> getAllUserComment();
+    List<CommentResponse> getAllUserComments();
+    List<CommentResponse> getAllComments();
     List<CommentResponse> getAllCommentsFromCard(Long cardId);
 
     SimpleResponse saveComment(CommentRequest commentRequest);

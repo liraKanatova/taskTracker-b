@@ -17,7 +17,7 @@ import peaksoft.house.tasktrackerb9.models.Comment;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.CommentRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CommentJdbcTemplateService;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomCommentRepository;
 import peaksoft.house.tasktrackerb9.services.CommentService;
 
 import java.time.ZonedDateTime;
@@ -30,19 +30,24 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final CommentJdbcTemplateService commentJdbcTemplateService;
+    private final CustomCommentRepository commentJdbcTemplateService;
     private final JwtService jwtService;
     private final CardRepository cardRepository;
 
     @Override
-    public List<CommentResponse> getAllUserComment() {
+    public List<CommentResponse> getAllUserComments() {
         User user = jwtService.getAuthentication();
-        return commentJdbcTemplateService.getAllComments(user.getId());
+        return commentJdbcTemplateService.getAllUserComments(user.getId());
+    }
+
+    @Override
+    public List<CommentResponse> getAllComments() {
+        return commentJdbcTemplateService.getAllComments();
     }
 
     @Override
     public List<CommentResponse> getAllCommentsFromCard(Long cardId) {
-        return null;
+        return commentJdbcTemplateService.getAllCommentByCardId(cardId);
     }
 
     @Override
@@ -52,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Card with id: %s doesn't exist", commentRequest.cardId()));
             return new NotFoundException(String.format("Card with id: %s doesn't exist", commentRequest.cardId()));
         });
-        Comment comment = new Comment(commentRequest.comment(), ZonedDateTime.now(), card, user);
+        Comment comment = new Comment(commentRequest.comment(), ZonedDateTime.now(), card,user);
         commentRepository.save(comment);
         log.info(String.format("Comment with id: %s successfully saved !", comment.getId()));
         return SimpleResponse.builder()
@@ -68,7 +73,7 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Comment with id %s doesn't exist!", commentId));
             return new NotFoundException(String.format("Comment with id %s doesn't exist!", commentId));
         });
-        if (user.getId().equals(comment.getUser().getId()) || user.getRole() == Role.ADMIN) {
+        if (user.getId().equals(comment.getMember().getId()) || user.getRole() == Role.ADMIN) {
             try {
                 return commentJdbcTemplateService.getCommentById(commentId);
             } catch (NotFoundException e) {
@@ -91,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Comment with id: %s  doesn't exist", commentId));
             return new NotFoundException(String.format("Comment with id: %s doesn't exist", commentId));
         });
-        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getUser().getId())) {
+        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getMember().getId())) {
             comment.setComment(commentRequest.comment());
             comment.setCreatedDate(ZonedDateTime.now());
             commentRepository.save(comment);
@@ -114,7 +119,7 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Comment with id: %s  doesn't exist", commentId));
             return new NotFoundException(String.format("Comment with id: %s doesn't exist", commentId));
         });
-        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getUser().getId())) {
+        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getMember().getId())) {
             commentRepository.delete(comment);
             log.info(String.format("Comment with id: %s successfully deleted !", comment.getId()));
             return SimpleResponse.builder()

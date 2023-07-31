@@ -17,21 +17,21 @@ public class UserWorkSpaceRole {
 
     @Id
     @GeneratedValue(generator = "userWorkSpaceRole_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "userWorkSpaceRole_gen", sequenceName = "userWorkSpaceRole_seq", allocationSize = 1)
+    @SequenceGenerator(name = "userWorkSpaceRole_gen", sequenceName = "userWorkSpaceRole_seq", allocationSize = 1,initialValue = 6)
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
-    private User user;
+    private User member;
 
     @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private WorkSpace workSpace;
 
-    public UserWorkSpaceRole(Role role, User user, WorkSpace workSpace) {
+    public UserWorkSpaceRole(Role role, User member, WorkSpace workSpace) {
         this.role = role;
-        this.user = user;
+        this.member =member;
         this.workSpace = workSpace;
     }
 }

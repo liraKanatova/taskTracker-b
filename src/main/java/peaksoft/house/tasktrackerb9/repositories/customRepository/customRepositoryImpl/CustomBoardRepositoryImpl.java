@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
+package peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import peaksoft.house.tasktrackerb9.models.User;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomBoardRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomBoardRepository;
 
 import java.util.List;
 

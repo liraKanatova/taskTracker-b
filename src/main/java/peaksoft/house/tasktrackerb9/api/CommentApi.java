@@ -18,11 +18,20 @@ import java.util.List;
 @CrossOrigin(origins = "*",maxAge = 3600)
 public class CommentApi {
     private final CommentService commentService;
-
-    @Operation(summary = "Get all comments user", description = "Get all comments by user auth id")
-    @GetMapping
+    @Operation(summary = "Get all comments ", description = "Get all comments from workspace")
+    @GetMapping("/comments")
     List<CommentResponse> getAllComments() {
         return commentService.getAllComments();
+    }
+    @Operation(summary = "Get all comments user", description = "Get all comments by user auth id")
+    @GetMapping("user-comments")
+    List<CommentResponse> getAllUserComments() {
+        return commentService.getAllUserComments();
+    }
+    @Operation(summary = "Get all comments from card", description = "Get all comments from cards by id")
+    @GetMapping("/comments/{cardId}")
+    List<CommentResponse> getAllCommentsByCardId(@PathVariable Long cardId) {
+        return commentService.getAllCommentsFromCard(cardId);
     }
 
     @Operation(summary = "Save comment", description = "Save comment by card id and user auth id")

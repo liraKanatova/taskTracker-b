@@ -17,7 +17,7 @@ import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomBoardRepositoryImpl;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomBoardRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class BoardServiceImpl implements BoardService {
         board.setBackGround(boardRequest.backGround());
         board.setWorkSpace(workSpace);
         workSpace.getBoards().add(board);
-        board.setUsers(List.of(user));
+        board.setMembers(List.of(user));
         boardRepository.save(board);
         boolean isFavorite = false;
         if(board.getFavorite() !=null){
