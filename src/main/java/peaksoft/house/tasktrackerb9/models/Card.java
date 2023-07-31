@@ -2,6 +2,8 @@ package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.ZonedDateTime;
 import java.util.List;
 import static jakarta.persistence.CascadeType.*;
 
@@ -26,6 +28,7 @@ public class Card {
 
     @jakarta.persistence.Column(name = "is_archive")
     private Boolean isArchive;
+    private ZonedDateTime createdDate;
 
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
     private List<User>members;

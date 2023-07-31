@@ -17,7 +17,7 @@ public class CommentResponse {
     private String createdDate;
     private Long creatorId;
     private String creatorName;
-    private String avatar;
+    private String creatorAvatar;
 
 
 }

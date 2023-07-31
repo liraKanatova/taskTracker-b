@@ -40,12 +40,12 @@ values (1,'Done',false,1),
        (4,'Attention',false,4),
        (5,'Done',false,5);
 
-insert into cards(id,title,description,is_archive,column_id)
-values (1,'title','words',false,1),
-       (2,'word','words',false,2),
-       (3,'title','words',false,3),
-       (4,'word','words',false,4),
-       (5,'title','words',false,5);
+insert into cards(id,title,description,is_archive,column_id,created_date)
+values (1,'title','words',false,1,'2023-07-10T10:30:00+03:00'),
+       (2,'word','words',false,2,'2023-07-10T10:30:00+03:00'),
+       (3,'title','words',false,3,'2023-07-10T10:30:00+03:00'),
+       (4,'word','words',false,4,'2023-07-10T10:30:00+03:00'),
+       (5,'title','words',false,5,'2023-07-10T10:30:00+03:00');
 
 insert into notifications(id,text,image,type,is_read,created_date,card_id)
 values (1,'batyraak bol','img','MOVE',false,now(),2),

@@ -50,7 +50,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setComment(rs.getString("comment"));
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
-            commentResponse.setAvatar(rs.getString("avatar"));
+            commentResponse.setCreatorAvatar(rs.getString("avatar"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -89,7 +89,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setComment(rs.getString("comment"));
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
-            commentResponse.setAvatar(rs.getString("image"));
+            commentResponse.setCreatorAvatar(rs.getString("image"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -128,7 +128,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setComment(rs.getString("comment"));
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
-            commentResponse.setAvatar(rs.getString("image"));
+            commentResponse.setCreatorAvatar(rs.getString("image"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -165,7 +165,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setComment(rs.getString("comment"));
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
-            commentResponse.setAvatar(rs.getString("image"));
+            commentResponse.setCreatorAvatar(rs.getString("image"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
