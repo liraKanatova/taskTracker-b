@@ -77,10 +77,10 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                 }
             }
         }
-        log.info("Email doesn't exist !");
+        log.info("Workspace is saved!");
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("Email doesn't exist !")
+                .message("Workspace is saved!")
                 .build();
     }
 
