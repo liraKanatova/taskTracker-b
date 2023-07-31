@@ -27,7 +27,7 @@ public class BoardApi {
         return boardService.saveBoard(boardRequest);
     }
 
-    @GetMapping("/boards/{workSpaceId}")
+    @GetMapping("/{workSpaceId}")
     @Operation(summary = "Get all boards", description = "Get all boards by workspace id")
     public List<BoardResponse> getAllBoarsByWorkSpace(@PathVariable Long workSpaceId) {
         return boardService.getAllBoardsByWorkspaceId(workSpaceId);
