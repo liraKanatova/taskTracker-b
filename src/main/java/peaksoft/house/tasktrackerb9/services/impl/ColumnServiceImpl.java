@@ -36,11 +36,11 @@ public class ColumnServiceImpl implements ColumnService {
     private final JwtService jwtService;
 
     @Override
-    public SimpleResponse createColumn(Long boardId, ColumnRequest columnRequest) {
+    public SimpleResponse createColumn(ColumnRequest columnRequest) {
         User user = jwtService.getAuthentication();
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> {
-            log.error("Column with id: " + boardId + " not found");
-            return new NotFoundException("Column with id: " + boardId + " not found");
+        Board board = boardRepository.findById(columnRequest.boardId()).orElseThrow(() -> {
+            log.error("Column with id: " + columnRequest.boardId() + " not found");
+            return new NotFoundException("Column with id: " + columnRequest.boardId() + " not found");
         });
         Column column = new Column();
         if (user != null) {

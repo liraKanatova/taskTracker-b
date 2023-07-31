@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ColumnService {
 
-    SimpleResponse createColumn(Long boardId, ColumnRequest columnRequest);
+    SimpleResponse createColumn(ColumnRequest columnRequest);
 
     List<ColumnResponse>getAllColumns(Long boardId);
 
