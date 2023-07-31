@@ -38,7 +38,12 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
-        return customBoardRepository.getAllBoardsByWorkspaceId(workSpaceId);
+        WorkSpace workSpace = workspaceRepository.findById(workSpaceId)
+                .orElseThrow(() -> {
+                    log.error("WorkSpace with id: " + workSpaceId + " not found");
+                    throw new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
+                });
+        return customBoardRepository.getAllBoardsByWorkspaceId(workSpace.getId());
     }
 
     @Override
@@ -58,9 +63,9 @@ public class BoardServiceImpl implements BoardService {
         board.setMembers(List.of(user));
         boardRepository.save(board);
         boolean isFavorite = false;
-        if(board.getFavorite() !=null){
+        if(board.getFavorites() !=null){
             for (Favorite favorite : user.getFavorites()) {
-                if(board.getFavorite().equals(favorite)){
+                if(board.getFavorites().contains(favorite)){
                     isFavorite = true;
                     break;
                 }
@@ -100,7 +105,13 @@ public class BoardServiceImpl implements BoardService {
                     throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
         WorkSpace workSpace = board.getWorkSpace();
-        workSpace.getBoards().remove(board);
+        if(workSpace != null) {
+            workSpace.getBoards().remove(board);
+        }
+        List<Favorite> favorites = board.getFavorites();
+        for (Favorite favorite : favorites) {
+            favorite.setBoard(null);
+        }
         boardRepository.deleteById(boardId);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
@@ -117,9 +128,9 @@ public class BoardServiceImpl implements BoardService {
                     throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
         boolean isFavorite = false;
-        if (board.getFavorite() != null) {
+        if (board.getFavorites() != null) {
             for (Favorite favorite : user.getFavorites()) {
-                if (board.getFavorite().equals(favorite)) {
+                if (board.getFavorites().contains(favorite)) {
                     isFavorite = true;
                     break;
                 }

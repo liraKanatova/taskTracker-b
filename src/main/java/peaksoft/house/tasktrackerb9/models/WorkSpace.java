@@ -32,8 +32,8 @@ public class WorkSpace {
     @OneToMany(cascade = {ALL},mappedBy = "workSpace",orphanRemoval = true)
     private List<Board>boards;
 
-    @OneToOne(cascade = {ALL},mappedBy = "workSpace")
-    private Favorite favorite;
+    @OneToMany(cascade = {ALL},mappedBy = "workSpace")
+    private List<Favorite> favorites;
 
     @OneToMany(cascade = {ALL},mappedBy = "workSpace",orphanRemoval = true)
     private List<UserWorkSpaceRole> userWorkSpaceRoles;
