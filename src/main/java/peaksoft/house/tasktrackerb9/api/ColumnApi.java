@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
@@ -22,25 +23,25 @@ public class ColumnApi {
 
     @PostMapping
     @Operation(summary = "Create Column",description = "Create column with board id")
-    public SimpleResponse createColumn(@RequestBody ColumnRequest columnRequest){
+    public SimpleResponse createColumn(@RequestBody @Valid ColumnRequest columnRequest){
         return columnService.createColumn(columnRequest);
     }
 
     @GetMapping("/{boardId}")
     @Operation(summary = "Get all columns",description = "Get all columns with board id")
-    public List<ColumnResponse> getAll(@PathVariable Long boardId){
+    public List<ColumnResponse> getAll(@PathVariable  Long boardId){
         return columnService.getAllColumns(boardId);
     }
 
     @PutMapping("/{columnId}")
     @Operation(summary = "Update column",description = "Update column by columnId")
-    public ColumnResponse updateColumn(@PathVariable Long columnId,@RequestBody ColumnRequest columnRequest){
+    public ColumnResponse updateColumn(@PathVariable Long columnId,@RequestBody @Valid ColumnRequest columnRequest){
         return columnService.update(columnId, columnRequest);
     }
 
     @DeleteMapping("/{columnId}")
     @Operation(summary = "Remove column",description = "Remove column by columnId")
-    public SimpleResponse removeColumn(@PathVariable Long columnId){
+    public SimpleResponse removeColumn(@PathVariable @Valid Long columnId){
         return columnService.removeColumn(columnId);
     }
 }

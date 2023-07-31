@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
@@ -41,7 +42,7 @@ public class BoardApi {
 
     @PutMapping
     @Operation(summary = "Update board", description = "Update board with id")
-    public SimpleResponse update(@RequestBody BoardUpdateRequest boardUpdateRequest) {
+    public SimpleResponse update(@RequestBody @Valid BoardUpdateRequest boardUpdateRequest) {
         return boardService.updateBoard(boardUpdateRequest);
     }
 
