@@ -1,6 +1,7 @@
-package peaksoft.tasktracker.repository.custom;
+package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService;
 
-import peaksoft.tasktracker.dto.response.AllMemberResponse;
+
+import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 
 public interface CustomMemberRepository {
 

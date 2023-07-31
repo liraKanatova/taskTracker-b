@@ -9,8 +9,10 @@ import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Card;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
+import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomMemberRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.MemberService;
 
 import java.util.List;
