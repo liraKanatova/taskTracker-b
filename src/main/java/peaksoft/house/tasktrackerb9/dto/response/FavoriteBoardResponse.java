@@ -9,13 +9,9 @@ import lombok.*;
 public class FavoriteBoardResponse {
 
     private Long userId;
-
     private Long boardId;
-
     private String title;
-
     private String backGround;
-
     private boolean isFavorite;
 
     public FavoriteBoardResponse(Long userId, Long boardId, String title, String backGround) {
