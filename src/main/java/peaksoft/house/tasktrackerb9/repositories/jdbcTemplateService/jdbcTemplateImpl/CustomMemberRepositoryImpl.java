@@ -29,7 +29,7 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                         u.email AS email,
                         u.image as image,
                         u.role as role
-                        FROM members u join boards_members bu on u.id = bu.members_id
+                        FROM users u join boards_members bu on u.id = bu.members_id
                         left  join cards_members cu on u.id = cu.members_id
                         WHERE cu.cards_id = ?;
                                
@@ -53,7 +53,7 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                          u.email AS email,
                          u.role as role,
                          u.image as image
-                 FROM members u join work_spaces_members wsu on u.id = wsu.members_id
+                 FROM users u join work_spaces_members wsu on u.id = wsu.members_id
                          join cards_members cu on u.id = cu.members_id
                          where cu.cards_id = ?
                 """;
