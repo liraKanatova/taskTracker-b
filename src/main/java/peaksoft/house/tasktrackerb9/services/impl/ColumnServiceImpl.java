@@ -80,7 +80,7 @@ public class ColumnServiceImpl implements ColumnService {
         } else {
             throw new BadCredentialException("You are not member");
         }
-        return new ColumnResponse(column.getId(), column.getTitle());
+        return new ColumnResponse(column.getId(), column.getTitle(),column.getIsArchive());
     }
 
     @Override
