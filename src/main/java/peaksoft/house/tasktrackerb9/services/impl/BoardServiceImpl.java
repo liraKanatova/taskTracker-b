@@ -10,6 +10,7 @@ import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.exceptions.BadRequestException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Board;
 import peaksoft.house.tasktrackerb9.models.Favorite;
@@ -82,11 +83,15 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public SimpleResponse updateBoard(BoardUpdateRequest boardUpdateRequest) {
 
+        User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardUpdateRequest.boardI())
                 .orElseThrow(() -> {
                     log.error("Board with id: " + boardUpdateRequest.boardI() + " not found");
                     throw new NotFoundException("Board with id: " + boardUpdateRequest.boardI() + " not found");
                 });
+        if(!user.getBoards().contains(board)){
+            throw new BadRequestException("Board not found");
+        }
         board.setTitle(boardUpdateRequest.title());
         board.setBackGround(boardUpdateRequest.backGround());
         boardRepository.save(board);
