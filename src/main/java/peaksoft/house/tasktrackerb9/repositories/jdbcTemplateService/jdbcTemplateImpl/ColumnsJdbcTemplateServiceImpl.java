@@ -22,11 +22,11 @@ public class ColumnsJdbcTemplateServiceImpl implements ColumnsJdbcTemplateServic
     @Override
     public List<ColumnResponse> getAllColumns(Long boardId) {
         String sql = """
-                select c.id,c.title from boards b 
+                select c.id,c.title,c.is_archive  from boards b
                 join columns c on b.id = c.board_id
-                where b.id=?""";
+                where b.id=? and c.is_archive=false""";
         List<ColumnResponse>columnResponses=jdbcTemplate.query(sql,((rs, rowNum) -> new ColumnResponse(rs.getLong("id"),
-                rs.getString("title"))),boardId);
-        return columnResponses.stream().map(x -> new ColumnResponse(x.getId(), x.getTitle())).toList();
+                rs.getString("title"),rs.getBoolean("is_archive"))),boardId);
+        return columnResponses.stream().map(x -> new ColumnResponse(x.getColumnId(), x.getTitle(),x.getIsArchive())).toList();
     }
 }

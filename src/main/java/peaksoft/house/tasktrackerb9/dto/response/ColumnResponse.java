@@ -11,12 +11,15 @@ import lombok.Setter;
 @Builder
 public class ColumnResponse {
 
-    private Long id;
+    private Long columnId;
 
     private String title;
 
-    public ColumnResponse(Long id, String title) {
-        this.id = id;
+    private Boolean isArchive;
+
+    public ColumnResponse(Long columnId, String title,Boolean isArchive) {
+        this.columnId = columnId;
         this.title = title;
+        this.isArchive=isArchive;
     }
 }

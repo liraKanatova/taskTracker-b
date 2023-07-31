@@ -49,7 +49,7 @@ public class ColumnServiceImpl implements ColumnService {
             board.getColumns().add(column);
             column.setBoard(board);
             user.getColumns().add(column);
-            column.setUsers(List.of(user));
+            column.setMembers(List.of(user));
             columnsRepository.save(column);
             log.info("Successfully created");
             return SimpleResponse.builder()
