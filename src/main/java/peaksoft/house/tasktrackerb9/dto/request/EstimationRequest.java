@@ -10,10 +10,10 @@ public record EstimationRequest(
 
         String reminder,
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:m")
         ZonedDateTime startDate,
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy HH:mm")
         ZonedDateTime dateOfFinish,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

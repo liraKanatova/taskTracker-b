@@ -23,6 +23,4 @@ public class UserResponse {
         this.avatar = avatar;
     }
 
-    public UserResponse(Long id, String s, String email, String image) {
-    }
 }
