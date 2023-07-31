@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("select new peaksoft.house.tasktrackerb9.dto.response.MemberResponse(u.id,u.firstName,u.lastName,u.email,u.image,u.role)from User u join UserWorkSpaceRole uw on uw.workSpace.id = :workSpaceId and uw.user.id=u.id where lower( concat(u.firstName,u.lastName,u.email) )LIKE lower( concat('%',:word,'%') )")
+    @Query("select new peaksoft.house.tasktrackerb9.dto.response.MemberResponse(u.id,u.firstName,u.lastName,u.email,u.image,u.role)from User u join UserWorkSpaceRole uw on uw.workSpace.id = :workSpaceId and uw.member.id=u.id where lower( concat(u.firstName,u.lastName,u.email) )LIKE lower( concat('%',:word,'%') )")
     List<MemberResponse> searchByWord(Long workSpaceId, String word);
 }
 
