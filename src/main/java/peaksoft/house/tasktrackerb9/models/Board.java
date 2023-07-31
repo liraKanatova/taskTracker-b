@@ -16,23 +16,24 @@ public class Board {
 
     @Id
     @GeneratedValue(generator = "board_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "board_gen",sequenceName = "board_seq",allocationSize = 1)
+    @SequenceGenerator(name = "board_gen",sequenceName = "board_seq",allocationSize = 1,
+    initialValue = 6)
     private Long id;
     private String title;
 
     @jakarta.persistence.Column(name = "back_ground")
     private String backGround;
 
-    @OneToOne(cascade = {ALL},mappedBy = "board")
+    @OneToOne(cascade = {ALL},mappedBy = "board",orphanRemoval = true)
     private Favorite favorite;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private WorkSpace workSpace;
 
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH})
-    private List<User>users;
+    private List<User>members;
 
-    @OneToMany(cascade = ALL,mappedBy = "board")
+    @OneToMany(cascade = ALL,mappedBy = "board",orphanRemoval = true)
     private List<Column>columns;
 
 }

@@ -16,7 +16,8 @@ public class Card {
 
     @Id
     @GeneratedValue(generator = "card_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "card_gen",sequenceName = "card_seq",allocationSize = 1)
+    @SequenceGenerator(name = "card_gen",sequenceName = "card_seq",allocationSize = 1,
+    initialValue = 6)
     private Long id;
 
     private String title;
@@ -27,7 +28,7 @@ public class Card {
     private Boolean isArchive;
 
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
-    private List<User>users;
+    private List<User>members;
 
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "cards")
     private List<Label>labels;
@@ -41,7 +42,7 @@ public class Card {
     @OneToMany(cascade = {ALL},mappedBy = "card")
     private List<Comment>comments;
 
-    @OneToMany(cascade = {ALL},mappedBy = "card")
+    @OneToMany(cascade = {ALL},mappedBy = "card",orphanRemoval = true)
     private List<CheckList>checkLists;
 
     @OneToOne(cascade = {ALL},mappedBy = "card")
