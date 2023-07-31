@@ -21,7 +21,7 @@ public class Notification {
 
     @Id
     @GeneratedValue(generator = "notification_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "notification_gen",sequenceName = "notification_seq",allocationSize = 1,initialValue = 6)
+    @SequenceGenerator(name = "notification_gen",sequenceName = "notification_seq",allocationSize = 1)
     private Long id;
 
     private String text;

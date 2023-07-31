@@ -25,7 +25,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(generator = "users_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "users_gen",sequenceName = "users_seq",allocationSize = 1,initialValue = 6)
+    @SequenceGenerator(name = "users_gen",sequenceName = "users_seq",allocationSize = 1)
     private Long id;
 
     @jakarta.persistence.Column(name = "first_name")
