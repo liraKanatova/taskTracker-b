@@ -9,6 +9,7 @@ import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Board;
@@ -43,7 +44,7 @@ public class ColumnServiceImpl implements ColumnService {
             return new NotFoundException("Column with id: " + columnRequest.boardId() + " not found");
         });
         Column column = new Column();
-        if (user != null) {
+        if (user.getRole().equals(Role.ADMIN)) {
             column.setTitle(columnRequest.title());
             column.setIsArchive(false);
             board.getColumns().add(column);
@@ -73,7 +74,7 @@ public class ColumnServiceImpl implements ColumnService {
             log.error("Column not found!");
             return new NotFoundException("Column with id: "+columnId+" not found");
         });
-        if (user != null) {
+        if (user.getRole().equals(Role.ADMIN)) {
             column.setTitle(columnRequest.title());
             columnsRepository.save(column);
              log.info("Column successfully updated");
@@ -90,7 +91,7 @@ public class ColumnServiceImpl implements ColumnService {
             log.error("Column not found!");
             return new NotFoundException("Column with id: "+columnId+" not found");
         });
-        if (user != null) {
+        if (user.getRole().equals(Role.ADMIN)) {
             columnsRepository.delete(column);
             log.info("Column  successfully deleted");
         } else throw new BadCredentialException("You are not member");
