@@ -22,6 +22,7 @@ public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
 
     @Override
     public FavoriteResponse getAll() {
+
         User user = jwtService.getAuthentication();
         String sql = """
                 SELECT u.id AS user_id,

@@ -24,8 +24,8 @@ public class Board {
     @jakarta.persistence.Column(name = "back_ground")
     private String backGround;
 
-    @OneToOne(cascade = {ALL},mappedBy = "board",orphanRemoval = true)
-    private Favorite favorite;
+    @OneToMany(cascade = {ALL},mappedBy = "board",orphanRemoval = true)
+    private List<Favorite> favorites;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private WorkSpace workSpace;

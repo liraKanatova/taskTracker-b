@@ -20,10 +20,10 @@ public class Favorite {
 
     private Long id;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Board board;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private WorkSpace workSpace;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
