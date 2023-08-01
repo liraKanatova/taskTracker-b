@@ -12,7 +12,4 @@ public class CommentResponse {
     private Long commentId;
     private String comment;
     private String createdDate;
-
-
-
 }
