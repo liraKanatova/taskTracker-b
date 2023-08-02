@@ -20,10 +20,4 @@ public interface CardService {
 
     SimpleResponse deleteCard(Long id);
 
-    SimpleResponse archiveCard(Long cardId);
-
-    SimpleResponse deleteAllCardsInColumn(Long columnId);
-
-    SimpleResponse archiveAllCardsInColumn(Long columnId);
-
 }

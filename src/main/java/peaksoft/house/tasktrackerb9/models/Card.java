@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import static jakarta.persistence.CascadeType.*;
 
@@ -58,36 +57,4 @@ public class Card {
 
     private Long creatorId;
 
-    public Card(String title,String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    public void addChecklist(CheckList checklist) {
-        if (checkLists == null) {
-            checkLists = new ArrayList<>();
-        }
-        checkLists.add(checklist);
-    }
-
-    public void addMember(User user) {
-        if (members == null) {
-            members = new ArrayList<>();
-        }
-        members.add(user);
-    }
-
-    public void addComment(Comment comment) {
-        if (comments == null) {
-            comments = new ArrayList<>();
-        }
-        comments.add(comment);
-    }
-
-    public void addLabel(Label label) {
-        if (labels == null) {
-            labels = new ArrayList<>();
-        }
-        labels.add(label);
-    }
 }

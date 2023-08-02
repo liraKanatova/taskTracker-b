@@ -52,22 +52,4 @@ public class CardApi {
         return cardService.deleteCard(cardId);
     }
 
-    @Operation(summary = "Archive", description = "This operation allows archiving/unarchiving a card by its ID")
-    @PutMapping("/archive/{cardId}")
-    public SimpleResponse archiveCard(@PathVariable Long cardId) {
-        return cardService.archiveCard(cardId);
-    }
-
-    @Operation(summary = "Archive all cards", description = "This operation allows archiving all cards in a column by its ID")
-    @PutMapping("/all-archive/{columnId}")
-    public SimpleResponse archiveAllCardsInColumn(@PathVariable Long columnId) {
-        return cardService.archiveAllCardsInColumn(columnId);
-    }
-
-    @Operation(summary = "Delete all cards", description = "This operation allows deleting all cards in a column by its ID")
-    @DeleteMapping("/all/{columnId}")
-    public SimpleResponse deleteAllCardsInColumn(@PathVariable Long columnId) {
-        return cardService.deleteAllCardsInColumn(columnId);
-    }
-
 }

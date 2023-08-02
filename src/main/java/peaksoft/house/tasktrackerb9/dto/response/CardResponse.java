@@ -14,9 +14,9 @@ public class CardResponse {
     private Long cardId;
     private String title;
     private String duration;
-    private int numberUsers;
-    private int numberItems;
-    private int numberCompletedItems;
+    private int numberOfUsers;
+    private int numberOfItems;
+    private int numberOfCompletedItems;
     private List<LabelResponse> labelResponses;
     private List<CommentResponse> commentResponses;
 

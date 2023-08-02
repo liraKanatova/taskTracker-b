@@ -441,13 +441,13 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             }
 
             int numberUsers = rs.getInt("numberUsers");
-            cardResponse.setNumberUsers(numberUsers);
+            cardResponse.setNumberOfUsers(numberUsers);
 
             int numberItems = rs.getInt("numberItems");
-            cardResponse.setNumberItems(numberItems);
+            cardResponse.setNumberOfUsers(numberItems);
 
             int numberCompletedItems = rs.getInt("numberCompletedItems");
-            cardResponse.setNumberCompletedItems(numberCompletedItems);
+            cardResponse.setNumberOfCompletedItems(numberCompletedItems);
 
             List<LabelResponse> labelResponses = getLabelResponsesForCard(rs.getLong("cardId"));
             cardResponse.setLabelResponses(labelResponses);
