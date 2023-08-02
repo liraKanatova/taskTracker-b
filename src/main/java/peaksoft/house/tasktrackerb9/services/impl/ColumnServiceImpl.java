@@ -12,14 +12,12 @@ import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
-import peaksoft.house.tasktrackerb9.models.Board;
-import peaksoft.house.tasktrackerb9.models.Column;
-import peaksoft.house.tasktrackerb9.models.User;
-import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
-import peaksoft.house.tasktrackerb9.repositories.ColumnsRepository;
+import peaksoft.house.tasktrackerb9.models.*;
+import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ColumnsJdbcTemplateServiceImpl;
 import peaksoft.house.tasktrackerb9.services.ColumnService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +33,12 @@ public class ColumnServiceImpl implements ColumnService {
     private final ColumnsJdbcTemplateServiceImpl columns;
 
     private final JwtService jwtService;
+
+    private final WorkSpaceRepository workSpaceRepository;
+
+    private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
+
+    private final CardRepository cardRepository;
 
     @Override
     public SimpleResponse createColumn(ColumnRequest columnRequest) {
@@ -99,5 +103,46 @@ public class ColumnServiceImpl implements ColumnService {
                 .message("Column successfully deleted")
                 .status(HttpStatus.OK)
                 .build();
+    }
+
+    @Override
+    public SimpleResponse sendToArchive(Long columnId) {
+
+        User user = jwtService.getAuthentication();
+        Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
+            log.error("Column with id: " + columnId + " not found!");
+            return new NotFoundException("Column with id: " + columnId + " not found!");
+        });
+
+        WorkSpace workSpace= workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
+            log.error("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
+            return new NotFoundException("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
+        });
+
+        UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
+        if (userWorkSpaceRole == null) {
+            log.error("You are not a member of this workspace!");
+            throw new BadCredentialException("You are not a member of this workspace!"+workSpace.getName()+"/"+user.getFirstName());
+        }
+
+        if (workSpace.getMembers().contains(userWorkSpaceRole.getMember())) {
+            column.setIsArchive(!column.getIsArchive());
+            columnsRepository.save(column);
+
+            List<Card> cardsInColumn = new ArrayList<>(column.getCards());
+            for (Card card : cardsInColumn) {
+                card.setIsArchive(column.getIsArchive());
+                cardRepository.save(card);
+            }
+
+            String message = column.getIsArchive() ? "Column with id: " + columnId + " successfully archived!" : "Column with id: " + columnId + " successfully unArchived!";
+            return SimpleResponse.builder()
+                    .status(HttpStatus.OK)
+                    .message(message)
+                    .build();
+        } else {
+            log.error("You can't archive this card!");
+            throw new BadCredentialException("You can't archive this card!");
+        }
     }
 }

@@ -15,4 +15,7 @@ public interface ColumnService {
     ColumnResponse update(Long columnId, ColumnRequest columnRequest);
 
     SimpleResponse removeColumn(Long columnId);
+
+    SimpleResponse sendToArchive(Long columnId);
+
 }
