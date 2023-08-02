@@ -25,7 +25,6 @@ import peaksoft.house.tasktrackerb9.dto.request.SignUpRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AuthenticationResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ResetPasswordResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
