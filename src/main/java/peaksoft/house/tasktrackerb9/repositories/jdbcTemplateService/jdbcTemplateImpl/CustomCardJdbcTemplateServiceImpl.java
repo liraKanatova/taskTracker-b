@@ -214,8 +214,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
         }, cardId);
 
         if (cardInnerPageResponses.isEmpty()) {
-            log.error("Card with id: " + cardId + " not found!");
-            throw new NotFoundException("Card with id: " + cardId + " not found!");
+            new CardInnerPageResponse();
         }
         return cardInnerPageResponses.get(0);
     }
