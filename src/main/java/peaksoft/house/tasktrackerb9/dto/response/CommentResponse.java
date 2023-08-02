@@ -11,6 +11,8 @@ public class CommentResponse {
     private Long commentId;
     private String comment;
     private String createdDate;
-    private CommentUserResponse commentUserResponse;
+    private Long creatorId;
+    private String creatorName;
+    private String creatorAvatar;
 
 }

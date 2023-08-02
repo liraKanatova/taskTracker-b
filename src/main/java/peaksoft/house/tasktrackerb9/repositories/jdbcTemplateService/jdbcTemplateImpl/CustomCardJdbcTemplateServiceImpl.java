@@ -4,11 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.*;
 import peaksoft.house.tasktrackerb9.enums.ReminderType;
-import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
-import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
+import peaksoft.house.tasktrackerb9.exceptions.*;
+import peaksoft.house.tasktrackerb9.exceptions.IllegalArgumentException;
+import peaksoft.house.tasktrackerb9.models.*;
+import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomCardJdbcTemplateService;
 
 import java.sql.Timestamp;
@@ -17,7 +21,10 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional
@@ -26,92 +33,252 @@ import java.util.List;
 public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplateService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CardRepository cardRepository;
+    private final EstimationRepository estimationRepository;
+    private final LabelRepository labelRepository;
+    private final UserRepository userRepository;
+    private final CheckListRepository checklistRepository;
 
+    public User getAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.getUserByEmail(email).orElseThrow(() ->
+                new NotFoundException("User not found!"));
+    }
+
+    @Override
+    public CardInnerPageResponse convertToCardInnerPageResponse(Card card) {
+        CardInnerPageResponse cardInnerPageResponse = new CardInnerPageResponse();
+        cardInnerPageResponse.setCardId(card.getId());
+        cardInnerPageResponse.setTitle(card.getTitle());
+        cardInnerPageResponse.setDescription(card.getDescription());
+        cardInnerPageResponse.setIsArchive(card.getIsArchive());
+        List<LabelResponse> list = new ArrayList<>();
+        if (card.getLabels() != null) {
+            for (LabelResponse  l : labelRepository.getAllLabelResponse()) {
+                LabelResponse labelResponse = new LabelResponse();
+                labelResponse.setLabelId(l.getLabelId());
+                labelResponse.setDescription(l.getDescription());
+                labelResponse.setColor(l.getColor());
+                list.add(labelResponse);
+            }
+            cardInnerPageResponse.setLabelResponses(list);
+        }else {
+            cardInnerPageResponse.setLabelResponses(new ArrayList<>());
+        }
+
+        if (card.getEstimation() != null) {
+            cardInnerPageResponse.setEstimationResponse(getEstimationByCardIdd(card.getId()));
+        }else {
+            cardInnerPageResponse.setEstimationResponse(new EstimationResponse());
+        }
+
+        if (card.getMembers() != null) {
+            cardInnerPageResponse.setUserResponses(getAllCardMembers(card.getMembers()));
+        }else{
+            cardInnerPageResponse.setUserResponses(new ArrayList<>());
+        }
+        cardInnerPageResponse.setChecklistResponses(getCheckListResponses(checklistRepository.findAllCheckListByCardId(card.getId())));
+        if (card.getComments() != null) {
+            cardInnerPageResponse.setCommentResponses(getCommentsResponse(card.getComments()));
+        }else {
+            cardInnerPageResponse.setCommentResponses(new ArrayList<>());
+        }
+
+        return cardInnerPageResponse;
+    }
+
+    private CommentResponse convertCommentToResponse(Comment comment) {
+        CommentResponse commentResponse = new CommentResponse();
+        commentResponse.setCommentId(comment.getId());
+        commentResponse.setComment(comment.getComment());
+        commentResponse.setCreatedDate(comment.getCreatedDate().toString());
+        commentResponse.setCreatorId(getAuthentication().getId());
+        commentResponse.setCreatorName(getAuthentication().getFirstName());
+        commentResponse.setCreatorAvatar(getAuthentication().getImage());
+        return commentResponse;
+
+    }
+
+    private List<CommentResponse> getCommentsResponse(List<Comment> comments) {
+        if (comments == null) {
+            return Collections.emptyList();
+        }
+        return comments.stream().map(this::convertCommentToResponse).collect(Collectors.toList());
+    }
+
+    private List<CheckListResponse> getCheckListResponses(List<CheckList> checklists) {
+        if (checklists == null) {
+            return Collections.emptyList();
+        }
+        return checklists.stream().map(this::convertCheckListToResponse).collect(Collectors.toList());
+    }
+
+    public CheckListResponse convertCheckListToResponse(CheckList checklist) {
+        CheckListResponse checkListResponse = new CheckListResponse();
+        checkListResponse.setCheckListId(checklist.getId());
+        checkListResponse.setDescription(checklist.getDescription());
+
+        List<Item> items = checklist.getItems();
+        List<ItemResponse> itemResponses = new ArrayList<>();
+        int countOfItems = items.size();
+        int countOfCompletedItems = 0;
+
+        for (Item item : items) {
+            ItemResponse itemResponse = new ItemResponse();
+            itemResponse.setId(item.getId());
+            itemResponse.setTitle(item.getTitle());
+            itemResponse.setIsDone(item.getIsDone());
+            itemResponses.add(itemResponse);
+
+            if (item.getIsDone().equals(true)) {
+                countOfCompletedItems++;
+            }
+        }
+        int count = (countOfItems > 0) ? (countOfCompletedItems * 100) / countOfItems : 0;
+        String counter = countOfCompletedItems + "/" + countOfItems;
+
+        checkListResponse.setPercent(count);
+        checkListResponse.setCounter(counter);
+        checkListResponse.setItemResponseList(itemResponses);
+
+        checklist.setPercent(count);
+        checklistRepository.save(checklist);
+
+        return checkListResponse;
+    }
+
+    private EstimationResponse getEstimationByCardIdd(Long cardId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(() -> {
+            log.error("Card with id: " + cardId + " not found!");
+            return new NotFoundException("Card with id: " + cardId + " not found!");
+        });
+        Estimation estimation = estimationRepository.findById(card.getEstimation().getId()).orElseThrow(() -> {
+            log.error("Estimation with id: " + card.getEstimation().getId()  + " not found!");
+            return new NotFoundException("Estimation with id: " + card.getEstimation().getId() + " not found!");
+        });
+        EstimationResponse estimationResponse = new EstimationResponse();
+        estimationResponse.setEstimationId(estimation.getId());
+        estimationResponse.setStartDate(estimation.getStartDate().toString());
+        estimationResponse.setDuetDate(estimation.getDuetDate().toString());
+        estimationResponse.setTime(estimation.getTime().toString());
+        estimationResponse.setReminderType(estimation.getReminderType());
+        return estimationResponse;
+
+    }
+
+    private List<UserResponse> getAllCardMembers(List<User> users) {
+        return users.stream().map(this::convertToUserResponse).collect(Collectors.toList());
+    }
+
+    private UserResponse convertToUserResponse(User user) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUserId(user.getId());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setAvatar(user.getImage());
+        return userResponse;
+    }
+
+    @Override
     public CardInnerPageResponse getAllCardInnerPage(Long cardId) {
         String query = "SELECT c.id AS cardId," +
-                       "    c.title AS title," +
-                       "c.description AS description, " +
-                       "c.is_archive AS isArchive " +
-                       "FROM cards AS c WHERE c.id = ?";
+                "    c.title AS title," +
+                "c.description AS description, " +
+                "c.is_archive AS isArchive " +
+                "FROM cards AS c WHERE c.id = ?";
 
-        CardInnerPageResponse cardInnerPageResponse1 = jdbcTemplate.queryForObject(query, (rs, rowNum) -> {
+        List<CardInnerPageResponse> cardInnerPageResponses = jdbcTemplate.query(query, (rs, rowNum) -> {
             CardInnerPageResponse response = new CardInnerPageResponse();
             response.setCardId(rs.getLong("cardId"));
             response.setTitle(rs.getString("title"));
             response.setDescription(rs.getString("description"));
             response.setIsArchive(rs.getBoolean("isArchive"));
-            response.setEstimationResponse(getEstimationByCardId(rs.getLong("cardId")));
-            response.setLabelResponses(getLabelResponsesByCardId(rs.getLong("cardId")));
-            response.setChecklistResponses(getCheckListResponsesByCardId(rs.getLong("cardId")));
-            response.setUserResponses(getMembersResponsesByCardId(rs.getLong("cardId")));
-            response.setCommentResponses(getCommentsResponsesByCardId(rs.getLong("cardId")));
+            long estimationId = rs.getLong("cardId");
+            response.setEstimationResponse(getEstimationByCardId(estimationId));
+
+            List<LabelResponse> labelResponses = getLabelResponsesByCardId(rs.getLong("cardId"));
+            response.setLabelResponses(labelResponses != null && !labelResponses.isEmpty() ? labelResponses : Collections.emptyList());
+
+            List<CheckListResponse> checklistResponses = getCheckListResponsesByCardId(rs.getLong("cardId"));
+            response.setChecklistResponses(checklistResponses != null && !checklistResponses.isEmpty() ? checklistResponses : Collections.emptyList());
+
+            List<UserResponse> userResponses = getMembersResponsesByCardId(rs.getLong("cardId"));
+            response.setUserResponses(userResponses != null && !userResponses.isEmpty() ? userResponses : Collections.emptyList());
+
+            List<CommentResponse> commentResponses = getCommentsResponsesByCardId(rs.getLong("cardId"));
+            response.setCommentResponses(commentResponses != null && !commentResponses.isEmpty() ? commentResponses : Collections.emptyList());
+
             return response;
         }, cardId);
 
-        if (cardInnerPageResponse1 == null) {
+        if (cardInnerPageResponses.isEmpty()) {
             log.error("Card with id: " + cardId + " not found!");
             throw new NotFoundException("Card with id: " + cardId + " not found!");
         }
-        return cardInnerPageResponse1;
+        return cardInnerPageResponses.get(0);
     }
-
-
 
     private EstimationResponse getEstimationByCardId(Long cardId) {
         String sql = """
-                    SELECT e.id AS estimationId,
-                           e.start_date AS startDate,
-                           e.due_date AS dueDate,
-                           e.time AS time,
-                           e.reminder_type AS reminderType
-                           FROM cards AS ca JOIN estimations AS e ON ca.id = e.card_id
-                           WHERE ca.id = ?
-                """;
+            SELECT e.id AS estimationId,
+                   e.start_date AS startDate,
+                   e.due_date AS dueDate,
+                   e.time AS time,
+                   e.reminder_type AS reminderType
+                   FROM cards AS ca LEFT JOIN estimations AS e ON ca.id = e.card_id
+                   WHERE ca.id = ?
+        """;
 
-        try {
-            return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-                EstimationResponse estimationResponse = new EstimationResponse();
-                estimationResponse.setEstimationId(rs.getLong("estimationId"));
+        List<EstimationResponse> estimations = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            EstimationResponse estimationResponse = new EstimationResponse();
 
-                Timestamp startDateTimestamp = rs.getTimestamp("startDate");
-                if (startDateTimestamp != null) {
-                    ZoneId zoneId = ZoneId.systemDefault();
-                    ZonedDateTime startDateZoned = startDateTimestamp.toInstant().atZone(zoneId);
-                    String formattedStartDate = startDateZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
-                    estimationResponse.setStartDate(formattedStartDate);
+            Long estimationId = rs.getLong("estimationId");
+            if (!rs.wasNull()) {
+                estimationResponse.setEstimationId(estimationId);
+            }
+            Timestamp startDateTimestamp = rs.getTimestamp("startDate");
+            if (!rs.wasNull()) {
+                ZoneId zoneId = ZoneId.systemDefault();
+                ZonedDateTime startDateZoned = startDateTimestamp.toInstant().atZone(zoneId);
+                String formattedStartDate = startDateZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
+                estimationResponse.setStartDate(formattedStartDate);
+            }
+
+            Timestamp dueDateTimestamp = rs.getTimestamp("dueDate");
+            if (!rs.wasNull()) {
+                ZoneId zoneId = ZoneId.systemDefault();
+                ZonedDateTime dueDateZoned = dueDateTimestamp.toInstant().atZone(zoneId);
+                String formattedDueDate = dueDateZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
+                estimationResponse.setDuetDate(formattedDueDate);
+            }
+
+            OffsetDateTime timeOffset = rs.getObject("time", OffsetDateTime.class);
+            if (!rs.wasNull()) {
+                ZoneId zoneId = ZoneId.systemDefault();
+                ZonedDateTime timeZoned = timeOffset.toInstant().atZone(zoneId);
+                String formattedTime = timeZoned.format(DateTimeFormatter.ofPattern("h:mm a"));
+                estimationResponse.setTime(formattedTime);
+            }
+
+            String reminderTypeStr = rs.getString("reminderType");
+            if (!rs.wasNull()) {
+                try {
+                    estimationResponse.setReminderType(ReminderType.valueOf(reminderTypeStr));
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Invalid reminderType");
                 }
+            }
 
-                Timestamp dueDateTimestamp = rs.getTimestamp("dueDate");
-                if (dueDateTimestamp != null) {
-                    ZoneId zoneId = ZoneId.systemDefault();
-                    ZonedDateTime dueDateZoned = dueDateTimestamp.toInstant().atZone(zoneId);
-                    String formattedDueDate = dueDateZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
-                    estimationResponse.setDuetDate(formattedDueDate);
-                }
+            return estimationResponse;
+        }, cardId);
 
-                OffsetDateTime timeOffset = rs.getObject("time", OffsetDateTime.class);
-                if (timeOffset != null) {
-                    ZoneId zoneId = ZoneId.systemDefault();
-                    ZonedDateTime timeZoned = timeOffset.toInstant().atZone(zoneId);
-                    String formattedTime = timeZoned.format(DateTimeFormatter.ofPattern("h:mm a"));
-                    estimationResponse.setTime(formattedTime);
-                }
-
-                String reminderTypeStr = rs.getString("reminderType");
-                if (reminderTypeStr != null) {
-                    try {
-                        estimationResponse.setReminderType(ReminderType.valueOf(reminderTypeStr));
-                    } catch (BadCredentialException e) {
-                        throw new BadCredentialException("invalid reminderType");
-                    }
-                }
-                return estimationResponse;
-            }, cardId);
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Estimation not found!");
+        if (estimations.isEmpty()) {
+            return new EstimationResponse();
         }
+        return estimations.get(0);
     }
-
 
     private List<LabelResponse> getLabelResponsesByCardId(Long cardId) {
         String sql = """
@@ -134,21 +301,52 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
     private List<CheckListResponse> getCheckListResponsesByCardId(Long cardId) {
         String sql = """
-                SELECT cl.id AS checkListId,
+          SELECT cl.id AS checkListId,
                        cl.description AS description,
-                       cl.percent AS percent
-                       FROM check_lists AS cl
-                       JOIN cards c ON c.id = cl.card_id
-                       WHERE c.id = ?
-                """;
+                       COUNT(i.id) AS numberItems,
+                       SUM(CASE WHEN i.is_done = true THEN 1 ELSE 0 END) AS numberCompletedItems,
+                       CASE WHEN COUNT(i.id) > 0
+                           THEN (SUM(CASE WHEN i.is_done = true THEN 1 ELSE 0 END) * 100.0) / COUNT(i.id)
+                           ELSE 0
+                       END AS percent
+                FROM check_lists AS cl
+                JOIN cards c ON c.id = cl.card_id
+                LEFT JOIN items i ON cl.id = i.check_list_id
+                WHERE c.id = ?
+                GROUP BY cl.id, cl.description, cl.percent
+            """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             CheckListResponse checkListResponse = new CheckListResponse();
             checkListResponse.setCheckListId(rs.getLong("checkListId"));
             checkListResponse.setDescription(rs.getString("description"));
             checkListResponse.setPercent(rs.getInt("percent"));
 
+            int numberItems = rs.getInt("numberItems");
+            int numberCompletedItems = rs.getInt("numberCompletedItems");
+            String counter = numberCompletedItems + "/" + numberItems;
+
+            checkListResponse.setCounter(counter);
+            checkListResponse.setItemResponseList(getItemsByCheckListId(rs.getLong("checkListId")));
+
             return checkListResponse;
         }, cardId);
+    }
+
+    private List<ItemResponse> getItemsByCheckListId(Long checkListId) {
+        String sql = """
+                  SELECT i.id AS itemId,
+                         i.title AS title,
+                         i.is_done AS isDone
+                  FROM items AS i
+                  WHERE i.check_list_id = ?
+    """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            ItemResponse itemResponse = new ItemResponse();
+            itemResponse.setId(rs.getLong("itemId"));
+            itemResponse.setTitle(rs.getString("title"));
+            itemResponse.setIsDone(rs.getBoolean("isDone"));
+            return itemResponse;
+        }, checkListId);
     }
 
     private List<UserResponse> getMembersResponsesByCardId(Long cardId) {
@@ -159,7 +357,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                    u.email AS email,
                    u.image AS image
                    FROM users AS u 
-                   JOIN cards_users cu ON u.id = cu.users_id 
+                   JOIN cards_members cu ON u.id = cu.members_id 
                    WHERE cu.cards_id = ?
             """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
@@ -180,12 +378,11 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                     co.comment AS comment,
                     co.created_date AS created_date,                       
                     u.id AS user_id,
-                    u.first_name AS firstName,
-                    u.last_name AS lastName,
+                    CONCAT(u.first_name, ' ', u.last_name) AS fullName,
                     u.image AS image
              FROM comments AS co
              JOIN cards c ON c.id = co.card_id
-             JOIN users u ON co.user_id = u.id
+             JOIN users u ON co.member_id = u.id
              WHERE c.id = ?
              """;
 
@@ -200,37 +397,30 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy / h:mma");
                 String formattedDateTime = zonedDateTime.format(formatter);
                 commentResponse.setCreatedDate(formattedDateTime);
+                commentResponse.setCreatorId(rs.getLong("user_id"));
+                commentResponse.setCreatorName(rs.getString("fullName"));
+                commentResponse.setCreatorAvatar(rs.getString("image"));
             }
-
-            CommentUserResponse userResponse = new CommentUserResponse();
-            userResponse.setUserId(rs.getLong("user_id"));
-            userResponse.setFirstName(rs.getString("firstName"));
-            userResponse.setLastName(rs.getString("lastName"));
-            userResponse.setImage(rs.getString("image"));
-            commentResponse.setCommentUserResponse(userResponse);
-
             return commentResponse;
         }, cardId);
     }
 
-
     @Override
     public List<CardResponse> getAllCardsByColumnId(Long columnId) {
-
         String query = """
-            SELECT c.id AS cardId,
-                   c.title AS title,
-                   e.start_date AS startDate,
-                   e.due_date AS dueDate,
-                   (SELECT COUNT(*) FROM cards_users AS cu WHERE cu.cards_id = c.id) AS numberUsers,
-                   (SELECT COUNT(*) FROM items AS i
-                   JOIN check_lists AS cl ON i.check_list_id = cl.id
-                   WHERE i.is_done = true AND cl.card_id = c.id) AS numberCompletedItems,
-                   (SELECT COUNT(*) FROM check_lists AS cl WHERE cl.card_id = c.id) AS numberItems
-                   FROM cards AS c
-                   LEFT JOIN estimations AS e ON c.id = e.card_id
-                   WHERE c.column_id = ? 
-            """;
+        SELECT c.id AS cardId,
+               c.title AS title,
+               e.start_date AS startDate,
+               e.due_date AS dueDate,
+               (SELECT COUNT(*) FROM cards_members AS cu WHERE cu.cards_id = c.id) AS numberUsers,
+               (SELECT COUNT(*) FROM items AS i
+               JOIN check_lists AS cl ON i.check_list_id = cl.id
+               WHERE i.is_done = true AND cl.card_id = c.id) AS numberCompletedItems,
+               (SELECT COUNT(*) FROM check_lists AS cl WHERE cl.card_id = c.id) AS numberItems
+               FROM cards AS c
+               LEFT JOIN estimations AS e ON c.id = e.card_id
+               WHERE c.column_id = ? and c.is_archive = false
+    """;
 
         List<CardResponse> cardResponses = jdbcTemplate.query(query, new Object[]{columnId}, (rs, rowNum) -> {
             CardResponse cardResponse = new CardResponse();
@@ -267,12 +457,10 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
             return cardResponse;
         });
-
-        if (cardResponses.isEmpty()) {
-            throw new NotFoundException("Column with id: " + columnId + " not found!");
-        } else {
-            return cardResponses;
+        if(cardResponses.isEmpty()){
+            throw new NotFoundException("Cards in column with this id: "+columnId+" null");
         }
+        return cardResponses;
     }
 
     private List<LabelResponse> getLabelResponsesForCard(Long cardId) {
@@ -300,12 +488,11 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                           co.comment AS comment,
                           co.created_date AS createdDate,
                           u.id AS userId,
-                          u.first_name AS firstName,
-                          u.last_name AS lastName,
+                          CONCAT(u.first_name, ' ', u.last_name) AS fullName,
                           u.image AS image
                    FROM comments AS co
                    JOIN cards c ON c.id = co.card_id
-                   JOIN users u ON co.user_id = u.id
+                   JOIN users u ON co.member_id = u.id
                    WHERE c.id = ?
                    """;
 
@@ -320,17 +507,11 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy / h:mma");
                 String formattedDateTime = zonedDateTime.format(formatter);
                 commentResponse.setCreatedDate(formattedDateTime);
-
-                CommentUserResponse userResponse = new CommentUserResponse();
-                userResponse.setUserId(rs.getLong("userId"));
-                userResponse.setFirstName(rs.getString("firstName"));
-                userResponse.setLastName(rs.getString("lastName"));
-                userResponse.setImage(rs.getString("image"));
-
-                commentResponse.setCommentUserResponse(userResponse);
+                commentResponse.setCreatorId(rs.getLong("userId"));
+                commentResponse.setCreatorName(rs.getString("fullName"));
+                commentResponse.setCreatorAvatar(rs.getString("image"));
             }
             return commentResponse;
         }, cardId);
     }
-
 }

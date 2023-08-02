@@ -34,15 +34,9 @@ public class CardApi {
         return cardService.getAllCardsByColumnId(columnId);
     }
 
-    @PostMapping("/create-card")
-    @Operation(summary = "Create card",description = "regular save card by column id")
-    public SimpleResponse createCard(@RequestBody CardRequest cardRequest){
-        return cardService.createCard(cardRequest);
-    }
-
-    @PostMapping("/full-save")
-    @Operation(summary = "Save card",description = "saving cards with a full operation by column id")
-    public CardInnerPageResponse saveCardFull(@RequestBody CardRequest cardRequest){
+    @PostMapping("/save")
+    @Operation(summary = "Save card",description = "saving cards operation by column id")
+    public CardInnerPageResponse saveCard(@RequestBody CardRequest cardRequest){
         return cardService.saveCard(cardRequest);
     }
 
@@ -56,6 +50,24 @@ public class CardApi {
     @Operation(summary = "Delete card",description = "delete card with card id")
     public SimpleResponse deleteCard(@PathVariable Long cardId){
         return cardService.deleteCard(cardId);
+    }
+
+    @Operation(summary = "Archive", description = "This operation allows archiving/unarchiving a card by its ID")
+    @PutMapping("/archive/{cardId}")
+    public SimpleResponse archiveCard(@PathVariable Long cardId) {
+        return cardService.archiveCard(cardId);
+    }
+
+    @Operation(summary = "Archive all cards", description = "This operation allows archiving all cards in a column by its ID")
+    @PutMapping("/all-archive/{columnId}")
+    public SimpleResponse archiveAllCardsInColumn(@PathVariable Long columnId) {
+        return cardService.archiveAllCardsInColumn(columnId);
+    }
+
+    @Operation(summary = "Delete all cards", description = "This operation allows deleting all cards in a column by its ID")
+    @DeleteMapping("/all/{columnId}")
+    public SimpleResponse deleteAllCardsInColumn(@PathVariable Long columnId) {
+        return cardService.deleteAllCardsInColumn(columnId);
     }
 
 }

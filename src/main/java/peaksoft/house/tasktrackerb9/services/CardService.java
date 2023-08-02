@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.services;
 
-
 import peaksoft.house.tasktrackerb9.dto.request.CardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.UpdateCardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
@@ -13,8 +12,6 @@ public interface CardService {
 
     CardInnerPageResponse saveCard(CardRequest cardRequest);
 
-    SimpleResponse createCard(CardRequest cardRequest);
-
     CardInnerPageResponse getInnerPageCardById(Long cardId);
 
     List<CardResponse> getAllCardsByColumnId(Long columnId);
@@ -22,5 +19,11 @@ public interface CardService {
     SimpleResponse updateCardById(UpdateCardRequest updateCardRequest);
 
     SimpleResponse deleteCard(Long id);
+
+    SimpleResponse archiveCard(Long cardId);
+
+    SimpleResponse deleteAllCardsInColumn(Long columnId);
+
+    SimpleResponse archiveAllCardsInColumn(Long columnId);
 
 }

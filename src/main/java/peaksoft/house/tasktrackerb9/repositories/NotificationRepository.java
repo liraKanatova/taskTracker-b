@@ -16,6 +16,5 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
     @Query("select e from Estimation e where e.notification.id = :id")
     Estimation findEstimationByNotificationId(Long id);
 
-
     List<Notification> findByCard(Card card);
 }
