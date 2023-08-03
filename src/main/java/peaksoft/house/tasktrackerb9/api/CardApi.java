@@ -16,13 +16,13 @@ public class CardApi {
 
     private final CardService cardService;
 
-    @Operation(summary = "Archive", description = "This operation allows archiving/unarchiving a card by its ID")
+    @Operation(summary = "Archive a card", description = "archiving and unarchiving card by id")
     @PutMapping("/archive/{cardId}")
     public SimpleResponse archiveCard(@PathVariable Long cardId) {
         return cardService.archiveCard(cardId);
     }
 
-    @Operation(summary = "Archive all cards", description = "This operation allows archiving all cards in a column by its ID")
+    @Operation(summary = "Archive all cards", description = "Archives all cards in a specific column by id")
     @PutMapping("/all-archive/{columnId}")
     public SimpleResponse archiveAllCardsInColumn(@PathVariable Long columnId) {
         return cardService.archiveAllCardsInColumn(columnId);

@@ -45,7 +45,7 @@ public class ColumnApi {
         return columnService.removeColumn(columnId);
     }
 
-    @Operation(summary = "Archive", description = "This operation allows archiving/unarchiving a column by its ID")
+    @Operation(summary = "Archive a column", description = "archiving and unarchiving column by id")
     @PutMapping("/archive/{columnId}")
     public SimpleResponse archiveCard(@PathVariable Long columnId) {
         return columnService.sendToArchive(columnId);
