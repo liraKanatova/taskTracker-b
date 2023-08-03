@@ -126,7 +126,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
         for (Item item : items) {
             ItemResponse itemResponse = new ItemResponse();
-            itemResponse.setId(item.getId());
+            itemResponse.setItemId(item.getId());
             itemResponse.setTitle(item.getTitle());
             itemResponse.setIsDone(item.getIsDone());
             itemResponses.add(itemResponse);
@@ -341,7 +341,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             ItemResponse itemResponse = new ItemResponse();
-            itemResponse.setId(rs.getLong("itemId"));
+            itemResponse.setItemId(rs.getLong("itemId"));
             itemResponse.setTitle(rs.getString("title"));
             itemResponse.setIsDone(rs.getBoolean("isDone"));
             return itemResponse;

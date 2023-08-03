@@ -34,8 +34,8 @@ public class CardApi {
         return cardService.getAllCardsByColumnId(columnId);
     }
 
-    @PostMapping("/save")
-    @Operation(summary = "Save card",description = "saving cards operation by column id")
+    @PostMapping
+    @Operation(summary = "Save card",description = "save card by column id")
     public CardInnerPageResponse saveCard(@RequestBody CardRequest cardRequest){
         return cardService.saveCard(cardRequest);
     }

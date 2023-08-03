@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ItemResponse {
 
-    private Long id;
+    private Long itemId;
     private String title;
     private Boolean isDone;
 
