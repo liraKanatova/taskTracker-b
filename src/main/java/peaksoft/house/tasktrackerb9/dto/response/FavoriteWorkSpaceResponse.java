@@ -9,11 +9,8 @@ import lombok.*;
 public class FavoriteWorkSpaceResponse {
 
     private Long userId;
-
     private Long workSpaceId;
-
     private String name;
-
     private boolean isFavorite;
 
     public FavoriteWorkSpaceResponse(Long userId, Long workSpaceId, String name) {

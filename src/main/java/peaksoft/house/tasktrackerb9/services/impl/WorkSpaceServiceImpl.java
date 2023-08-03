@@ -3,8 +3,6 @@ package peaksoft.house.tasktrackerb9.services.impl;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ import peaksoft.house.tasktrackerb9.services.WorkSpaceService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -77,10 +74,10 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                 }
             }
         }
-        log.info("Email doesn't exist !");
+        log.info("Workspace is saved!");
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("Email doesn't exist !")
+                .message("Workspace is saved!")
                 .build();
     }
 
@@ -137,9 +134,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
         }
         user.setWorkSpaces(null);
         userRepository.save(user);
-        for (Card card : cardsToDelete) {
-            cardRepository.delete(card);
-        }
+        cardRepository.deleteAll(cardsToDelete);
         workSpaceRepository.delete(workSpace);
         log.info(String.format("WorkSpace with id %s  successfully deleted !", id));
         return SimpleResponse.builder()
@@ -148,6 +143,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                 .build();
 
     }
+
     private void removeNotificationsForCard(Card card) {
         List<Notification> notifications = notificationRepository.findByCard(card);
         for (Notification notification : notifications) {

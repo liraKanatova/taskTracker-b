@@ -30,14 +30,13 @@ public class CustomLabelServiceImpl implements CustomLabelRepository {
                 l.color   AS  labelColor
                 FROM labels AS l
                 """;
-        List<LabelResponse> labelResponses = jdbcTemplate.query(query, ((rs, rowNum) -> {
+        return jdbcTemplate.query(query, ((rs, rowNum) -> {
             LabelResponse labelResponse = new LabelResponse();
             labelResponse.setLabelId(rs.getLong("id"));
             labelResponse.setDescription(rs.getString("labelName"));
             labelResponse.setColor(rs.getString("labelColor"));
             return labelResponse;
         }));
-        return labelResponses;
     }
 
     @Override

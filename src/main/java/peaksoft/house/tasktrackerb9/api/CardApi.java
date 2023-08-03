@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.services.CardService;
 import peaksoft.house.tasktrackerb9.dto.request.CardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.UpdateCardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
-import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.services.CardService;
 
 import java.util.List;
 
@@ -21,7 +21,24 @@ import java.util.List;
 public class CardApi {
 
     private final CardService cardService;
+  
+    @Operation(summary = "Archive a card", description = "archiving and unarchiving card by id")
+    @PutMapping("/archive/{cardId}")
+    public SimpleResponse archiveCard(@PathVariable Long cardId) {
+        return cardService.archiveCard(cardId);
+    }
 
+    @Operation(summary = "Archive all cards", description = "Archives all cards in a specific column by id")
+    @PutMapping("/all-archive/{columnId}")
+    public SimpleResponse archiveAllCardsInColumn(@PathVariable Long columnId) {
+        return cardService.archiveAllCardsInColumn(columnId);
+    }
+
+    @Operation(summary = "Delete all cards", description = "This operation allows deleting all cards in a column by its ID")
+    @DeleteMapping("/all/{columnId}")
+    public SimpleResponse deleteAllCardsInColumn(@PathVariable Long columnId) {
+        return cardService.deleteAllCardsInColumn(columnId);
+      
     @GetMapping("/{cardId}")
     @Operation(summary = "Get card", description = "get inner page card by card id")
     public CardInnerPageResponse getInnerPageCardById(@PathVariable Long cardId){
