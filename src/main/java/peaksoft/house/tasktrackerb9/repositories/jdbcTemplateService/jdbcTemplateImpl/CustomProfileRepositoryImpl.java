@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class ProfileImpl implements ProfileJdbcTemplate {
+public class CustomProfileRepositoryImpl implements ProfileJdbcTemplate {
 
     private final JdbcTemplate jdbcTemplate;
 
