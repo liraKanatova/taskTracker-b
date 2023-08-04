@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
+import peaksoft.house.tasktrackerb9.dto.response.GlobalSearchResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
@@ -62,5 +63,10 @@ public class ProfileServiceImpl implements ProfileService {
                         , user.getImage());
         jwtService.generateToken(user);
         return userResponse;
+    }
+
+    @Override
+    public GlobalSearchResponse search(String search) {
+        return queryJdbc.search(search);
     }
 }

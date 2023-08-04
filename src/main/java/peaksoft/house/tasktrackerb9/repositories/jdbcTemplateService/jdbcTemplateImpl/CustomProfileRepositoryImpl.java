@@ -8,9 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
-import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
-import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
-import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
+import peaksoft.house.tasktrackerb9.dto.response.*;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomProfileRepository;
 
@@ -110,6 +108,49 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 .avatar(user.getImage())
                 .countWorkSpaces(count)
                 .workSpaceResponse(workSpaceResponses)
+                .build();
+    }
+
+    @Override
+    public GlobalSearchResponse search(String search) {
+
+        String sql = """
+                SELECT u.* FROM users u
+                WHERE u.first_name like lower(concat('%',?,'%'))
+                OR u.last_name like lower(concat('%',?,'%'))
+                  """;
+        List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rusNum) -> new UserResponse(rs.getLong("id")
+                , rs.getString("first_name")
+                , rs.getString("last_name")
+                , rs.getString("email")
+                , rs.getString("image")),search,search);
+        String sql2 = """
+                SELECT b.* FROM boards b 
+                WHERE b.title LIKE lower(CONCAT('%',?,'%'))           
+                """;
+        List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, ((rs, rowNum) -> new BoardResponse(rs.getLong("id")
+                , rs.getString("title")
+                , rs.getString("backGround"))), search);
+
+        String sql3 = """
+                SELECT c.* FROM columns c 
+                WHERE c.title LIKE lower(concat('%',?,'%'))
+                                """;
+        List<ColumnResponse> columnResponses = jdbcTemplate.query(sql3, ((rs, rowNum) -> new ColumnResponse(rs.getLong("id")
+                , rs.getString("title"),rs.getBoolean("is_archive"))), search);
+
+        String sql4= """
+               SELECT cd.* from cards as cd
+               where cd.title like lower( concat('%',?,'%')) 
+                """;
+        List<CardResponse>cardResponses=jdbcTemplate.query(sql4,((rs, rowNum) -> new CardResponse(rs.getLong("id")
+                ,rs.getString("title"))),search);
+
+        return GlobalSearchResponse.builder()
+                .userResponses(userResponses)
+                .boardResponses(boardResponses)
+                .columnResponses(columnResponses)
+                .cardResponses(cardResponses)
                 .build();
     }
 }
