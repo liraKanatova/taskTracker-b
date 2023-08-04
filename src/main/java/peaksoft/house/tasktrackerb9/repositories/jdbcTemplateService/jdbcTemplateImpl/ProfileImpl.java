@@ -67,8 +67,8 @@ public class ProfileImpl implements ProfileJdbcTemplate {
         String query1 = """
                SELECT ws.*
                FROM users u
-                        JOIN users_spaces uws ON u.id = uws.users_id
-                        JOIN work_spaces ws ON uws.spaces_id = ws.id
+                        JOIN users_work_spaces uws ON u.id = uws.members_id
+                        JOIN work_spaces ws ON uws.work_spaces_id = ws.id
                WHERE u.id = ?;
                        """;
         List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(query1, (rs, rowNum) -> new WorkSpaceResponse(
@@ -84,8 +84,8 @@ public class ProfileImpl implements ProfileJdbcTemplate {
                   u.image AS avatar,
                   (SELECT COUNT(*)\s
                    FROM users AS u2
-                   JOIN users_spaces uws ON u2.id = uws.users_id
-                   JOIN work_spaces ws ON ws.id = uws.spaces_id
+                   JOIN users_work_spaces uws ON u2.id = uws.members_id
+                   JOIN work_spaces ws ON ws.id = uws.work_spaces_id
                    WHERE u2.id = u.id) AS countWorkSpaces
               FROM users AS u
               WHERE u.id = ?;
