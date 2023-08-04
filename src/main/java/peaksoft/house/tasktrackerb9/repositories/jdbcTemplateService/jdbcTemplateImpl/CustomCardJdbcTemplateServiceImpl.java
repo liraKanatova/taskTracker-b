@@ -24,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @Transactional
@@ -33,152 +32,13 @@ import java.util.stream.Collectors;
 public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplateService {
 
     private final JdbcTemplate jdbcTemplate;
-    private final CardRepository cardRepository;
-    private final EstimationRepository estimationRepository;
-    private final LabelRepository labelRepository;
     private final UserRepository userRepository;
-    private final CheckListRepository checklistRepository;
 
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepository.getUserByEmail(email).orElseThrow(() ->
                 new NotFoundException("User not found!"));
-    }
-
-    @Override
-    public CardInnerPageResponse convertToCardInnerPageResponse(Card card) {
-        CardInnerPageResponse cardInnerPageResponse = new CardInnerPageResponse();
-        cardInnerPageResponse.setCardId(card.getId());
-        cardInnerPageResponse.setTitle(card.getTitle());
-        cardInnerPageResponse.setDescription(card.getDescription());
-        cardInnerPageResponse.setIsArchive(card.getIsArchive());
-        List<LabelResponse> list = new ArrayList<>();
-        if (card.getLabels() != null) {
-            for (LabelResponse  l : labelRepository.getAllLabelResponse()) {
-                LabelResponse labelResponse = new LabelResponse();
-                labelResponse.setLabelId(l.getLabelId());
-                labelResponse.setDescription(l.getDescription());
-                labelResponse.setColor(l.getColor());
-                list.add(labelResponse);
-            }
-            cardInnerPageResponse.setLabelResponses(list);
-        }else {
-            cardInnerPageResponse.setLabelResponses(new ArrayList<>());
-        }
-
-        if (card.getEstimation() != null) {
-            cardInnerPageResponse.setEstimationResponse(getEstimationByCardIdd(card.getId()));
-        }else {
-            cardInnerPageResponse.setEstimationResponse(new EstimationResponse());
-        }
-
-        if (card.getMembers() != null) {
-            cardInnerPageResponse.setUserResponses(getAllCardMembers(card.getMembers()));
-        }else{
-            cardInnerPageResponse.setUserResponses(new ArrayList<>());
-        }
-        cardInnerPageResponse.setChecklistResponses(getCheckListResponses(checklistRepository.findAllCheckListByCardId(card.getId())));
-        if (card.getComments() != null) {
-            cardInnerPageResponse.setCommentResponses(getCommentsResponse(card.getComments()));
-        }else {
-            cardInnerPageResponse.setCommentResponses(new ArrayList<>());
-        }
-
-        return cardInnerPageResponse;
-    }
-
-    private CommentResponse convertCommentToResponse(Comment comment) {
-        CommentResponse commentResponse = new CommentResponse();
-        commentResponse.setCommentId(comment.getId());
-        commentResponse.setComment(comment.getComment());
-        commentResponse.setCreatedDate(comment.getCreatedDate().toString());
-        commentResponse.setCreatorId(getAuthentication().getId());
-        commentResponse.setCreatorName(getAuthentication().getFirstName());
-        commentResponse.setCreatorAvatar(getAuthentication().getImage());
-        return commentResponse;
-
-    }
-
-    private List<CommentResponse> getCommentsResponse(List<Comment> comments) {
-        if (comments == null) {
-            return Collections.emptyList();
-        }
-        return comments.stream().map(this::convertCommentToResponse).collect(Collectors.toList());
-    }
-
-    private List<CheckListResponse> getCheckListResponses(List<CheckList> checklists) {
-        if (checklists == null) {
-            return Collections.emptyList();
-        }
-        return checklists.stream().map(this::convertCheckListToResponse).collect(Collectors.toList());
-    }
-
-    public CheckListResponse convertCheckListToResponse(CheckList checklist) {
-        CheckListResponse checkListResponse = new CheckListResponse();
-        checkListResponse.setCheckListId(checklist.getId());
-        checkListResponse.setDescription(checklist.getDescription());
-
-        List<Item> items = checklist.getItems();
-        List<ItemResponse> itemResponses = new ArrayList<>();
-        int countOfItems = items.size();
-        int countOfCompletedItems = 0;
-
-        for (Item item : items) {
-            ItemResponse itemResponse = new ItemResponse();
-            itemResponse.setItemId(item.getId());
-            itemResponse.setTitle(item.getTitle());
-            itemResponse.setIsDone(item.getIsDone());
-            itemResponses.add(itemResponse);
-
-            if (item.getIsDone().equals(true)) {
-                countOfCompletedItems++;
-            }
-        }
-        int count = (countOfItems > 0) ? (countOfCompletedItems * 100) / countOfItems : 0;
-        String counter = countOfCompletedItems + "/" + countOfItems;
-
-        checkListResponse.setPercent(count);
-        checkListResponse.setCounter(counter);
-        checkListResponse.setItemResponseList(itemResponses);
-
-        checklist.setPercent(count);
-        checklistRepository.save(checklist);
-
-        return checkListResponse;
-    }
-
-    private EstimationResponse getEstimationByCardIdd(Long cardId) {
-        Card card = cardRepository.findById(cardId).orElseThrow(() -> {
-            log.error("Card with id: " + cardId + " not found!");
-            return new NotFoundException("Card with id: " + cardId + " not found!");
-        });
-        Estimation estimation = estimationRepository.findById(card.getEstimation().getId()).orElseThrow(() -> {
-            log.error("Estimation with id: " + card.getEstimation().getId()  + " not found!");
-            return new NotFoundException("Estimation with id: " + card.getEstimation().getId() + " not found!");
-        });
-        EstimationResponse estimationResponse = new EstimationResponse();
-        estimationResponse.setEstimationId(estimation.getId());
-        estimationResponse.setStartDate(estimation.getStartDate().toString());
-        estimationResponse.setDuetDate(estimation.getDuetDate().toString());
-        estimationResponse.setTime(estimation.getTime().toString());
-        estimationResponse.setReminderType(estimation.getReminderType());
-        return estimationResponse;
-
-    }
-
-    private List<UserResponse> getAllCardMembers(List<User> users) {
-        return users.stream().map(this::convertToUserResponse).collect(Collectors.toList());
-    }
-
-    private UserResponse convertToUserResponse(User user) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setUserId(user.getId());
-        userResponse.setFirstName(user.getFirstName());
-        userResponse.setLastName(user.getLastName());
-        userResponse.setEmail(user.getEmail());
-        userResponse.setAvatar(user.getImage());
-        return userResponse;
     }
 
     @Override
@@ -258,7 +118,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 ZoneId zoneId = ZoneId.systemDefault();
                 ZonedDateTime timeZoned = timeOffset.toInstant().atZone(zoneId);
                 String formattedTime = timeZoned.format(DateTimeFormatter.ofPattern("h:mm a"));
-                estimationResponse.setTime(formattedTime);
+                estimationResponse.setFinishTime(formattedTime);
             }
 
             String reminderTypeStr = rs.getString("reminderType");
@@ -407,18 +267,18 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     @Override
     public List<CardResponse> getAllCardsByColumnId(Long columnId) {
         String query = """
-        SELECT c.id AS cardId,
-               c.title AS title,
-               e.start_date AS startDate,
-               e.due_date AS dueDate,
-               (SELECT COUNT(*) FROM cards_members AS cu WHERE cu.cards_id = c.id) AS numberUsers,
-               (SELECT COUNT(*) FROM items AS i
-               JOIN check_lists AS cl ON i.check_list_id = cl.id
-               WHERE i.is_done = true AND cl.card_id = c.id) AS numberCompletedItems,
-               (SELECT COUNT(*) FROM check_lists AS cl WHERE cl.card_id = c.id) AS numberItems
-               FROM cards AS c
-               LEFT JOIN estimations AS e ON c.id = e.card_id
-               WHERE c.column_id = ? and c.is_archive = false
+    SELECT c.id AS cardId,
+           c.title AS title,
+           e.start_date AS startDate,
+           e.due_date AS dueDate,
+           (SELECT COUNT(*) FROM cards_members AS cu WHERE cu.cards_id = c.id) AS numberUsers,
+           (SELECT COUNT(*) FROM items AS i
+           JOIN check_lists AS cl ON i.check_list_id = cl.id
+           WHERE i.is_done = true AND cl.card_id = c.id) AS numberCompletedItems,
+           (SELECT COUNT(*) FROM check_lists AS cl WHERE cl.card_id = c.id) AS numberItems
+    FROM cards AS c
+    LEFT JOIN estimations AS e ON c.id = e.card_id
+    WHERE c.column_id = ? and c.is_archive = false
     """;
 
         List<CardResponse> cardResponses = jdbcTemplate.query(query, new Object[]{columnId}, (rs, rowNum) -> {
@@ -443,7 +303,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             cardResponse.setNumberOfUsers(numberUsers);
 
             int numberItems = rs.getInt("numberItems");
-            cardResponse.setNumberOfUsers(numberItems);
+            cardResponse.setNumberOfItems(numberItems);
 
             int numberCompletedItems = rs.getInt("numberCompletedItems");
             cardResponse.setNumberOfCompletedItems(numberCompletedItems);
@@ -456,11 +316,12 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
             return cardResponse;
         });
-        if(cardResponses.isEmpty()){
-            throw new NotFoundException("Cards in column with this id: "+columnId+" null");
+        if (cardResponses.isEmpty()) {
+            return new ArrayList<>();
         }
         return cardResponses;
     }
+
 
     private List<LabelResponse> getLabelResponsesForCard(Long cardId) {
         String sql = """

@@ -17,14 +17,14 @@ public class EstimationResponse {
     private ReminderType reminderType;
     private String startDate;
     private String duetDate;
-    private String time;
+    private String finishTime;
 
 
-    public EstimationResponse(Long estimationId, ReminderType reminderType, String startDate, String duetDate, String time) {
+    public EstimationResponse(Long estimationId, ReminderType reminderType, String startDate, String duetDate, String finishTime) {
         this.estimationId = estimationId;
         this.reminderType = reminderType;
         this.startDate = startDate;
         this.duetDate = duetDate;
-        this.time = time;
+        this.finishTime = finishTime;
     }
 }

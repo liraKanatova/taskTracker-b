@@ -21,7 +21,7 @@ import java.util.List;
 public class CardApi {
 
     private final CardService cardService;
-  
+
     @Operation(summary = "Archive a card", description = "archiving and unarchiving card by id")
     @PutMapping("/archive/{cardId}")
     public SimpleResponse archiveCard(@PathVariable Long cardId) {
@@ -38,34 +38,35 @@ public class CardApi {
     @DeleteMapping("/all/{columnId}")
     public SimpleResponse deleteAllCardsInColumn(@PathVariable Long columnId) {
         return cardService.deleteAllCardsInColumn(columnId);
-      
+    }
+
     @GetMapping("/{cardId}")
     @Operation(summary = "Get card", description = "get inner page card by card id")
-    public CardInnerPageResponse getInnerPageCardById(@PathVariable Long cardId){
+    public CardInnerPageResponse getInnerPageCardById(@PathVariable Long cardId) {
         return cardService.getInnerPageCardById(cardId);
     }
 
     @GetMapping("/get-cards/{columnId}")
     @Operation(summary = "Get all cards", description = "get all cards by column id")
-    public List<CardResponse> getCardsByColumnId(@PathVariable Long columnId){
+    public List<CardResponse> getCardsByColumnId(@PathVariable Long columnId) {
         return cardService.getAllCardsByColumnId(columnId);
     }
 
     @PostMapping
-    @Operation(summary = "Save card",description = "save card by column id")
-    public CardInnerPageResponse saveCard(@RequestBody CardRequest cardRequest){
+    @Operation(summary = "Save card", description = "save card by column id")
+    public CardInnerPageResponse saveCard(@RequestBody CardRequest cardRequest) {
         return cardService.saveCard(cardRequest);
     }
 
     @PutMapping
-    @Operation(summary = "Update card",description = "update card with card id")
-    public SimpleResponse updateCard(@RequestBody UpdateCardRequest updateCardRequest){
+    @Operation(summary = "Update card", description = "update card with card id")
+    public SimpleResponse updateCard(@RequestBody UpdateCardRequest updateCardRequest) {
         return cardService.updateCardById(updateCardRequest);
     }
 
     @DeleteMapping("/{cardId}")
-    @Operation(summary = "Delete card",description = "delete card with card id")
-    public SimpleResponse deleteCard(@PathVariable Long cardId){
+    @Operation(summary = "Delete card", description = "delete card with card id")
+    public SimpleResponse deleteCard(@PathVariable Long cardId) {
         return cardService.deleteCard(cardId);
     }
 

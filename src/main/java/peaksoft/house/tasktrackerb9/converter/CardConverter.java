@@ -10,7 +10,6 @@ import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
 
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,19 +49,26 @@ public class CardConverter {
                 list.add(labelResponse);
             }
             cardInnerPageResponse.setLabelResponses(list);
+        }else {
+            cardInnerPageResponse.setLabelResponses(new ArrayList<>());
         }
 
         if (card.getEstimation() != null) {
-            cardInnerPageResponse.setEstimationResponse(getEstimationByCardId(card.getId()));
+            cardInnerPageResponse.setEstimationResponse(getEstimationByCardIdd(card.getId()));
+        }else {
+            cardInnerPageResponse.setEstimationResponse(new EstimationResponse());
         }
 
-        if (card.getUsers() != null) {
-            cardInnerPageResponse.setUserResponses(getAllCardMembers(card.getUsers()));
+        if (card.getMembers() != null) {
+            cardInnerPageResponse.setUserResponses(getAllCardMembers(card.getMembers()));
+        }else{
+            cardInnerPageResponse.setUserResponses(new ArrayList<>());
         }
-
         cardInnerPageResponse.setChecklistResponses(getCheckListResponses(checklistRepository.findAllCheckListByCardId(card.getId())));
         if (card.getComments() != null) {
             cardInnerPageResponse.setCommentResponses(getCommentsResponse(card.getComments()));
+        }else {
+            cardInnerPageResponse.setCommentResponses(new ArrayList<>());
         }
 
         return cardInnerPageResponse;
@@ -70,18 +76,16 @@ public class CardConverter {
 
     private CommentResponse convertCommentToResponse(Comment comment) {
         CommentResponse commentResponse = new CommentResponse();
-        CommentUserResponse commentUserResponse = new CommentUserResponse();
         commentResponse.setCommentId(comment.getId());
         commentResponse.setComment(comment.getComment());
         commentResponse.setCreatedDate(comment.getCreatedDate().toString());
-        commentResponse.setCommentUserResponse(commentUserResponse);
-        commentUserResponse.setUserId(getAuthentication().getId());
-        commentUserResponse.setFirstName(getAuthentication().getFirstName());
-        commentUserResponse.setLastName(getAuthentication().getLastName());
-        commentUserResponse.setImage(getAuthentication().getImage());
+        commentResponse.setCreatorId(getAuthentication().getId());
+        commentResponse.setCreatorName(getAuthentication().getFirstName());
+        commentResponse.setCreatorAvatar(getAuthentication().getImage());
         return commentResponse;
 
     }
+
     private List<CommentResponse> getCommentsResponse(List<Comment> comments) {
         if (comments == null) {
             return Collections.emptyList();
@@ -95,6 +99,7 @@ public class CardConverter {
         }
         return checklists.stream().map(this::convertCheckListToResponse).collect(Collectors.toList());
     }
+
     public CheckListResponse convertCheckListToResponse(CheckList checklist) {
         CheckListResponse checkListResponse = new CheckListResponse();
         checkListResponse.setCheckListId(checklist.getId());
@@ -107,16 +112,15 @@ public class CardConverter {
 
         for (Item item : items) {
             ItemResponse itemResponse = new ItemResponse();
-            itemResponse.setId(item.getId());
+            itemResponse.setItemId(item.getId());
             itemResponse.setTitle(item.getTitle());
             itemResponse.setIsDone(item.getIsDone());
             itemResponses.add(itemResponse);
 
-            if (item.getIsDone()) {
+            if (item.getIsDone().equals(true)) {
                 countOfCompletedItems++;
             }
         }
-
         int count = (countOfItems > 0) ? (countOfCompletedItems * 100) / countOfItems : 0;
         String counter = countOfCompletedItems + "/" + countOfItems;
 
@@ -130,8 +134,7 @@ public class CardConverter {
         return checkListResponse;
     }
 
-
-    private EstimationResponse getEstimationByCardId(Long cardId) {
+    private EstimationResponse getEstimationByCardIdd(Long cardId) {
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
             log.error("Card with id: " + cardId + " not found!");
             return new NotFoundException("Card with id: " + cardId + " not found!");
@@ -144,59 +147,16 @@ public class CardConverter {
         estimationResponse.setEstimationId(estimation.getId());
         estimationResponse.setStartDate(estimation.getStartDate().toString());
         estimationResponse.setDuetDate(estimation.getDuetDate().toString());
-        estimationResponse.setTime(estimation.getTime().toString());
+        estimationResponse.setFinishTime(estimation.getTime().toString());
         estimationResponse.setReminderType(estimation.getReminderType());
         return estimationResponse;
 
     }
 
-    public List<CardResponse> convertToCardResponseForGetAll(List<Card> cards) {
-        return cards.stream().map(card -> {
-                    CardResponse cardResponse = new CardResponse();
-                    cardResponse.setCardId(card.getId());
-                    cardResponse.setTitle(card.getTitle());
-
-                    List<LabelResponse> labelResponses = card.getLabels().stream()
-                            .map(label -> {
-                                LabelResponse labelResponse = new LabelResponse();
-                                labelResponse.setLabelId(label.getId());
-                                labelResponse.setDescription(label.getLabelName());
-                                labelResponse.setColor(label.getColor());
-                                return labelResponse;
-                            })
-                            .collect(Collectors.toList());
-                    cardResponse.setLabelResponses(labelResponses);
-
-                    if (card.getEstimation() != null) {
-                        int between = Period.between(card.getEstimation().getStartDate().toLocalDate(),
-                                card.getEstimation().getDuetDate().toLocalDate()).getDays();
-                        cardResponse.setDuration(" " + between + " days");
-                    }
-
-                    cardResponse.setNumberUsers(card.getUsers().size());
-
-                    int totalItems = card.getCheckLists().stream()
-                            .mapToInt(checklist -> checklist.getItems().size()).sum();
-                    cardResponse.setNumberItems(totalItems);
-
-                    int completedItems = card.getCheckLists().stream()
-                            .flatMap(checklist -> checklist.getItems().stream())
-                            .filter(Item::getIsDone).toList().size();
-                    cardResponse.setNumberCompletedItems(completedItems);
-
-                    if (card.getComments() != null) {
-                        cardResponse.setCommentResponses(getCommentsResponse(card.getComments()));
-                    }
-
-                    return cardResponse;
-                })
-                .collect(Collectors.toList());
-    }
-
-
     private List<UserResponse> getAllCardMembers(List<User> users) {
         return users.stream().map(this::convertToUserResponse).collect(Collectors.toList());
     }
+
     private UserResponse convertToUserResponse(User user) {
         UserResponse userResponse = new UserResponse();
         userResponse.setUserId(user.getId());
