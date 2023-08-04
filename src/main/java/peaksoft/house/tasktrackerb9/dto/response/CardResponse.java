@@ -6,9 +6,9 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CardResponse {
 
     private Long cardId;
@@ -19,5 +19,9 @@ public class CardResponse {
     private int numberOfCompletedItems;
     private List<LabelResponse> labelResponses;
     private List<CommentResponse> commentResponses;
-
+  
+    public CardResponse(Long cardId, String title) {
+        this.cardId = cardId;
+        this.title = title;
+    }
 }

@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
+import peaksoft.house.tasktrackerb9.dto.response.GlobalSearchResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 
@@ -14,5 +15,7 @@ public interface ProfileService {
     ProfileResponse getProfileById(Long userId);
 
     UserResponse getMyProfile();
+
+    GlobalSearchResponse search(String search);
 
 }
