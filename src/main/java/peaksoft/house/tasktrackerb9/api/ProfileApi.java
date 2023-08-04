@@ -34,7 +34,7 @@ public class ProfileApi {
 
     @GetMapping("/{userId}")
     @Operation(summary = "Profile",description = "Profile user get by id")
-    public ProfileResponse getProfileById(@PathVariable  Long userId){
+    public ProfileResponse getProfileById(@PathVariable Long userId){
         return userService.getProfileById(userId);
     }
 
