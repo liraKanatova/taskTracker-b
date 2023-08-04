@@ -11,9 +11,7 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
-
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomProfileRepositoryImpl;
-
 import peaksoft.house.tasktrackerb9.services.ProfileService;
 
 @Service
@@ -35,7 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public UserResponse updateImageUserId(String image) {
-        User user =jwtService.getAuthentication();
+        User user = jwtService.getAuthentication();
         user.setImage(image);
         userRepository.save(user);
         log.info("Updated image user");
@@ -59,10 +57,10 @@ public class ProfileServiceImpl implements ProfileService {
         UserResponse userResponse =
                 new UserResponse(
                         user.getId()
-                        ,user.getFirstName()
-                        ,user.getLastName()
-                        ,user.getEmail()
-                        ,user.getImage());
+                        , user.getFirstName()
+                        , user.getLastName()
+                        , user.getEmail()
+                        , user.getImage());
         jwtService.generateToken(user);
         return userResponse;
     }

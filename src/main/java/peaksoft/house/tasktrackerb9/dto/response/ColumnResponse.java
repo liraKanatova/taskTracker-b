@@ -18,6 +18,7 @@ public class ColumnResponse {
     private Boolean isArchive;
 
     public ColumnResponse(Long columnId, String title, Boolean isArchive) {
+
         this.columnId = columnId;
         this.title = title;
         this.isArchive=isArchive;

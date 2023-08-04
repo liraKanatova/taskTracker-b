@@ -28,7 +28,7 @@ public class ProfileApi {
 
     @PutMapping("/avatar")
     @Operation(summary = "Update image", description = "User updating profile image")
-    public UserResponse updateImage( @RequestBody String userRequestImage) {
+    public UserResponse updateImage(@RequestBody String userRequestImage) {
         return userService.updateImageUserId(userRequestImage);
     }
 
