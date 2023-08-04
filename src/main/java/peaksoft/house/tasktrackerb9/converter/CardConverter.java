@@ -64,7 +64,7 @@ public class CardConverter {
         }else{
             cardInnerPageResponse.setUserResponses(new ArrayList<>());
         }
-        cardInnerPageResponse.setChecklistResponses(getCheckListResponses(checklistRepository.findAllCheckListByCardId(card.getId())));
+        cardInnerPageResponse.setChecklistResponses(getCheckListResponses(card.getCheckLists()));
         if (card.getComments() != null) {
             cardInnerPageResponse.setCommentResponses(getCommentsResponse(card.getComments()));
         }else {
