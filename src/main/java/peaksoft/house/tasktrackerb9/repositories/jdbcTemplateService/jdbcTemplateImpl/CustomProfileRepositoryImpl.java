@@ -31,7 +31,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     @Override
     public UserResponse updateUser(UserRequest userRequest) {
-        User user=jwtService.getAuthentication();
+        User user = jwtService.getAuthentication();
         String query = "UPDATE users AS u SET first_name=?,last_name=?,email=?,password=? WHERE u.id=?";
 
         jdbcTemplate.update(query,
@@ -59,41 +59,41 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 WHERE u.id = ?
                 """;
         User user = jdbcTemplate.queryForObject(query, (rs, rowNum) ->
-                new User(rs.getLong("id")
-                        , rs.getString("first_name")
-                        , rs.getString("last_name")
-                        , rs.getString("email")
-                        , rs.getString("image")), userId);
+                        new User(rs.getLong("id"),
+                                rs.getString("first_name"),
+                                rs.getString("last_name"),
+                                rs.getString("email"),
+                                rs.getString("image")
+                        ),
+                userId);
         String query1 = """
-               SELECT ws.*
-               FROM users u
-
-                        JOIN users_work_spaces uws ON u.id = uws.members_id
-                        JOIN work_spaces ws ON uws.work_spaces_id = ws.id
-
-               WHERE u.id = ?;
-                       """;
+                SELECT ws.id,ws.name
+                FROM users u
+                         JOIN users_work_spaces uws ON u.id = uws.members_id
+                         JOIN work_spaces ws ON uws.work_spaces_id = ws.id
+                WHERE u.id = ?;
+                        """;
         List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(query1, (rs, rowNum) -> new WorkSpaceResponse(
-                rs.getLong("workSpaceId"),
-                rs.getString("workSpaceName")
+                rs.getLong("id"),
+                rs.getString("name")
         ), userId);
         String sql = """
-              SELECT\s
-                  u.id AS userId,
-                  u.first_name AS firstName,
-                  u.last_name AS lastName,
-                  u.email AS email,
-                  u.image AS avatar,
-                  (SELECT COUNT(*)\s
-                   FROM users AS u2
+                       SELECT\s
+                           u.id AS userId,
+                           u.first_name AS firstName,
+                           u.last_name AS lastName,
+                           u.email AS email,
+                           u.image AS avatar,
+                           (SELECT COUNT(*)\s
+                            FROM users AS u2
 
-                   JOIN users_work_spaces uws ON u2.id = uws.members_id
-                   JOIN work_spaces ws ON ws.id = uws.work_spaces_id
-       WHERE u2.id = u.id) AS countWorkSpaces
-              FROM users AS u
-              WHERE u.id = ?;
-               
-                                """;
+                            JOIN users_work_spaces uws ON u2.id = uws.members_id
+                            JOIN work_spaces ws ON ws.id = uws.work_spaces_id
+                WHERE u2.id = u.id) AS countWorkSpaces
+                       FROM users AS u
+                       WHERE u.id = ?;
+                        
+                                         """;
         ProfileResponse profileResponse = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new ProfileResponse(rs.getLong("userId")
                 , rs.getString("firstName")
                 , rs.getString("lastName")
