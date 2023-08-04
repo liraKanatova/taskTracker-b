@@ -37,7 +37,7 @@ public class Card {
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "cards")
     private List<Label>labels;
 
-    @OneToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "card")
+    @OneToMany(cascade = {DETACH,MERGE,REFRESH,REMOVE},mappedBy = "card")
     private List<Notification>notifications;
 
     @OneToMany(cascade = {ALL},mappedBy = "card")
