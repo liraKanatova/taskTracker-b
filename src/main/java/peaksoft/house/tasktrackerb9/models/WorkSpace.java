@@ -18,7 +18,7 @@ public class WorkSpace {
 
     @Id
     @GeneratedValue(generator = "workSpace_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "workSpace_gen",sequenceName = "workSpace_seq",allocationSize = 1)
+    @SequenceGenerator(name = "workSpace_gen",sequenceName = "workSpace_seq",allocationSize = 1,initialValue = 6)
     private Long id;
 
     private String name;
@@ -27,15 +27,15 @@ public class WorkSpace {
     private Long adminId;
 
     @ManyToMany(mappedBy = "workSpaces",cascade ={DETACH,REFRESH,MERGE})
-    private List<User>users;
+    private List<User>members;
 
-    @OneToMany(cascade = {ALL},mappedBy = "workSpace")
+    @OneToMany(cascade = {ALL},mappedBy = "workSpace",orphanRemoval = true)
     private List<Board>boards;
 
-    @OneToOne(cascade = {ALL},mappedBy = "workSpace")
-    private Favorite favorite;
-
     @OneToMany(cascade = {ALL},mappedBy = "workSpace")
+    private List<Favorite> favorites;
+
+    @OneToMany(cascade = {ALL},mappedBy = "workSpace",orphanRemoval = true)
     private List<UserWorkSpaceRole> userWorkSpaceRoles;
 
     public WorkSpace(String name, Long adminId) {

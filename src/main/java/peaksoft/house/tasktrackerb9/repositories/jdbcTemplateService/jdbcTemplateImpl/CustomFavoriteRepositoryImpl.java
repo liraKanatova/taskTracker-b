@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
+public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -22,6 +22,7 @@ public class CustomFavoriteRepoImpl implements CustomFavoriteRepository {
 
     @Override
     public FavoriteResponse getAll() {
+
         User user = jwtService.getAuthentication();
         String sql = """
                 SELECT u.id AS user_id,

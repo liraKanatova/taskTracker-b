@@ -1,14 +1,13 @@
 package peaksoft.house.tasktrackerb9.exceptions.handler;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.webjars.NotFoundException;
-import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
-import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
-import peaksoft.house.tasktrackerb9.exceptions.BadRequestException;
-import peaksoft.house.tasktrackerb9.exceptions.ExceptionResponse;
+import peaksoft.house.tasktrackerb9.exceptions.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,5 +46,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.FORBIDDEN,
                 e.getClass().getSimpleName(),
                 e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handleValidationException(MethodArgumentNotValidException e) {
+        StringBuilder errorMessage = new StringBuilder();
+        for (FieldError error : e.getBindingResult().getFieldErrors()) {
+            errorMessage.append(error.getField()).append(": ").append(error.getDefaultMessage()).append(", ");
+        }
+        return ExceptionResponse.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .exceptionClassName(e.getClass().getSimpleName())
+                .message(errorMessage.toString())
+                .build();
     }
 }

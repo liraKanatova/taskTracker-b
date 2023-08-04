@@ -16,17 +16,17 @@ public class Favorite {
 
     @Id
     @GeneratedValue(generator = "favorite_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "favorite_gen", sequenceName = "favorite_seq", allocationSize = 1)
+    @SequenceGenerator(name = "favorite_gen", sequenceName = "favorite_seq", allocationSize = 1,initialValue = 6)
 
     private Long id;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Board board;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private WorkSpace workSpace;
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
-    private User user;
+    private User member;
 
 }

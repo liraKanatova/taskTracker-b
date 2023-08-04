@@ -1,6 +1,6 @@
 insert into users(id,first_name,last_name,email,password,image,role)
 values (1,'Abdumalik','Turatbek uulu','asanbekovmalik2@gmail.com', '$2a$12$6RFdM5bwOFsWmbrD8Z4u5u/VcEyRTebNBbFcHbMEcOe1MupujUrPS',  'https://ichef.bbci.co.uk/news/976/cpsprodpb/3EE0/production/_121269061_getty.jpg','ADMIN'),
-       (2,'Matmusa','Abduvohob uulu','abduvohobuulu@gmail.com', '$2a$12$dlNyy3vwjDZ/ehV./7fPBu5Vy2hR4JuMei.PlyT33p1dcfdZOxPEe',  'https://www.brend.uz/upload_files/news/567135ea55997.jpg','ADMIN'),
+       (2,'Matmusa','Abduvohob uulu','admin@gmail.com', '$2a$12$sXb9HkBhXH8IpmYY05Dbm.UFYN1nPi8Gghye68nWreDd3iaeVGW9a',  'https://www.brend.uz/upload_files/news/567135ea55997.jpg','ADMIN'),
        (3,'Lira','Kanaatova','lira.kanaatova.ch@gmail.com', '$2a$12$N8/R3Q04xhEAhZ1vWcaQquLn3nDE5V8xwPApuBndhKNUUCr.mljf.',  'https://images.squarespace-cdn.com/content/v1/61b76cc1f6acc75c4a875e90/ad0f8b40-9936-4b7a-931b-f4f9b2da0b47/output-onlinepngtools.png','ADMIN'),
        (4,'Adilet','Islambek uulu','adilet@gmail.com', '$2a$12$xYXRx6kjHtxqb0sV1jLrh.WrcfmoVazuwqLY1YmVjHlGjcHroICVO',  'https://biogr.net/wp-content/uploads/2022/02/63463463.jpg','ADMIN'),
        (5,'Manas','Abdugani uulu','manas@gmail.com', '$2a$12$egcK6uZ5RlHPgEzEEczyM.VVX33yCsgyH2Kdw4m.lJk7Bl2pnE39.',  'https://kai.kg/public/images/2021/12/1638521287.png','ADMIN');
@@ -19,14 +19,14 @@ values (1,'word','img',1),
        (4,'title','img',4),
        (5,'word','img',5);
 
-insert into favorites(id,user_id,board_id,work_space_id)
+insert into favorites(id,member_id,board_id,work_space_id)
 values (1,5,5,5),
        (2,4,4,4),
        (3,3,3,3),
        (4,2,2,2),
        (5,1,1,1);
 
-insert into user_work_space_roles(id,role,user_id,work_space_id)
+insert into user_work_space_roles(id,role,member_id,work_space_id)
 values (1,'ADMIN',5,5),
        (2,'MEMBER',4,4),
        (3,'ADMIN',3,3),
@@ -68,7 +68,7 @@ values (1,10,'writing',1),
        (4,40,'writing',4),
        (5,70,'task',5);
 
-insert into comments(id,comment,created_date,card_id,user_id)
+insert into comments(id,comment,created_date,card_id,member_id)
   values (1,'Kachan butot',now(),1,1),
          (2,'Tuura emesko brat',now(),2,2),
          (3,'tutorial please',now(),3,3),
@@ -96,14 +96,14 @@ values (1,now(),'link',1),
        (4,now(),'link',4),
        (5,now(),'link',5);
 
-insert into users_work_spaces(work_spaces_id,users_id)
+insert into users_work_spaces(work_spaces_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
        (5,5);
 
-insert into notifications_users(notifications_id,users_id)
+insert into notifications_members(notifications_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
@@ -117,21 +117,21 @@ values (1,1),
        (4,4),
        (5,5);
 
-insert into columns_users(columns_id,users_id)
+insert into columns_members(columns_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
        (5,5);
 
-insert into cards_users(cards_id,users_id)
+insert into cards_members(cards_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
        (5,5);
 
-insert into boards_users(boards_id,users_id)
+insert into boards_members(boards_id,members_id)
 values (1,1),
        (2,2),
        (3,3),

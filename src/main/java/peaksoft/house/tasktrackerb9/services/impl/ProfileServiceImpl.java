@@ -32,7 +32,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public UserResponse updateImageUserId(String image) {
-        User user =jwtService.getAuthentication();
+        User user = jwtService.getAuthentication();
         user.setImage(image);
         userRepository.save(user);
         log.info("Updated image user");
@@ -56,10 +56,10 @@ public class ProfileServiceImpl implements ProfileService {
         UserResponse userResponse =
                 new UserResponse(
                         user.getId()
-                        ,user.getFirstName()
-                        ,user.getLastName()
-                        ,user.getEmail()
-                        ,user.getImage());
+                        , user.getFirstName()
+                        , user.getLastName()
+                        , user.getEmail()
+                        , user.getImage());
         jwtService.generateToken(user);
         return userResponse;
     }

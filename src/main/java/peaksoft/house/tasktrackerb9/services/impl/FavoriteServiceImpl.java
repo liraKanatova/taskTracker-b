@@ -16,7 +16,7 @@ import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.FavoriteRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomFavoriteRepoImpl;
+import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomFavoriteRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
 
-    private final CustomFavoriteRepoImpl customFavoriteRepo;
+    private final CustomFavoriteRepositoryImpl customFavoriteRepo;
 
     private final WorkSpaceRepository workSpaceRepository;
 
@@ -66,7 +66,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
         Favorite favorite = new Favorite();
         favorite.setBoard(board);
-        favorite.setUser(user);
+        favorite.setMember(user);
         user.getFavorites().add(favorite);
         favoriteRepository.save(favorite);
         return BoardResponse.builder()
@@ -86,7 +86,7 @@ public class FavoriteServiceImpl implements FavoriteService {
                     log.error("WorkSpace with id: " + workSpaceId + " not found");
                     throw new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
                 });
-        List<Favorite> favorites = favoriteRepository.getFavoriteByUserId(user.getId());
+        List<Favorite> favorites = favoriteRepository.getFavoriteByMemberId(user.getId());
         boolean deleted = false;
         for (Favorite f : favorites) {
             if (f.getWorkSpace() != null) {
@@ -108,7 +108,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
         Favorite favorite = new Favorite();
         favorite.setWorkSpace(workSpace);
-        favorite.setUser(user);
+        favorite.setMember(user);
         favoriteRepository.save(favorite);
         user.getFavorites().add(favorite);
         return WorkSpaceFavoriteResponse.builder()

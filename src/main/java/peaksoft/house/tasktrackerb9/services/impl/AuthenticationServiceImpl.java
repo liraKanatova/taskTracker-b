@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseToken;
 import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponse signUp(SignUpRequest signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.email())) {
             log.error(String.format("User with email: %s already exist!", signUpRequest.email()));
-            throw new EntityExistsException(String.format("User with email: %s already exist!", signUpRequest.email()));
+            throw new NotFoundException(String.format("User with email: %s already exist!", signUpRequest.email()));
         }
         User user = new User();
         user.setFirstName(signUpRequest.firstName());
