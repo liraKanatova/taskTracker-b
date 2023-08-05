@@ -46,7 +46,7 @@ public class CardApi {
         return cardService.getInnerPageCardById(cardId);
     }
 
-    @GetMapping("/get-cards/{columnId}")
+    @GetMapping("/column-cards/{columnId}")
     @Operation(summary = "Get all cards", description = "get all cards by column id")
     public List<CardResponse> getCardsByColumnId(@PathVariable Long columnId) {
         return cardService.getAllCardsByColumnId(columnId);
