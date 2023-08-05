@@ -22,4 +22,5 @@ public class UserResponse {
         this.email = email;
         this.avatar = avatar;
     }
+
 }

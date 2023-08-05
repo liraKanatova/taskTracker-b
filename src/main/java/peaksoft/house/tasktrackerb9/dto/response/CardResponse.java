@@ -16,10 +16,10 @@ public class CardResponse {
     private String duration;
     private int numberOfUsers;
     private int numberOfItems;
-    private int numberCompletedOfItems;
+    private int numberOfCompletedItems;
     private List<LabelResponse> labelResponses;
     private List<CommentResponse> commentResponses;
-
+  
     public CardResponse(Long cardId, String title) {
         this.cardId = cardId;
         this.title = title;

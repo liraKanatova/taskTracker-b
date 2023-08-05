@@ -2,6 +2,8 @@ package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.ZonedDateTime;
 import java.util.List;
 import static jakarta.persistence.CascadeType.*;
 
@@ -27,13 +29,15 @@ public class Card {
     @jakarta.persistence.Column(name = "is_archive")
     private Boolean isArchive;
 
+    private ZonedDateTime createdDate;
+
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
     private List<User>members;
 
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "cards")
     private List<Label>labels;
 
-    @OneToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "card")
+    @OneToMany(cascade = {DETACH,MERGE,REFRESH,REMOVE},mappedBy = "card")
     private List<Notification>notifications;
 
     @OneToMany(cascade = {ALL},mappedBy = "card")
@@ -50,4 +54,7 @@ public class Card {
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Column column;
+
+    private Long creatorId;
+
 }

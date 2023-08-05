@@ -5,5 +5,4 @@ import peaksoft.house.tasktrackerb9.models.Card;
 
 public interface CardRepository extends JpaRepository<Card,Long> {
 
-
 }
