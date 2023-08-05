@@ -29,8 +29,8 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                         u.email AS email,
                         u.image as image,
                         u.role as role
-                        FROM users u join boards_members bu on u.id = bu.members_id
-                        left  join cards_members cu on u.id = cu.members_id
+                        FROM users u join boards_users bu on u.id = bu.users_id
+                        left  join cards_users cu on u.id = cu.users_id
                         WHERE cu.cards_id = ?;
                                
                  """;
@@ -53,8 +53,8 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                          u.email AS email,
                          u.role as role,
                          u.image as image
-                 FROM users u join work_spaces_members wsu on u.id = wsu.members_id
-                         join cards_members cu on u.id = cu.members_id
+                 FROM users u join users_work_spaces wsu on u.id = wsu.users_id
+                         join cards_users cu on u.id = cu.users_id
                          where cu.cards_id = ?
                 """;
         List<MemberResponse> workSpaceMembers = jdbcTemplate.query(
