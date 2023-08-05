@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
+import peaksoft.house.tasktrackerb9.dto.response.GlobalSearchResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.services.impl.ProfileServiceImpl;
@@ -27,13 +28,13 @@ public class ProfileApi {
 
     @PutMapping("/avatar")
     @Operation(summary = "Update image", description = "User updating profile image")
-    public UserResponse updateImage( @RequestBody String userRequestImage) {
+    public UserResponse updateImage(@RequestBody String userRequestImage) {
         return userService.updateImageUserId(userRequestImage);
     }
 
     @GetMapping("/{userId}")
     @Operation(summary = "Profile",description = "Profile user get by id")
-    public ProfileResponse getProfileById(@PathVariable  Long userId){
+    public ProfileResponse getProfileById(@PathVariable Long userId){
         return userService.getProfileById(userId);
     }
 
@@ -42,6 +43,11 @@ public class ProfileApi {
     @Operation(summary = "My profile",description = "Get my profile")
     public UserResponse getMyProfile(){
         return userService.getMyProfile();
+    }
+
+    @GetMapping("/global-search")
+    public GlobalSearchResponse search(@RequestParam  String search){
+        return userService.search(search);
     }
 
 }
