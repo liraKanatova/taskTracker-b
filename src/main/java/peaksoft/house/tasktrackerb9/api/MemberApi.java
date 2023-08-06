@@ -20,13 +20,13 @@ public class MemberApi {
 
 private final MemberService memberService;
 
-@GetMapping("/search/{workSpaceId}")
-    @Operation(summary = "Search members",description = "User search members by email or name")
-    public List<MemberResponse> searchUserByEmailOrName(@PathVariable Long workSpaceId, @RequestParam String word){
-    return memberService.searchMemberByWord(workSpaceId, word);
+@GetMapping("/search")
+    @Operation(summary = "Search ",description = "User search members by email or name")
+    public List<MemberResponse> searchUserByEmailOrName(@RequestParam(name = "workSpaceId") Long workSpaceId, @RequestParam(name = "email") String email){
+    return memberService.searchByEmail(workSpaceId, email);
 }
 
-@GetMapping("/members/{cardId}")
+@GetMapping("/{cardId}")
     @Operation(summary = "All members",description = "Get all members by board and work_space")
     public AllMemberResponse getAll(@PathVariable Long cardId){
     return memberService.getAll(cardId);

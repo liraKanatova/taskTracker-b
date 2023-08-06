@@ -33,13 +33,13 @@ public class MemberServiceImpl implements MemberService {
     private final CustomMemberRepositoryImpl customMemberRepository;
 
     @Override
-    public List<MemberResponse> searchMemberByWord(Long workSpaceId, String word) {
+    public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> {
                     log.error("WorkSpace with id: " + workSpaceId + " not found");
                     throw new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
                 });
-        return userRepository.searchByWord(workSpace.getId(), word);
+        return customMemberRepository.searchByEmail(workSpace.getId(), email);
     }
 
     @Override

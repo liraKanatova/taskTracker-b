@@ -75,4 +75,27 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 .build();
 
     }
+
+    @Override
+    public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
+       String sql = """
+               SELECT
+               u.*
+               FROM users  u join users_work_spaces uws on uws.work_spaces_id = ?
+               AND uws.users_id = u.id
+               WHERE lower(CONCAT(u.first_name,u.last_name,u.email)) LIKE lower(?)
+               """;
+       String searchEmail = "%"+email+"%";
+
+       return jdbcTemplate.query(sql, (rs, rowNum) -> new MemberResponse(
+               rs.getLong("member_id"),
+               rs.getString("first_name"),
+               rs.getString("last_name"),
+               rs.getString("email"),
+               rs.getString("image"),
+               Role.valueOf(rs.getString("role"))),
+               workSpaceId,
+               searchEmail
+       );
+    }
 }

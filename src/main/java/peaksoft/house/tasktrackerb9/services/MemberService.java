@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MemberService {
 
-    List<MemberResponse> searchMemberByWord(Long workSpaceId, String word);
+    List<MemberResponse> searchByEmail(Long workSpaceId, String email);
 
     AllMemberResponse getAll(Long cardId);
 
