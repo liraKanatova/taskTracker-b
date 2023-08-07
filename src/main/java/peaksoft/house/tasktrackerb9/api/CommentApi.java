@@ -46,7 +46,7 @@ public class CommentApi {
     @PermitAll
     @Operation(summary = "Get comment by id", description = "Get comment by id")
     @GetMapping("/{commentId}")
-    CommentResponse getCommentById(@PathVariable Long commentId) {
+    public CommentResponse getCommentById(@PathVariable Long commentId) {
         return commentService.getCommentById(commentId);
     }
 
