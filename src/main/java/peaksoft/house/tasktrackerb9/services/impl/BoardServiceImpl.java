@@ -52,7 +52,7 @@ public class BoardServiceImpl implements BoardService {
         WorkSpace workSpace = workspaceRepository.findById(boardRequest.workSpaceId())
                 .orElseThrow(() -> {
                     log.error("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
-                    throw new NotFoundException("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
+                    return new NotFoundException("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
                 });
         if (!user.getBoards().contains(workSpace)) {
             throw new BadCredentialException("this is not your workspace");
@@ -110,7 +110,7 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.error("Board with id: " + boardId + " not found");
-                    throw new NotFoundException("Board with id: " + boardId + " not found");
+                    return new NotFoundException("Board with id: " + boardId + " not found");
                 });
         if(!user.getBoards().contains(board)){
             throw new BadRequestException("Board not found");

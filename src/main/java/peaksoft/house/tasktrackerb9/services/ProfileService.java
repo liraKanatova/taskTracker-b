@@ -18,6 +18,4 @@ public interface ProfileService {
 
     GlobalSearchResponse search(String search);
 
-
-
 }
