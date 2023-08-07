@@ -30,8 +30,6 @@ public class Card {
     private Boolean isArchive;
     private ZonedDateTime createdDate;
 
-    private ZonedDateTime createdDate;
-
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
     private List<User>members;
 

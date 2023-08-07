@@ -11,13 +11,9 @@ import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
-<<<<<<< HEAD
 
 
 import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomProfileRepositoryImpl;
-=======
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomProfileRepositoryImpl;
->>>>>>> 8344fca9e05c8606ffd08184de646cd94c153015
 import peaksoft.house.tasktrackerb9.services.ProfileService;
 
 @Service

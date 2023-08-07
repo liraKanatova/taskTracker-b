@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                 e.getClass().getSimpleName(),
                 e.getMessage());
     }
-<<<<<<< HEAD
+
     @ExceptionHandler(UnauthorizedAccessException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionResponse handleUnauthorizedAccessException(UnauthorizedAccessException e) {
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
                 e.getClass().getSimpleName(),
                 e.getMessage()
         );
-=======
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -69,6 +69,5 @@ public class GlobalExceptionHandler {
                 .exceptionClassName(e.getClass().getSimpleName())
                 .message(errorMessage.toString())
                 .build();
->>>>>>> 8344fca9e05c8606ffd08184de646cd94c153015
     }
 }
