@@ -25,21 +25,21 @@ public class CommentApi {
     @PermitAll
     @Operation(summary = "Get all comments ", description = "Get all comments from workspace")
     @GetMapping("/comments")
-    List<CommentResponse> getAllComments() {
+    public List<CommentResponse> getAllComments() {
         return commentService.getAllComments();
     }
 
     @PermitAll
     @Operation(summary = "Get all comments from card", description = "Get all comments from cards by id")
     @GetMapping("/comments/{cardId}")
-    List<CommentResponse> getAllCommentsByCardId(@PathVariable Long cardId) {
+    public List<CommentResponse> getAllCommentsByCardId(@PathVariable Long cardId) {
         return commentService.getAllCommentsFromCard(cardId);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Operation(summary = "Save comment", description = "Save comment by card id and user auth id")
     @PostMapping()
-    SimpleResponse saveComment(@RequestBody CommentRequest commentRequest) {
+    public SimpleResponse saveComment(@RequestBody CommentRequest commentRequest) {
         return commentService.saveComment(commentRequest);
     }
 
@@ -53,14 +53,14 @@ public class CommentApi {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Operation(summary = "Update comment", description = "Update comment by user id")
     @PutMapping("/{commentId}")
-    SimpleResponse updateCommentById(@PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
+    public SimpleResponse updateCommentById(@PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
         return commentService.updateCommentById(commentId, commentRequest);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @Operation(summary = "Delete comment", description = "Delete comment by user id")
     @DeleteMapping("/{commentId}")
-    SimpleResponse deleteCommentById(@PathVariable Long commentId) {
+    public SimpleResponse deleteCommentById(@PathVariable Long commentId) {
         return commentService.deleteCommentById(commentId);
     }
 }
