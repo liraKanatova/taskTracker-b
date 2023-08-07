@@ -134,9 +134,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
         }
         user.setWorkSpaces(null);
         userRepository.save(user);
-        for (Card card : cardsToDelete) {
-            cardRepository.delete(card);
-        }
+        cardRepository.deleteAll(cardsToDelete);
         workSpaceRepository.delete(workSpace);
         log.info(String.format("WorkSpace with id %s  successfully deleted !", id));
         return SimpleResponse.builder()
@@ -145,6 +143,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                 .build();
 
     }
+
     private void removeNotificationsForCard(Card card) {
         List<Notification> notifications = notificationRepository.findByCard(card);
         for (Notification notification : notifications) {

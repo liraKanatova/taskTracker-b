@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ResetPasswordRequest;
@@ -25,13 +26,13 @@ public class AuthenticationApi {
 
     @PostMapping("/signUp")
     @Operation(summary = "SignUp",description = "Register new users")
-    public AuthenticationResponse signUp(@RequestBody SignUpRequest signUpRequest){
+    public AuthenticationResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest){
         return authenticationService.signUp(signUpRequest);
     }
 
     @PostMapping("/signIn")
     @Operation(summary = "SignIn",description = "Only registered users can login")
-    public  AuthenticationResponse signIn(@RequestBody SignInRequest signInRequest){
+    public  AuthenticationResponse signIn(@RequestBody @Valid SignInRequest signInRequest){
         return authenticationService.signIn(signInRequest);
     }
 
@@ -43,7 +44,7 @@ public class AuthenticationApi {
 
     @PostMapping("/reset-password")
     @Operation(summary = "Reset password", description = "Here you can reset your password")
-    public ResetPasswordResponse resetPassword(@RequestBody ResetPasswordRequest passwordRequest) {
+    public ResetPasswordResponse resetPassword(@RequestBody @Valid ResetPasswordRequest passwordRequest) {
         return authenticationService.resetPassword(passwordRequest);
     }
 

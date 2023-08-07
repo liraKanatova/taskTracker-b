@@ -38,7 +38,7 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
                     favorites f on u.id = f.member_id
                where u.id = ?
                 """;
-        List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql,
+        return jdbcTemplate.query(sql,
                 new Object[]{user.getId()}, (rs, rowNum) -> {
                     WorkSpaceResponse workSpaceResponse = new WorkSpaceResponse();
                     workSpaceResponse.setWorkSpaceId(rs.getLong("id"));
@@ -50,7 +50,6 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
                     return workSpaceResponse;
                 }
         );
-        return workSpaceResponses;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
               AND w.id = ?
                 """;
         User user = jwtService.getAuthentication();
-        WorkSpaceResponse workSpaceResponse = jdbcTemplate.queryForObject(
+        return jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{user.getId(), workSpaceId},
                 (rs, rowNum) -> {
@@ -83,7 +82,6 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
                     return response;
                 }
         );
-        return workSpaceResponse;
     }
 
 }

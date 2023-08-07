@@ -1,12 +1,10 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class LabelResponse {
@@ -14,4 +12,9 @@ public class LabelResponse {
     private String description;
     private String color;
 
+    public LabelResponse(Long labelId, String description, String color) {
+        this.labelId = labelId;
+        this.description = description;
+        this.color = color;
+    }
 }

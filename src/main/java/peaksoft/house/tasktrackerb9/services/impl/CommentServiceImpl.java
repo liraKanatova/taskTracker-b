@@ -96,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Comment with id: %s  doesn't exist", commentId));
             return new NotFoundException(String.format("Comment with id: %s doesn't exist", commentId));
         });
-        if (user.getRole() == Role.ADMIN || user.getId().equals(comment.getMember().getId())) {
+        if (user.getId().equals(comment.getMember().getId())) {
             comment.setComment(commentRequest.comment());
             comment.setCreatedDate(ZonedDateTime.now());
             commentRepository.save(comment);

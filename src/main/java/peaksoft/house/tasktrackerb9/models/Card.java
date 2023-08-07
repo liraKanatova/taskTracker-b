@@ -30,13 +30,15 @@ public class Card {
     private Boolean isArchive;
     private ZonedDateTime createdDate;
 
+    private ZonedDateTime createdDate;
+
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
     private List<User>members;
 
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "cards")
     private List<Label>labels;
 
-    @OneToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "card")
+    @OneToMany(cascade = {DETACH,MERGE,REFRESH,REMOVE},mappedBy = "card")
     private List<Notification>notifications;
 
     @OneToMany(cascade = {ALL},mappedBy = "card")
@@ -53,4 +55,7 @@ public class Card {
 
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Column column;
+
+    private Long creatorId;
+
 }

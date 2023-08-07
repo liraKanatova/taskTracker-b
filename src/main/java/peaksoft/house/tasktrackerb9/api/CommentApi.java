@@ -29,12 +29,6 @@ public class CommentApi {
         return commentService.getAllComments();
     }
 
-    @Operation(summary = "Get all comments user", description = "Get all comments by user auth id")
-    @GetMapping("user-comments")
-    List<CommentResponse> getAllUserComments() {
-        return commentService.getAllUserComments();
-    }
-
     @PermitAll
     @Operation(summary = "Get all comments from card", description = "Get all comments from cards by id")
     @GetMapping("/comments/{cardId}")
@@ -50,21 +44,21 @@ public class CommentApi {
     }
 
     @PermitAll
-    @Operation(summary = "Get by Id", description = "Get comment by user auth id and own id")
+    @Operation(summary = "Get comment by id", description = "Get comment by id")
     @GetMapping("/{commentId}")
     CommentResponse getCommentById(@PathVariable Long commentId) {
         return commentService.getCommentById(commentId);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "Update comment", description = "Update comment by user auth id and own id")
+    @Operation(summary = "Update comment", description = "Update comment by user id")
     @PutMapping("/{commentId}")
     SimpleResponse updateCommentById(@PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
         return commentService.updateCommentById(commentId, commentRequest);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @Operation(summary = "Delete comment", description = "Delete comment by user auth id and own id")
+    @Operation(summary = "Delete comment", description = "Delete comment by user id")
     @DeleteMapping("/{commentId}")
     SimpleResponse deleteCommentById(@PathVariable Long commentId) {
         return commentService.deleteCommentById(commentId);
