@@ -47,6 +47,16 @@ public class GlobalExceptionHandler {
                 e.getMessage());
     }
 
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionResponse handleUnauthorizedAccessException(UnauthorizedAccessException e) {
+        return new ExceptionResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                e.getClass().getSimpleName(),
+                e.getMessage()
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleValidationException(MethodArgumentNotValidException e) {

@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService;
+package peaksoft.house.tasktrackerb9.repositories.customRepository;
 
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 

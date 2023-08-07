@@ -18,7 +18,7 @@ import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomWorkSpaceRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomWorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.services.WorkSpaceService;
 
 import java.util.ArrayList;
