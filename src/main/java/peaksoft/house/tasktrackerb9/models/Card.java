@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
 import static jakarta.persistence.CascadeType.*;
 
@@ -30,10 +31,10 @@ public class Card {
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
     private List<User>members;
 
-    @ManyToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "cards")
+    @ManyToMany(cascade = {ALL},mappedBy = "cards")
     private List<Label>labels;
 
-    @OneToMany(cascade = {DETACH,MERGE,REFRESH},mappedBy = "card")
+    @OneToMany(cascade = {ALL},mappedBy = "card")
     private List<Notification>notifications;
 
     @OneToMany(cascade = {ALL},mappedBy = "card")

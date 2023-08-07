@@ -29,7 +29,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                 " CASE WHEN f.board_id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite "+
                 " FROM boards b "+
                 " JOIN work_spaces ws ON b.work_space_id = ws.id "+
-                " LEFT JOIN favorites f ON b.id = f.board_id AND f.user_id = ? "+
+                " LEFT JOIN favorites f ON b.id = f.board_id AND f.member_id = ? "+
                 " WHERE ws.id = ?";
 
         return jdbcTemplate.query(sql,

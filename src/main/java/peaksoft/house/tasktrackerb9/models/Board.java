@@ -33,7 +33,7 @@ public class Board {
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH})
     private List<User>members;
 
-    @OneToMany(cascade = ALL,mappedBy = "board",orphanRemoval = true)
+    @OneToMany(cascade = ALL,mappedBy = "board")
     private List<Column>columns;
 
 }
