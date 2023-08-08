@@ -54,7 +54,7 @@ public class BoardServiceImpl implements BoardService {
                     log.error("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
                     return new NotFoundException("WorkSpace with id: " + boardRequest.workSpaceId() + " not found");
                 });
-        if (!user.getBoards().contains(workSpace)) {
+        if (!user.getWorkSpaces().contains(workSpace)) {
             throw new BadCredentialException("this is not your workspace");
         }
             Board board = new Board();
@@ -64,22 +64,15 @@ public class BoardServiceImpl implements BoardService {
             workSpace.getBoards().add(board);
             board.setMembers(List.of(user));
             boardRepository.save(board);
-        boolean isFavorite = false;
-        if(board.getFavorites() !=null){
-            for (Favorite favorite : user.getFavorites()) {
-                if(board.getFavorites().contains(favorite)){
-                    isFavorite = true;
-                    break;
-                }
-            }
+            return BoardResponse.builder()
+                    .boardId(board.getId())
+                    .title(board.getTitle())
+                    .backGround(board.getBackGround())
+                    .isFavorite(false)
+                    .build();
+
         }
-        return BoardResponse.builder()
-                .boardId(board.getId())
-                .title(board.getTitle())
-                .backGround(board.getBackGround())
-                .isFavorite(isFavorite)
-                .build();
-    }
+
 
     @Override
     public SimpleResponse updateBoard(BoardUpdateRequest boardUpdateRequest) {
@@ -92,14 +85,15 @@ public class BoardServiceImpl implements BoardService {
                 });
         if(!user.getBoards().contains(board)){
             throw new BadRequestException("Board not found");
+        }else {
+            board.setTitle(boardUpdateRequest.title());
+            board.setBackGround(boardUpdateRequest.backGround());
+            boardRepository.save(board);
+            return SimpleResponse.builder()
+                    .status(HttpStatus.OK)
+                    .message("Board updated successfully ")
+                    .build();
         }
-        board.setTitle(boardUpdateRequest.title());
-        board.setBackGround(boardUpdateRequest.backGround());
-        boardRepository.save(board);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Board updated successfully ")
-                .build();
     }
 
 
@@ -114,17 +108,18 @@ public class BoardServiceImpl implements BoardService {
                 });
         if(!user.getBoards().contains(board)){
             throw new BadRequestException("Board not found");
-        }
-        WorkSpace workSpace = board.getWorkSpace();
-        if(workSpace != null) {
-            workSpace.getBoards().remove(board);
-        }
+        }else {
+            WorkSpace workSpace = board.getWorkSpace();
+            if (workSpace != null) {
+                workSpace.getBoards().remove(board);
+            }
 
-        boardRepository.delete(board);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Board successfully deleted")
-                .build();
+            boardRepository.delete(board);
+            return SimpleResponse.builder()
+                    .status(HttpStatus.OK)
+                    .message("Board successfully deleted")
+                    .build();
+        }
     }
 
 
@@ -138,21 +133,22 @@ public class BoardServiceImpl implements BoardService {
                 });
         if(!user.getBoards().contains(board)){
             throw new BadRequestException("Board not found");
-        }
-        boolean isFavorite = false;
-        if (board.getFavorites() != null) {
-            for (Favorite favorite : user.getFavorites()) {
-                if (board.getFavorites().contains(favorite)) {
-                    isFavorite = true;
-                    break;
+        }else {
+            boolean isFavorite = false;
+            if (board.getFavorites() != null) {
+                for (Favorite favorite : user.getFavorites()) {
+                    if (board.getFavorites().contains(favorite)) {
+                        isFavorite = true;
+                        break;
+                    }
                 }
             }
+            return BoardResponse.builder()
+                    .boardId(boardId)
+                    .title(board.getTitle())
+                    .backGround(board.getBackGround())
+                    .isFavorite(isFavorite)
+                    .build();
         }
-        return BoardResponse.builder()
-                .boardId(boardId)
-                .title(board.getTitle())
-                .backGround(board.getBackGround())
-                .isFavorite(isFavorite)
-                .build();
     }
 }

@@ -21,7 +21,7 @@ public class Card {
     @Id
     @GeneratedValue(generator = "card_gen",strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "card_gen",sequenceName = "card_seq",allocationSize = 1,
-    initialValue = 6)
+    initialValue = 19)
     private Long id;
 
     private String title;
