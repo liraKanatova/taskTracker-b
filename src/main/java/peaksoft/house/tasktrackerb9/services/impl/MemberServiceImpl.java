@@ -11,7 +11,7 @@ import peaksoft.house.tasktrackerb9.models.Card;
 import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomMemberRepositoryImpl;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomMemberRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.MemberService;
 
 import java.util.List;
