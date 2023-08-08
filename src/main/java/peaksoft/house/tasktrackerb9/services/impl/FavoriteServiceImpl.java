@@ -98,47 +98,16 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
 
         if (isFavorite) {
-            List<Board> boards = workSpace.getBoards();
-            for (Board board : boards) {
-                for (Favorite favorite : favorites) {
-                    if (favorite.getBoard() != null && favorite.getBoard().equals(board)) {
-                        favorites.remove(favorite);
-                        favoriteRepository.delete(favorite);
-                        break;
-                    }
-                }
-            }
-
             favorites.remove(existingWorkSpaceFavorite);
-            favoriteRepository.delete(existingWorkSpaceFavorite);
+            favoriteRepository.deleteById(existingWorkSpaceFavorite.getId());
         } else {
-            Favorite workSpaceFavorite = new Favorite();
-            workSpaceFavorite.setWorkSpace(workSpace);
-            workSpaceFavorite.setMember(user);
+            Favorite newWorkSpaceFavorite = new Favorite();
+            newWorkSpaceFavorite.setWorkSpace(workSpace);
+            newWorkSpaceFavorite.setMember(user);
             assert favorites != null;
-            favorites.add(workSpaceFavorite);
-            favoriteRepository.save(workSpaceFavorite);
-
-            List<Board> boards = workSpace.getBoards();
-            for (Board board : boards) {
-                boolean boardIsFavorite = false;
-                for (Favorite favorite : favorites) {
-                    if (favorite.getBoard() != null && favorite.getBoard().equals(board)) {
-                        boardIsFavorite = true;
-                        break;
-                    }
-                }
-
-                if (!boardIsFavorite) {
-                    Favorite boardFavorite = new Favorite();
-                    boardFavorite.setBoard(board);
-                    boardFavorite.setMember(user);
-                    favorites.add(boardFavorite);
-                    favoriteRepository.save(boardFavorite);
-                }
-            }
+            favorites.add(newWorkSpaceFavorite);
+            favoriteRepository.save(newWorkSpaceFavorite);
         }
-
         return WorkSpaceFavoriteResponse.builder()
                 .workSpaceId(workSpace.getId())
                 .name(workSpace.getName())
