@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
+package peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.LabelResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomLabelRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomLabelRepository;
 
 import java.util.List;
 import java.util.Optional;

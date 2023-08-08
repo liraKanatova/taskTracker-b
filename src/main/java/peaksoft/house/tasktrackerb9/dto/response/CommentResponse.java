@@ -2,6 +2,8 @@ package peaksoft.house.tasktrackerb9.dto.response;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
