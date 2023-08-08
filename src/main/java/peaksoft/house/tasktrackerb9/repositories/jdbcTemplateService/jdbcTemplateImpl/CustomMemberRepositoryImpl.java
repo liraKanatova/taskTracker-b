@@ -8,7 +8,6 @@ import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomMemberRepository;
-
 import java.util.List;
 
 @Repository
