@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/boards")
+@RequestMapping("/api/boards")
 @Tag(name = "Board Api", description = "Api methods for boards")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class BoardApi {
@@ -28,7 +28,7 @@ public class BoardApi {
         return boardService.saveBoard(boardRequest);
     }
 
-    @GetMapping("/{workSpaceId}")
+    @GetMapping("/get-all/{workSpaceId}")
     @Operation(summary = "Get all boards", description = "Get all boards by workspace id")
     public List<BoardResponse> getAllBoarsByWorkSpace(@PathVariable Long workSpaceId) {
         return boardService.getAllBoardsByWorkspaceId(workSpaceId);

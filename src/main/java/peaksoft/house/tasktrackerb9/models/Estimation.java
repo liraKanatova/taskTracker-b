@@ -38,8 +38,8 @@ public class Estimation {
     @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;
 
+
     @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
     private Notification notification;
-
 
 }

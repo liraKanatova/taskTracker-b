@@ -43,6 +43,7 @@ public class Notification {
     @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE},mappedBy = "notification")
+    @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
+
     private Estimation estimation;
 }
