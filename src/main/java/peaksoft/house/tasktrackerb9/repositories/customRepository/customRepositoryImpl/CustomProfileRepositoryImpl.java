@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
+package peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.*;
 import peaksoft.house.tasktrackerb9.models.User;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomProfileRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomProfileRepository;
 
 import java.util.List;
 
@@ -50,7 +50,6 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     @Override
     public ProfileResponse getProfileById(Long userId) {
-
         String query = """
                 SELECT u.id, email, first_name, image, last_name
                 FROM users u

@@ -30,7 +30,6 @@ public class Card {
 
     @jakarta.persistence.Column(name = "is_archive")
     private Boolean isArchive;
-
     private ZonedDateTime createdDate;
 
     @ManyToMany(cascade ={DETACH,MERGE,REFRESH})

@@ -33,4 +33,10 @@ public class Comment {
     private User member;
 
 
+    public Comment(String comment, ZonedDateTime now, Card card, User user) {
+        this.comment = comment;
+        this.createdDate = now;
+        this.card = card;
+        this.member = user;
+    }
 }

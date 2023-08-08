@@ -16,7 +16,7 @@ import peaksoft.house.tasktrackerb9.repositories.BoardRepository;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
 import peaksoft.house.tasktrackerb9.repositories.FavoriteRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomFavoriteRepositoryImpl;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomFavoriteRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.FavoriteService;
 
 import java.util.List;
