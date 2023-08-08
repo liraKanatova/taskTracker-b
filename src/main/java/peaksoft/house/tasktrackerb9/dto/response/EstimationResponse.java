@@ -2,6 +2,7 @@ package peaksoft.house.tasktrackerb9.dto.response;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import peaksoft.house.tasktrackerb9.enums.ReminderType;
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
 public class EstimationResponse {
 
     private Long estimationId;
