@@ -10,7 +10,6 @@ import peaksoft.house.tasktrackerb9.services.MemberService;
 
 import java.util.List;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/members")
@@ -18,18 +17,17 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class MemberApi {
 
-private final MemberService memberService;
+    private final MemberService memberService;
 
-@GetMapping("/search")
-    @Operation(summary = "Search ",description = "User search members by email or name")
-    public List<MemberResponse> searchUserByEmailOrName(@RequestParam(name = "workSpaceId") Long workSpaceId, @RequestParam(name = "email") String email){
-    return memberService.searchByEmail(workSpaceId, email);
-}
+    @GetMapping("/search")
+    @Operation(summary = "Search ", description = "User search members by email or name")
+    public List<MemberResponse> searchUserByEmailOrName(@RequestParam(name = "workSpaceId") Long workSpaceId, @RequestParam(name = "email") String email) {
+        return memberService.searchByEmail(workSpaceId, email);
+    }
 
-@GetMapping("/{cardId}")
-    @Operation(summary = "All members",description = "Get all members by board and work_space")
-    public AllMemberResponse getAll(@PathVariable Long cardId){
-    return memberService.getAll(cardId);
-}
-
+    @GetMapping("/{cardId}")
+    @Operation(summary = "All members", description = "Get all members by board and work_space")
+    public AllMemberResponse getAll(@PathVariable Long cardId) {
+        return memberService.getAll(cardId);
+    }
 }
