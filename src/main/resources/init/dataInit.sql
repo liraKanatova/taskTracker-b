@@ -162,12 +162,12 @@ insert into comments(id,comment,created_date,card_id,member_id)
          (4,'Harosh',now(),4,4),
          (5,'Good job',now(),5,5);
 
-insert into estimations(id,reminder_type,start_date,due_date,time,card_id,notification_id)
-values (1,'NONE','2023-07-10T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00',1,1),
-       (2,'FIVE_MINUTE','2023-07-09T10:30:00+03:00','2023-07-10T10:30:00+03:00','2023-07-10T10:30:00+03:00',2,2),
-       (3,'TEN_MINUTE','2023-07-08T10:30:00+03:00','2023-07-09T10:30:00+03:00','2023-07-09T10:30:00+03:00',3,3),
-       (4,'FIFTEEN_MINUTE','2023-07-07T10:30:00+03:00','2023-07-08T10:30:00+03:00','2023-07-08T10:30:00+03:00',4,4),
-       (5,'THIRD_MINUTE','2023-07-06T10:30:00+03:00','2023-07-07T10:30:00+03:00','2023-07-07T10:30:00+03:00',5,5);
+insert into estimations(id,reminder_type,start_date,due_date,time,card_id)
+values (1,'NONE','2023-07-10T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00',1),
+       (2,'FIVE_MINUTE','2023-07-09T10:30:00+03:00','2023-07-10T10:30:00+03:00','2023-07-10T10:30:00+03:00',2),
+       (3,'TEN_MINUTE','2023-07-08T10:30:00+03:00','2023-07-09T10:30:00+03:00','2023-07-09T10:30:00+03:00',3),
+       (4,'FIFTEEN_MINUTE','2023-07-07T10:30:00+03:00','2023-07-08T10:30:00+03:00','2023-07-08T10:30:00+03:00',4),
+       (5,'THIRD_MINUTE','2023-07-06T10:30:00+03:00','2023-07-07T10:30:00+03:00','2023-07-07T10:30:00+03:00',5);
 
 insert into items(id,is_done,title,check_list_id)
 values (1,false,'word',1),
@@ -183,12 +183,37 @@ values (1,now(),'link',1),
        (4,now(),'link',4),
        (5,now(),'link',5);
 
-insert into users_work_spaces(work_spaces_id,members_id)
+insert into users_work_spaces(members_id,work_spaces_id)
 values (1,1),
+       (1,7),
+       (1,8),
+       (1,9),
+       (1,10),
+       (1,11),
        (2,2),
+       (2,12),
+       (2,13),
+       (2,14),
+       (2,15),
+       (2,16),
        (3,3),
+       (3,17),
+       (3,18),
+       (3,19),
+       (3,20),
+       (3,21),
+       (3,22),
        (4,4),
-       (5,5);
+       (4,5),
+       (4,23),
+       (4,24),
+       (4,25),
+       (4,26),
+       (5,6),
+       (5,27),
+       (5,28),
+       (5,29),
+       (5,30);
 
 insert into notifications_members(notifications_id,members_id)
 values (1,1),

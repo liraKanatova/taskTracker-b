@@ -6,11 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +27,15 @@ public class S3Service {
         String key = System.currentTimeMillis() + file.getOriginalFilename();
         PutObjectRequest p = PutObjectRequest.builder()
                 .bucket(bucketName)
-                .contentType("JPG")
                 .contentType("jpeg")
-                .contentType("jfif")
                 .contentType("png")
-                .contentType("mp4")
                 .contentType("ogg")
+                .contentType("mp3")
                 .contentType("mpeg")
+                .contentType("ogg")
+                .contentType("m4a")
+                .contentType("oga")
+                .contentType("pdf")
                 .contentLength(file.getSize())
                 .key(key)
                 .build();
@@ -42,7 +45,7 @@ public class S3Service {
 
     public Map<String, String> delete(String fileLink) {
         try {
-            String key = fileLink.substring(bucketPath.length());
+            String key = fileLink.replace(bucketPath, "");
             s3Client.deleteObject(dor -> dor.bucket(bucketName).key(key).build());
         } catch (S3Exception e) {
             throw new IllegalStateException(e.awsErrorDetails().errorMessage());
@@ -50,6 +53,14 @@ public class S3Service {
             throw new IllegalStateException(e.getMessage());
         }
         return Map.of("message", fileLink + " has been deleted");
+    }
+
+    public List<String> listAllFiles(){
+        ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .build();
+        ListObjectsV2Response listObjectsV2Result = s3Client.listObjectsV2(listObjectsRequest);
+        return listObjectsV2Result.contents().stream().map(S3Object::key).collect(Collectors.toList());
     }
 
 }
