@@ -20,7 +20,6 @@ import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Service
 @Transactional
@@ -34,20 +33,20 @@ public class EstimationServiceImpl implements EstimationService {
 
     private final CardRepository cardRepository;
 
-        @Override
-        public EstimationResponse createdEstimation(EstimationRequest request) {
-            User user = jwtService.getAuthentication();
-            Estimation estimation = new Estimation();
-            Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
-                log.info("Card with id: " + request.cardId() + " id not found");
-                return new NotFoundException("Card with id: " + request.cardId() + " id not found");
-            });
+    @Override
+    public EstimationResponse createdEstimation(EstimationRequest request) {
+        User user = jwtService.getAuthentication();
+        Estimation estimation = new Estimation();
+        Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
+            log.info("Card with id: " + request.cardId() + " id not found");
+            return new NotFoundException("Card with id: " + request.cardId() + " id not found");
+        });
 
-            if (!user.getCards().contains(card)) {
-                throw new BadCredentialException("This is not your card");
-            }
+        if (!user.getCards().contains(card)) {
+            throw new BadCredentialException("This is not your card");
+        }
 
-            if (card.getEstimation() == null) {
+        if (card.getEstimation() == null) {
             if (request.startDate().isBefore(request.dateOfFinish())) {
                 estimation.setStartDate(request.startDate());
                 estimation.setDuetDate(request.dateOfFinish());
@@ -67,6 +66,9 @@ public class EstimationServiceImpl implements EstimationService {
                     throw new BadRequestException("Invalid reminder value");
                 }
 
+                ZonedDateTime notificationTime = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+                estimation.setTime(notificationTime);
+
                 card.setEstimation(estimation);
                 estimationRepository.save(estimation);
                 log.info("Successfully saved estimation: " + estimation);
@@ -76,7 +78,6 @@ public class EstimationServiceImpl implements EstimationService {
         } else {
             throw new BadRequestException("This card already has an estimation");
         }
-
         return EstimationResponse.builder()
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
@@ -85,30 +86,43 @@ public class EstimationServiceImpl implements EstimationService {
                 .reminderType(estimation.getReminderType())
                 .build();
     }
+
     @Override
     public EstimationResponse updateEstimation(EstimationRequest request) {
         User user = jwtService.getAuthentication();
-        Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
+        Estimation estimation = estimationRepository.findById(request.cardId()).orElseThrow(() -> {
             log.info("Card with id: " + request.cardId() + " id not found");
             return new NotFoundException("Card with id: " + request.cardId() + " id not found");
         });
-        if (!user.getCards().contains(card)) {
-            throw new BadCredentialException("this is not your card");
-        }
-        if (card.getEstimation() == null) {
-            throw new BadRequestException("This card already has estimation!");
+
+        estimation.setStartDate(request.startDate());
+        estimation.setDuetDate(request.dateOfFinish());
+
+        String reminder = request.reminder();
+        if ("None".equals(reminder)) {
+            estimation.setReminderType(ReminderType.NONE);
+        } else if ("5".equals(reminder)) {
+            estimation.setReminderType(ReminderType.FIVE_MINUTE);
+        } else if ("10".equals(reminder)) {
+            estimation.setReminderType(ReminderType.TEN_MINUTE);
+        } else if ("15".equals(reminder)) {
+            estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
+        } else if ("30".equals(reminder)) {
+            estimation.setReminderType(ReminderType.THIRD_MINUTE);
         } else {
-            card.getEstimation().setStartDate(request.startDate());
-            card.getEstimation().setDuetDate(request.dateOfFinish());
-            card.getEstimation().setReminderType(ReminderType.valueOf(request.reminder()));
-            cardRepository.save(card);
-            log.info("Successfully estimation updated!");
+            throw new BadRequestException("Invalid reminder value");
         }
+
+        ZonedDateTime notificationTime = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+        estimation.setTime(notificationTime);
+        estimationRepository.save(estimation);
+        log.info("Successfully estimation updated!");
+
         return EstimationResponse.builder()
-                .estimationId(card.getEstimation().getId())
-                .startDate(card.getEstimation().getStartDate().toString())
-                .duetDate(card.getEstimation().getDuetDate().toString())
-                .reminderType(card.getEstimation().getReminderType())
+                .estimationId(estimation.getId())
+                .startDate(estimation.getStartDate().toString())
+                .duetDate(estimation.getDuetDate().toString())
+                .reminderType(estimation.getReminderType())
                 .build();
     }
 }
