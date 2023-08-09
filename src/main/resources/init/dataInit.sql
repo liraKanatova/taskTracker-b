@@ -70,11 +70,24 @@ values (1,'word','img',1),
        (30,'Fine Dine','color',20);
 
 insert into favorites(id,member_id,board_id,work_space_id)
-values (1,5,5,5),
-       (2,4,4,4),
-       (3,3,3,3),
-       (4,2,2,2),
-       (5,1,1,1);
+values (1,5,null,5),
+       (2,5,5,null),
+       (3,4,null,4),
+       (4,4,4,null),
+       (5,3,null,3),
+       (6,3,3,null),
+       (7,1,null,1),
+       (8,1,1,null),
+       (9,2,null,1),
+       (10,2,null,2),
+       (11,2,null,3),
+       (12,2,null,4),
+       (13,2,null,5),
+       (14,2,1,null),
+       (15,2,2,null),
+       (16,2,3,null),
+       (17,2,4,null),
+       (18,2,5,null);
 
 insert into user_work_space_roles(id,role,member_id,work_space_id)
 values (1,'ADMIN',5,5),
@@ -100,14 +113,6 @@ values (1,'Done',false,1),
        (14,'Final',false,5),
        (15,'Attention',false,20),
        (16,'Done',false,2);
-
---
--- insert into cards(id,title,description,is_archive,column_id,created_date)
--- values (1,'title','words',false,1,'2023-07-10T10:30:00+03:00'),
---        (2,'word','words',false,2,'2023-07-10T10:30:00+03:00'),
---        (3,'title','words',false,3,'2023-07-10T10:30:00+03:00'),
---        (4,'word','words',false,4,'2023-07-10T10:30:00+03:00'),
---        (5,'title','words',false,5,'2023-07-10T10:30:00+03:00');
 
 insert into cards(id,title,description,is_archive,created_date,column_id,creator_id)
 values (1,'title','for work',false,now(),1,1),
@@ -209,8 +214,6 @@ values (1,1),
        (5,28),
        (5,29),
        (5,30);
-
-
 
 insert into notifications_members(notifications_id,members_id)
 values (1,1),
