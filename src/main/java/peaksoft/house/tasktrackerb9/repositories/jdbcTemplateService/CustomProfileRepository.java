@@ -10,4 +10,6 @@ public interface CustomProfileRepository {
     UserResponse updateUser(UserRequest userRequest);
 
     ProfileResponse getProfileById(Long userId);
+
+    ProfileResponse getMyProfile();
 }

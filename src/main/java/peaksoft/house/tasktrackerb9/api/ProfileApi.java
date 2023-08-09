@@ -40,7 +40,7 @@ public class ProfileApi {
 
     @GetMapping("/me")
     @Operation(summary = "My profile",description = "Get my profile")
-    public UserResponse getMyProfile(){
+    public ProfileResponse getMyProfile(){
         return userService.getMyProfile();
     }
 

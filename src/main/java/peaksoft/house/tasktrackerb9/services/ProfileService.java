@@ -13,7 +13,7 @@ public interface ProfileService {
 
     ProfileResponse getProfileById(Long userId);
 
-    UserResponse getMyProfile();
+    ProfileResponse getMyProfile();
 
 
 
