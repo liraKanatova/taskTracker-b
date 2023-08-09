@@ -22,8 +22,6 @@ import peaksoft.house.tasktrackerb9.services.EstimationService;
 
 import java.time.ZonedDateTime;
 
-import static software.amazon.awssdk.protocols.xml.internal.unmarshall.XmlResponseParserUtils.parse;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -36,41 +34,61 @@ public class EstimationServiceImpl implements EstimationService {
 
     private final CardRepository cardRepository;
 
-    private final DateTimeF
-
-
     @Override
     public EstimationResponse createdEstimation(EstimationRequest request) {
 
         User user = jwtService.getAuthentication();
         Estimation estimation = new Estimation();
         Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
-            log.info("Card with id: " + request.cardId() + " id not found");
-            return new NotFoundException("Card with id: " + request.cardId() + " id not found");
+            log.info("Card with id: " + request.cardId() + " not found");
+            throw new NotFoundException("Card with id: " + request.cardId() + " not found");
         });
+
         if (!user.getCards().contains(card)) {
-            throw new BadCredentialException("this is not your card");
+            throw new BadCredentialException("This is not your card");
         }
+
         if (card.getEstimation() == null) {
             if (request.startDate().isBefore(request.dateOfFinish())) {
                 estimation.setStartDate(request.startDate());
                 estimation.setDuetDate(request.dateOfFinish());
-                if (request.reminder().equals("5")){
-                    estimation.setReminderType(ReminderType.FIVE_MINUTE);
 
+                if (request.reminder().equals("None")) {
+                    estimation.setReminderType(ReminderType.NONE);
+                } else if (request.reminder().equals("5")) {
+                    estimation.setReminderType(ReminderType.FIVE_MINUTE);
+                } else if (request.reminder().equals("10")) {
+                    estimation.setReminderType(ReminderType.TEN_MINUTE);
+                } else if (request.reminder().equals("15")) {
+                    estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
+                } else if (request.reminder().equals("30")) {
+                    estimation.setReminderType(ReminderType.THIRD_MINUTE);
+                } else {
+                    throw new BadRequestException("Invalid reminder value");
                 }
+
+                ZonedDateTime notificationTime = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+                estimation.setTime(notificationTime);
+
                 card.setEstimation(estimation);
                 estimationRepository.save(estimation);
-                log.info("Successfully estimation saved!" + estimation);
-            } else throw new BadRequestException("The start date must not be before date finish!");
-        } else throw new BadRequestException("This card already has estimation!");
+                log.info("Successfully saved estimation: " + estimation);
+            } else {
+                throw new BadRequestException("The start date must not be before the finish date");
+            }
+        } else {
+            throw new BadRequestException("This card already has an estimation");
+        }
+
         return EstimationResponse.builder()
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
                 .duetDate(estimation.getDuetDate().toString())
+                .finishTime(estimation.getTime().toString())
                 .reminderType(estimation.getReminderType())
                 .build();
     }
+
 
     @Override
     public EstimationResponse updateEstimation(EstimationRequest request) {
@@ -84,7 +102,7 @@ public class EstimationServiceImpl implements EstimationService {
         }
         if (card.getEstimation() == null) {
             throw new BadRequestException("This card already has estimation!");
-        }else {
+        } else {
             card.getEstimation().setStartDate(request.startDate());
             card.getEstimation().setDuetDate(request.dateOfFinish());
             card.getEstimation().setReminderType(ReminderType.valueOf(request.reminder()));

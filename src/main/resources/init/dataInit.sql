@@ -101,14 +101,7 @@ values (1,'Done',false,1),
        (15,'Attention',false,20),
        (16,'Done',false,2);
 
-<<<<<<< HEAD
-insert into cards(id,title,description,is_archive,column_id,created_date)
-values (1,'title','words',false,1,'2023-07-10T10:30:00+03:00'),
-       (2,'word','words',false,2,'2023-07-10T10:30:00+03:00'),
-       (3,'title','words',false,3,'2023-07-10T10:30:00+03:00'),
-       (4,'word','words',false,4,'2023-07-10T10:30:00+03:00'),
-       (5,'title','words',false,5,'2023-07-10T10:30:00+03:00');
-=======
+
 insert into cards(id,title,description,is_archive,created_date,column_id,creator_id)
 values (1,'title','for work',false,now(),1,1),
        (2,'word','words',false,now(),2,1),
@@ -128,7 +121,6 @@ values (1,'title','for work',false,now(),1,1),
        (16,'word','words',false,now(),2,2),
        (17,'title','words',false,now(),7,2),
        (18,'word','words',false,now(),5,5);
->>>>>>> 8344fca9e05c8606ffd08184de646cd94c153015
 
 insert into notifications(id,text,image,type,is_read,created_date,card_id)
 values (1,'batyraak bol','img','MOVE',false,now(),2),
