@@ -17,7 +17,7 @@ public class Board {
     @Id
     @GeneratedValue(generator = "board_gen",strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "board_gen",sequenceName = "board_seq",allocationSize = 1,
-    initialValue = 6)
+    initialValue = 31)
     private Long id;
     private String title;
 
@@ -33,7 +33,7 @@ public class Board {
     @ManyToMany(cascade = {DETACH,MERGE,REFRESH})
     private List<User>members;
 
-    @OneToMany(cascade = ALL,mappedBy = "board",orphanRemoval = true)
+    @OneToMany(cascade = ALL,mappedBy = "board")
     private List<Column>columns;
 
 }

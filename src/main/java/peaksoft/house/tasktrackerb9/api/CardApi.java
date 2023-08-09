@@ -6,6 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.CardService;
+import peaksoft.house.tasktrackerb9.dto.request.CardRequest;
+import peaksoft.house.tasktrackerb9.dto.request.UpdateCardRequest;
+import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
+import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +38,36 @@ public class CardApi {
     @DeleteMapping("/all/{columnId}")
     public SimpleResponse deleteAllCardsInColumn(@PathVariable Long columnId) {
         return cardService.deleteAllCardsInColumn(columnId);
+    }
+
+    @GetMapping("/{cardId}")
+    @Operation(summary = "Get card", description = "get inner page card by card id")
+    public CardInnerPageResponse getInnerPageCardById(@PathVariable Long cardId) {
+        return cardService.getInnerPageCardById(cardId);
+    }
+
+    @GetMapping("/column-cards/{columnId}")
+    @Operation(summary = "Get all cards", description = "get all cards by column id")
+    public List<CardResponse> getCardsByColumnId(@PathVariable Long columnId) {
+        return cardService.getAllCardsByColumnId(columnId);
+    }
+
+    @PostMapping
+    @Operation(summary = "Save card", description = "save card by column id")
+    public CardInnerPageResponse saveCard(@RequestBody CardRequest cardRequest) {
+        return cardService.saveCard(cardRequest);
+    }
+
+    @PutMapping
+    @Operation(summary = "Update card", description = "update card with card id")
+    public SimpleResponse updateCard(@RequestBody UpdateCardRequest updateCardRequest) {
+        return cardService.updateCardById(updateCardRequest);
+    }
+
+    @DeleteMapping("/{cardId}")
+    @Operation(summary = "Delete card", description = "delete card with card id")
+    public SimpleResponse deleteCard(@PathVariable Long cardId) {
+        return cardService.deleteCard(cardId);
     }
 
 }

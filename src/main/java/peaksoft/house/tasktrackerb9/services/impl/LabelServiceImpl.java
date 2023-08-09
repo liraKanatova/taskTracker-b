@@ -14,7 +14,7 @@ import peaksoft.house.tasktrackerb9.models.Card;
 import peaksoft.house.tasktrackerb9.models.Label;
 import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.LabelRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomLabelRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomLabelRepository;
 import peaksoft.house.tasktrackerb9.services.LabelService;
 
 

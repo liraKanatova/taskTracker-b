@@ -3,6 +3,8 @@ package peaksoft.house.tasktrackerb9.models;
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
+
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -18,13 +20,14 @@ public class WorkSpace {
 
     @Id
     @GeneratedValue(generator = "workSpace_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "workSpace_gen",sequenceName = "workSpace_seq",allocationSize = 1,initialValue = 6)
+    @SequenceGenerator(name = "workSpace_gen",sequenceName = "workSpace_seq",allocationSize = 1,initialValue = 31)
     private Long id;
 
     private String name;
 
     @Column(name = "admin_id")
     private Long adminId;
+    private ZonedDateTime createdDate;
 
     @ManyToMany(mappedBy = "workSpaces",cascade ={DETACH,REFRESH,MERGE})
     private List<User>members;

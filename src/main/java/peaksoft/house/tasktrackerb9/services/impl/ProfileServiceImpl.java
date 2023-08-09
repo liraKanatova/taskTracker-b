@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
+import peaksoft.house.tasktrackerb9.dto.response.GlobalSearchResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ProfileResponse;
 import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.UserRepository;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.CustomProfileRepositoryImpl;
+
+
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomProfileRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.ProfileService;
 
 @Service
@@ -53,5 +56,10 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ProfileResponse getMyProfile() {
         return queryJdbc.getMyProfile();
+    }
+
+    @Override
+    public GlobalSearchResponse search(String search) {
+        return queryJdbc.search(search);
     }
 }

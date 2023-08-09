@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import peaksoft.house.tasktrackerb9.services.impl.S3Service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,6 +33,10 @@ public class S3Api {
         return s3Service.delete(fileLink);
     }
 
-
+    @Operation(summary = "This is get all files")
+    @GetMapping
+    List<String> listAllFiles() {
+        return s3Service.listAllFiles();
+    }
 }
 
