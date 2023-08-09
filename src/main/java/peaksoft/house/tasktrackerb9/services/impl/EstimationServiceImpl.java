@@ -4,7 +4,6 @@ package peaksoft.house.tasktrackerb9.services.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.EstimationRequest;
@@ -21,6 +20,7 @@ import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @Transactional
@@ -34,41 +34,38 @@ public class EstimationServiceImpl implements EstimationService {
 
     private final CardRepository cardRepository;
 
-    @Override
-    public EstimationResponse createdEstimation(EstimationRequest request) {
+        @Override
+        public EstimationResponse createdEstimation(EstimationRequest request) {
+            User user = jwtService.getAuthentication();
+            Estimation estimation = new Estimation();
+            Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
+                log.info("Card with id: " + request.cardId() + " id not found");
+                return new NotFoundException("Card with id: " + request.cardId() + " id not found");
+            });
 
-        User user = jwtService.getAuthentication();
-        Estimation estimation = new Estimation();
-        Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
-            log.info("Card with id: " + request.cardId() + " not found");
-            throw new NotFoundException("Card with id: " + request.cardId() + " not found");
-        });
+            if (!user.getCards().contains(card)) {
+                throw new BadCredentialException("This is not your card");
+            }
 
-        if (!user.getCards().contains(card)) {
-            throw new BadCredentialException("This is not your card");
-        }
-
-        if (card.getEstimation() == null) {
+            if (card.getEstimation() == null) {
             if (request.startDate().isBefore(request.dateOfFinish())) {
                 estimation.setStartDate(request.startDate());
                 estimation.setDuetDate(request.dateOfFinish());
 
-                if (request.reminder().equals("None")) {
+                String reminder = request.reminder();
+                if ("None".equals(reminder)) {
                     estimation.setReminderType(ReminderType.NONE);
-                } else if (request.reminder().equals("5")) {
+                } else if ("5".equals(reminder)) {
                     estimation.setReminderType(ReminderType.FIVE_MINUTE);
-                } else if (request.reminder().equals("10")) {
+                } else if ("10".equals(reminder)) {
                     estimation.setReminderType(ReminderType.TEN_MINUTE);
-                } else if (request.reminder().equals("15")) {
+                } else if ("15".equals(reminder)) {
                     estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-                } else if (request.reminder().equals("30")) {
+                } else if ("30".equals(reminder)) {
                     estimation.setReminderType(ReminderType.THIRD_MINUTE);
                 } else {
                     throw new BadRequestException("Invalid reminder value");
                 }
-
-                ZonedDateTime notificationTime = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
-                estimation.setTime(notificationTime);
 
                 card.setEstimation(estimation);
                 estimationRepository.save(estimation);
@@ -88,8 +85,6 @@ public class EstimationServiceImpl implements EstimationService {
                 .reminderType(estimation.getReminderType())
                 .build();
     }
-
-
     @Override
     public EstimationResponse updateEstimation(EstimationRequest request) {
         User user = jwtService.getAuthentication();
