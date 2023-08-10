@@ -54,17 +54,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public UserResponse getMyProfile() {
-        User user = jwtService.getAuthentication();
-        UserResponse userResponse =
-                new UserResponse(
-                        user.getId()
-                        , user.getFirstName()
-                        , user.getLastName()
-                        , user.getEmail()
-                        , user.getImage());
-        jwtService.generateToken(user);
-        return userResponse;
+    public ProfileResponse getMyProfile() {
+        return queryJdbc.getMyProfile();
     }
 
     @Override
