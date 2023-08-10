@@ -3,6 +3,7 @@ package peaksoft.house.tasktrackerb9.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
@@ -12,9 +13,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/members")
+@RequestMapping("/api/members")
 @Tag(name = "Member Api", description = "Api methods for members")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAuthority('ADMIN')")
 public class MemberApi {
 
     private final MemberService memberService;

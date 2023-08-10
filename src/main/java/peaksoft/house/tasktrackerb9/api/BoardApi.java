@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/boards")
 @Tag(name = "Board Api", description = "Api methods for boards")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
 public class BoardApi {
 
     private final BoardService boardService;

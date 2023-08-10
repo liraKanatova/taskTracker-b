@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Workspace API", description = "All workspace endpoints")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
 public class WorkSpaceApi {
 
     private final WorkSpaceService workSpaceService;
