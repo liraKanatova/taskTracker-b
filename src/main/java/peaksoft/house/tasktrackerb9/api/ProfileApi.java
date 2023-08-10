@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.GlobalSearchResponse;
@@ -16,6 +17,7 @@ import peaksoft.house.tasktrackerb9.services.impl.ProfileServiceImpl;
 @RequiredArgsConstructor
 @Tag(name = "Profile Api",description = "Api Profile to management")
 @CrossOrigin(origins = "*",maxAge = 3600)
+@PreAuthorize("hasAuthority('ADMIN')")
 public class ProfileApi {
 
     private final ProfileServiceImpl userService;
