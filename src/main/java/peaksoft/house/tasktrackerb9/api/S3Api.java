@@ -23,7 +23,7 @@ public class S3Api {
 
     @Operation(summary = "This is upload file ")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, String> upload(@RequestParam(value = "file") MultipartFile multipartFile) throws IOException {
+     String upload(@RequestParam(value = "file") MultipartFile multipartFile) throws IOException {
         return s3Service.upload(multipartFile);
     }
     
