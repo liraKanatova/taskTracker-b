@@ -9,6 +9,7 @@ import peaksoft.house.tasktrackerb9.dto.response.*;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
+import peaksoft.house.tasktrackerb9.services.impl.CheckListServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,7 @@ public class CardConverter {
     private final EstimationRepository estimationRepository;
     private final LabelRepository labelRepository;
     private final UserRepository userRepository;
-    private final CheckListRepository checklistRepository;
+    private final CheckListServiceImpl checkListService;
 
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -41,7 +42,7 @@ public class CardConverter {
         cardInnerPageResponse.setIsArchive(card.getIsArchive());
         List<LabelResponse> list = new ArrayList<>();
         if (card.getLabels() != null) {
-            for (LabelResponse  l : labelRepository.getAllLabelResponse()) {
+            for (LabelResponse l : labelRepository.getAllLabelResponse()) {
                 LabelResponse labelResponse = new LabelResponse();
                 labelResponse.setLabelId(l.getLabelId());
                 labelResponse.setDescription(l.getDescription());
@@ -49,25 +50,25 @@ public class CardConverter {
                 list.add(labelResponse);
             }
             cardInnerPageResponse.setLabelResponses(list);
-        }else {
+        } else {
             cardInnerPageResponse.setLabelResponses(new ArrayList<>());
         }
 
         if (card.getEstimation() != null) {
             cardInnerPageResponse.setEstimationResponse(getEstimationByCardIdd(card.getId()));
-        }else {
+        } else {
             cardInnerPageResponse.setEstimationResponse(new EstimationResponse());
         }
 
         if (card.getMembers() != null) {
             cardInnerPageResponse.setUserResponses(getAllCardMembers(card.getMembers()));
-        }else{
+        } else {
             cardInnerPageResponse.setUserResponses(new ArrayList<>());
         }
         cardInnerPageResponse.setChecklistResponses(getCheckListResponses(card.getCheckLists()));
         if (card.getComments() != null) {
             cardInnerPageResponse.setCommentResponses(getCommentsResponse(card.getComments()));
-        }else {
+        } else {
             cardInnerPageResponse.setCommentResponses(new ArrayList<>());
         }
 
@@ -97,43 +98,12 @@ public class CardConverter {
         if (checklists == null) {
             return Collections.emptyList();
         }
-        return checklists.stream().map(this::convertCheckListToResponse).collect(Collectors.toList());
-    }
-
-    public CheckListResponse convertCheckListToResponse(CheckList checklist) {
-        CheckListResponse checkListResponse = new CheckListResponse();
-        checkListResponse.setCheckListId(checklist.getId());
-        checkListResponse.setDescription(checklist.getDescription());
-
-        List<Item> items = checklist.getItems();
-
-        if(items != null) {
-            List<ItemResponse> itemResponses = new ArrayList<>();
-            int countOfItems = items.size();
-            int countOfCompletedItems = 0;
-
-            for (Item item : items) {
-                ItemResponse itemResponse = new ItemResponse();
-                itemResponse.setItemId(item.getId());
-                itemResponse.setTitle(item.getTitle());
-                itemResponse.setIsDone(item.getIsDone());
-                itemResponses.add(itemResponse);
-
-                if (item.getIsDone() != null && item.getIsDone()) {
-                    countOfCompletedItems++;
-                }
-            }
-            int count = (countOfItems > 0) ? (countOfCompletedItems * 100) / countOfItems : 0;
-            String counter = countOfCompletedItems + "/" + countOfItems;
-
-            checkListResponse.setPercent(count);
-            checkListResponse.setCounter(counter);
-            checkListResponse.setItemResponseList(itemResponses);
-
-            checklist.setPercent(count);
-            checklistRepository.save(checklist);
+        List<CheckListResponse> responses = new ArrayList<>();
+        for (CheckList checklist : checklists) {
+            CheckListResponse response = checkListService.convertCheckListToResponse(checklist);
+            responses.add(response);
         }
-        return checkListResponse;
+        return responses;
     }
 
     private EstimationResponse getEstimationByCardIdd(Long cardId) {
@@ -142,7 +112,7 @@ public class CardConverter {
             return new NotFoundException("Card with id: " + cardId + " not found!");
         });
         Estimation estimation = estimationRepository.findById(card.getEstimation().getId()).orElseThrow(() -> {
-            log.error("Estimation with id: " + card.getEstimation().getId()  + " not found!");
+            log.error("Estimation with id: " + card.getEstimation().getId() + " not found!");
             return new NotFoundException("Estimation with id: " + card.getEstimation().getId() + " not found!");
         });
         EstimationResponse estimationResponse = new EstimationResponse();

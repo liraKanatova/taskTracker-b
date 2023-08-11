@@ -22,7 +22,7 @@ public class CheckList {
     initialValue = 6)
     private Long id;
 
-    private String description;
+    private String title;
 
     private int percent;
 

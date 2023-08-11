@@ -143,7 +143,7 @@ values (1,'Green','Done'),
        (4,'Orange','Attention'),
        (5,'Green','Done');
 
-insert into check_lists(id,percent,description,card_id)
+insert into check_lists(id,percent,title,card_id)
 values (1,10,'writing',1),
        (2,20,'character',2),
        (3,30,'reading',3),

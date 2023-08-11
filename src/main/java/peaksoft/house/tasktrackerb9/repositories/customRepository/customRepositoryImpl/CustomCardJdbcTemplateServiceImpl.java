@@ -161,7 +161,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     private List<CheckListResponse> getCheckListResponsesByCardId(Long cardId) {
         String sql = """
           SELECT cl.id AS checkListId,
-                       cl.description AS description,
+                       cl.title AS title,
                        COUNT(i.id) AS numberItems,
                        SUM(CASE WHEN i.is_done = true THEN 1 ELSE 0 END) AS numberCompletedItems,
                        CASE WHEN COUNT(i.id) > 0
@@ -172,12 +172,12 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 JOIN cards c ON c.id = cl.card_id
                 LEFT JOIN items i ON cl.id = i.check_list_id
                 WHERE c.id = ?
-                GROUP BY cl.id, cl.description, cl.percent
+                GROUP BY cl.id, cl.title, cl.percent
             """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             CheckListResponse checkListResponse = new CheckListResponse();
             checkListResponse.setCheckListId(rs.getLong("checkListId"));
-            checkListResponse.setDescription(rs.getString("description"));
+            checkListResponse.setTitle(rs.getString("title"));
             checkListResponse.setPercent(rs.getInt("percent"));
 
             int numberItems = rs.getInt("numberItems");

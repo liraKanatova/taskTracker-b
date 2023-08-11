@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/checkList")
 @Tag(name = "CheckList API", description = "API for managing checkList")
-@CrossOrigin(origins = "*",maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class CheckListApi {
 
     private final CheckListService checkListService;
@@ -28,18 +28,18 @@ public class CheckListApi {
 
     @PostMapping("/{cardId}")
     @Operation(summary = "Save checkList", description = "save checkList by card id")
-    public CheckListResponse saveCheckList(@PathVariable Long cardId,@RequestBody CheckListRequest request) {
+    public CheckListResponse saveCheckList(@PathVariable Long cardId, @RequestBody CheckListRequest request) {
         return checkListService.saveCheckList(cardId, request);
     }
 
     @PutMapping("/{checkListId}")
-    @Operation(summary = "Update checkList", description = "update checkList with checkList id")
-    public CheckListResponse updateCheckList(@PathVariable Long checkListId,@RequestBody CheckListRequest request) {
+    @Operation(summary = "Update checkList", description = "update checkList by checkList id")
+    public CheckListResponse updateCheckList(@PathVariable Long checkListId, @RequestBody CheckListRequest request) {
         return checkListService.updateCheckListById(checkListId, request);
     }
 
     @DeleteMapping("/{checkListId}")
-    @Operation(summary = "Delete checkList", description = "delete checkList with checkList id")
+    @Operation(summary = "Delete checkList", description = "delete checkList by checkList id")
     public SimpleResponse deleteCheckList(@PathVariable Long checkListId) {
         return checkListService.deleteCheckList(checkListId);
     }
