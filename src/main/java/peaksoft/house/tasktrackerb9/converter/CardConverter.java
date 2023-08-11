@@ -106,31 +106,33 @@ public class CardConverter {
         checkListResponse.setDescription(checklist.getDescription());
 
         List<Item> items = checklist.getItems();
-        List<ItemResponse> itemResponses = new ArrayList<>();
-        int countOfItems = items.size();
-        int countOfCompletedItems = 0;
 
-        for (Item item : items) {
-            ItemResponse itemResponse = new ItemResponse();
-            itemResponse.setItemId(item.getId());
-            itemResponse.setTitle(item.getTitle());
-            itemResponse.setIsDone(item.getIsDone());
-            itemResponses.add(itemResponse);
+        if(items != null) {
+            List<ItemResponse> itemResponses = new ArrayList<>();
+            int countOfItems = items.size();
+            int countOfCompletedItems = 0;
 
-            if (item.getIsDone().equals(true)) {
-                countOfCompletedItems++;
+            for (Item item : items) {
+                ItemResponse itemResponse = new ItemResponse();
+                itemResponse.setItemId(item.getId());
+                itemResponse.setTitle(item.getTitle());
+                itemResponse.setIsDone(item.getIsDone());
+                itemResponses.add(itemResponse);
+
+                if (item.getIsDone() != null && item.getIsDone()) {
+                    countOfCompletedItems++;
+                }
             }
+            int count = (countOfItems > 0) ? (countOfCompletedItems * 100) / countOfItems : 0;
+            String counter = countOfCompletedItems + "/" + countOfItems;
+
+            checkListResponse.setPercent(count);
+            checkListResponse.setCounter(counter);
+            checkListResponse.setItemResponseList(itemResponses);
+
+            checklist.setPercent(count);
+            checklistRepository.save(checklist);
         }
-        int count = (countOfItems > 0) ? (countOfCompletedItems * 100) / countOfItems : 0;
-        String counter = countOfCompletedItems + "/" + countOfItems;
-
-        checkListResponse.setPercent(count);
-        checkListResponse.setCounter(counter);
-        checkListResponse.setItemResponseList(itemResponses);
-
-        checklist.setPercent(count);
-        checklistRepository.save(checklist);
-
         return checkListResponse;
     }
 

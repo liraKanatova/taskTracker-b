@@ -17,6 +17,7 @@ import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomCheckListRepository;
 import peaksoft.house.tasktrackerb9.services.CheckListService;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -83,7 +84,9 @@ public class CheckListServiceImpl implements CheckListService {
             return new NotFoundException("CheckList with id: " + checkListId + " not found!");
         });
 
-        checkList.getItems().forEach(item -> item.setCheckList(null));
+        List<Item> items = checkList.getItems();
+        items.forEach(item -> item.getCheckList().getItems().remove(checkList));
+
         checkListRepository.delete(checkList);
 
                log.info("CheckList with id: " + checkListId + " successfully deleted!");
