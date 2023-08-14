@@ -1,101 +1,41 @@
 drop table if exists boards_members cascade;
-
 drop table if exists attachments cascade;
-
 drop table if exists cards_members cascade;
-
 drop table if exists columns_members cascade;
-
 drop table if exists comments cascade;
-
 drop table if exists favorites cascade;
-
 drop table if exists items cascade;
-
 drop table if exists check_lists cascade;
-
 drop table if exists labels_cards cascade;
-
 drop table if exists labels cascade;
-
 drop table if exists notifications_members cascade;
-
 drop table if exists notifications cascade;
-
 drop table if exists estimations cascade;
-
 drop table if exists cards cascade;
-
 drop table if exists columns cascade;
-
 drop table if exists boards cascade;
-
 drop table if exists user_work_space_roles cascade;
-
 drop table if exists users_work_spaces cascade;
-
 drop table if exists users cascade;
-
 drop table if exists work_spaces cascade;
 
-create sequence if not exists public.attachment_seq;
-
-alter sequence public.attachment_seq owner to postgres;
-
-create sequence if not exists public.board_seq;
-
-alter sequence public.board_seq owner to postgres;
-
-create sequence if not exists public.card_seq;
-
-alter sequence public.card_seq owner to postgres;
-
-create sequence if not exists public.check_list_seq;
-
-alter sequence public.check_list_seq owner to postgres;
-
-create sequence if not exists public.column_seq;
-
-alter sequence public.column_seq owner to postgres;
-
-create sequence if not exists public.comment_seq;
-
-alter sequence public.comment_seq owner to postgres;
-
-create sequence if not exists public.estimation_seq;
-
-alter sequence public.estimation_seq owner to postgres;
-
-create sequence if not exists public.favorite_seq;
-
-alter sequence public.favorite_seq owner to postgres;
-
-create sequence if not exists public.items_seq;
-
-alter sequence public.items_seq owner to postgres;
-
-create sequence if not exists public.label_seq;
-
-alter sequence public.label_seq owner to postgres;
-
-create sequence if not exists public.notification_seq;
-
-alter sequence public.notification_seq owner to postgres;
-
-create sequence if not exists public.users_seq;
-
-alter sequence public.users_seq owner to postgres;
-
-create sequence if not exists public.user_work_space_role_seq;
-
-alter sequence public.user_work_space_role_seq owner to postgres;
-
-create sequence if not exists public.work_space_seq;
-
-alter sequence public.work_space_seq owner to postgres;
+create sequence if not exists attachment_seq;
+create sequence if not exists board_seq;
+create sequence if not exists card_seq;
+create sequence if not exists check_list_seq;
+create sequence if not exists column_seq;
+create sequence if not exists comment_seq;
+create sequence if not exists estimation_seq;
+create sequence if not exists favorite_seq;
+create sequence if not exists items_seq;
+create sequence if not exists label_seq;
+create sequence if not exists notification_seq;
+create sequence if not exists users_seq;
+create sequence if not exists user_work_space_role_seq;
+create sequence if not exists work_space_seq;
 
 
-create table public.labels
+create table labels
 (
     id         bigint not null
         primary key,
@@ -103,10 +43,10 @@ create table public.labels
     label_name varchar(255)
 );
 
-alter table public.labels
+alter table labels
     owner to postgres;
 
-create table public.users
+create table users
 (
     id         bigint not null
         primary key,
@@ -120,10 +60,10 @@ create table public.users
             check ((role)::text = ANY ((ARRAY ['ADMIN'::character varying, 'MEMBER'::character varying])::text[]))
 );
 
-alter table public.users
+alter table users
     owner to postgres;
 
-create table public.work_spaces
+create table work_spaces
 (
     admin_id     bigint,
     created_date timestamp(6) with time zone,
@@ -132,10 +72,10 @@ create table public.work_spaces
     name         varchar(255)
 );
 
-alter table public.work_spaces
+alter table work_spaces
     owner to postgres;
 
-create table public.boards
+create table boards
 (
     id            bigint not null
         primary key,
@@ -146,10 +86,10 @@ create table public.boards
     title         varchar(255)
 );
 
-alter table public.boards
+alter table boards
     owner to postgres;
 
-create table public.boards_members
+create table boards_members
 (
     boards_id  bigint not null
         constraint fkq9up0wa41qtcle4h76b3xomam
@@ -159,10 +99,10 @@ create table public.boards_members
             references public.users
 );
 
-alter table public.boards_members
+alter table boards_members
     owner to postgres;
 
-create table public.columns
+create table columns
 (
     is_archive boolean,
     board_id   bigint
@@ -173,10 +113,10 @@ create table public.columns
     title      varchar(255)
 );
 
-alter table public.columns
+alter table columns
     owner to postgres;
 
-create table public.cards
+create table cards
 (
     is_archive   boolean,
     column_id    bigint
@@ -190,10 +130,10 @@ create table public.cards
     title        varchar(255)
 );
 
-alter table public.cards
+alter table cards
     owner to postgres;
 
-create table public.attachments
+create table attachments
 (
     card_id       bigint
         constraint fk8a70ieewfki0nbv4mjs3mof23
@@ -204,10 +144,10 @@ create table public.attachments
     document_link varchar(255)
 );
 
-alter table public.attachments
+alter table attachments
     owner to postgres;
 
-create table public.cards_members
+create table cards_members
 (
     cards_id   bigint not null
         constraint fkcsxbshdyr1jf2em8ofn180gxv
@@ -217,10 +157,10 @@ create table public.cards_members
             references public.users
 );
 
-alter table public.cards_members
+alter table cards_members
     owner to postgres;
 
-create table public.check_lists
+create table check_lists
 (
     percent     integer not null,
     card_id     bigint
@@ -231,10 +171,10 @@ create table public.check_lists
     description varchar(255)
 );
 
-alter table public.check_lists
+alter table check_lists
     owner to postgres;
 
-create table public.columns_members
+create table columns_members
 (
     columns_id bigint not null
         constraint fkbkh4a31w3q1eoc32trny8sbaf
@@ -244,10 +184,10 @@ create table public.columns_members
             references public.users
 );
 
-alter table public.columns_members
+alter table columns_members
     owner to postgres;
 
-create table public.comments
+create table comments
 (
     card_id      bigint
         constraint fkq1d8ryms7bmgcdllfk7k50oe4
@@ -261,10 +201,10 @@ create table public.comments
     comment      varchar(255)
 );
 
-alter table public.comments
+alter table comments
     owner to postgres;
 
-create table public.estimations
+create table estimations
 (
     card_id         bigint
         unique
@@ -283,10 +223,10 @@ create table public.estimations
                    ((ARRAY ['NONE'::character varying, 'FIVE_MINUTE'::character varying, 'TEN_MINUTE'::character varying, 'FIFTEEN_MINUTE'::character varying, 'THIRD_MINUTE'::character varying])::text[]))
 );
 
-alter table public.estimations
+alter table estimations
     owner to postgres;
 
-create table public.favorites
+create table favorites
 (
     board_id      bigint
         constraint fkgpl0y89n3t9gkcmsro4n7eqm9
@@ -301,10 +241,10 @@ create table public.favorites
             references public.work_spaces
 );
 
-alter table public.favorites
+alter table favorites
     owner to postgres;
 
-create table public.items
+create table items
 (
     is_done       boolean,
     check_list_id bigint
@@ -315,10 +255,10 @@ create table public.items
     title         varchar(255)
 );
 
-alter table public.items
+alter table items
     owner to postgres;
 
-create table public.labels_cards
+create table labels_cards
 (
     cards_id  bigint not null
         constraint fk2x08s9bbm0p87exuu03cgnhvd
@@ -328,10 +268,10 @@ create table public.labels_cards
             references public.labels
 );
 
-alter table public.labels_cards
+alter table labels_cards
     owner to postgres;
 
-create table public.notifications
+create table notifications
 (
     is_read       boolean,
     card_id       bigint
@@ -352,14 +292,14 @@ create table public.notifications
                    ((ARRAY ['REMINDER'::character varying, 'MOVE'::character varying, 'ASSIGN'::character varying])::text[]))
 );
 
-alter table public.notifications
+alter table notifications
     owner to postgres;
 
-alter table public.estimations
+alter table estimations
     add constraint fkfo3raelhtwxmue4kbu2sfgnea
         foreign key (notification_id) references public.notifications;
 
-create table public.notifications_members
+create table notifications_members
 (
     members_id       bigint not null
         constraint fko63r12e2lo568gl49ggi5xu22
@@ -369,10 +309,10 @@ create table public.notifications_members
             references public.notifications
 );
 
-alter table public.notifications_members
+alter table notifications_members
     owner to postgres;
 
-create table public.user_work_space_roles
+create table user_work_space_roles
 (
     id            bigint not null
         primary key,
@@ -387,10 +327,10 @@ create table public.user_work_space_roles
             check ((role)::text = ANY ((ARRAY ['ADMIN'::character varying, 'MEMBER'::character varying])::text[]))
 );
 
-alter table public.user_work_space_roles
+alter table user_work_space_roles
     owner to postgres;
 
-create table public.users_work_spaces
+create table users_work_spaces
 (
     members_id     bigint not null
         constraint fkljecswpj6g81tc6ntuaabwfis
@@ -400,6 +340,6 @@ create table public.users_work_spaces
             references public.work_spaces
 );
 
-alter table public.users_work_spaces
+alter table users_work_spaces
     owner to postgres;
 
