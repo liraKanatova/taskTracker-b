@@ -49,9 +49,16 @@ public class CheckListServiceImpl implements CheckListService {
         CheckList checkList = new CheckList();
         checkList.setTitle(checkListRequest.title());
         checkList.setCard(card);
+        checkListRepository.save(checkList);
 
         log.info("CheckList successfully saved!");
-        return convertCheckListToResponse(checkListRepository.save(checkList));
+        return CheckListResponse.builder()
+                .checkListId(checkList.getId())
+                .title(checkList.getTitle())
+                .percent(checkList.getPercent())
+                .counter("0/0")
+                .itemResponseList(new ArrayList<>())
+                .build();
     }
 
     @Override
@@ -85,7 +92,7 @@ public class CheckListServiceImpl implements CheckListService {
         });
 
         List<Item> items = checkList.getItems();
-        items.forEach(item -> item.getCheckList().getItems().remove(checkList));
+        items.forEach(item -> item.getCheckList().getItems().remove(item));
 
         checkListRepository.delete(checkList);
 
