@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.EstimationRequest;
 import peaksoft.house.tasktrackerb9.dto.response.EstimationResponse;
+import peaksoft.house.tasktrackerb9.services.EstimationService;
 import peaksoft.house.tasktrackerb9.services.impl.EstimationServiceImpl;
 
 @RestController
@@ -16,7 +17,7 @@ import peaksoft.house.tasktrackerb9.services.impl.EstimationServiceImpl;
 @CrossOrigin(origins = "*",maxAge = 3600)
 public class EstimationApi {
 
-    private final EstimationServiceImpl service;
+    private final EstimationService service;
 
     @PostMapping
     @Operation(summary = "Create Estimation",description = "Create estimation is the card id")

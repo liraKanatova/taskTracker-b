@@ -39,7 +39,7 @@ public class EstimationServiceImpl implements EstimationService {
         Estimation estimation = new Estimation();
         Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
             log.info("Card with id: " + request.cardId() + " id not found");
-            return new NotFoundException("Card with id: " + request.cardId() + " id not found");
+            return new NotFoundException("Card with id: " + request.cardId() + "  not found");
         });
 
         if (!user.getCards().contains(card)) {
@@ -66,8 +66,8 @@ public class EstimationServiceImpl implements EstimationService {
                     throw new BadRequestException("Invalid reminder value");
                 }
 
-                ZonedDateTime notificationTime = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
-                estimation.setTime(notificationTime);
+                ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+                estimation.setTime(time);
 
                 card.setEstimation(estimation);
                 estimationRepository.save(estimation);
@@ -89,12 +89,10 @@ public class EstimationServiceImpl implements EstimationService {
 
     @Override
     public EstimationResponse updateEstimation(EstimationRequest request) {
-        User user = jwtService.getAuthentication();
         Estimation estimation = estimationRepository.findById(request.cardId()).orElseThrow(() -> {
-            log.info("Card with id: " + request.cardId() + " id not found");
+            log.info("Card with id: " + request.cardId() + "  not found");
             return new NotFoundException("Card with id: " + request.cardId() + " id not found");
         });
-
         estimation.setStartDate(request.startDate());
         estimation.setDuetDate(request.dateOfFinish());
 
@@ -113,8 +111,8 @@ public class EstimationServiceImpl implements EstimationService {
             throw new BadRequestException("Invalid reminder value");
         }
 
-        ZonedDateTime notificationTime = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
-        estimation.setTime(notificationTime);
+        ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+        estimation.setTime(time);
         estimationRepository.save(estimation);
         log.info("Successfully estimation updated!");
 
@@ -122,6 +120,7 @@ public class EstimationServiceImpl implements EstimationService {
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
                 .duetDate(estimation.getDuetDate().toString())
+                .finishTime(estimation.getTime().toString())
                 .reminderType(estimation.getReminderType())
                 .build();
     }
