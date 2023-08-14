@@ -25,19 +25,20 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
     public List<WorkSpaceResponse> getAllWorkSpaces() {
         User user = jwtService.getAuthentication();
         String sql = """
-               SELECT w.id                                                AS id,
-                      w.name                                              AS workSpaceName,
-                      u.id                                                AS userId,
-                      concat(u.first_name, '  ', u.last_name)             AS fullName,
-                      u.image                                             AS image,
-                      CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
-               FROM work_spaces
-                        AS w
-                        JOIN users AS u ON w.admin_id = u.id
-                        LEFT JOIN
-                    favorites f on u.id = f.member_id
-               where u.id = ?
-                """;
+                SELECT w.id                                                AS id,
+                       w.name                                              AS workSpaceName,
+                       u.id                                                AS userId,
+                       concat(u.first_name, '  ', u.last_name)             AS fullName,
+                       u.image                                             AS image,
+                       CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
+                FROM work_spaces
+                         AS w
+                         JOIN users AS u ON w.admin_id = u.id
+                         LEFT JOIN
+                     favorites f on u.id = f.member_id
+                where u.id = ? group by w.id, w.name, u.id, concat(u.first_name, '  ', u.last_name), u.image,
+                                        CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END
+                     """;
         return jdbcTemplate.query(sql,
                 new Object[]{user.getId()}, (rs, rowNum) -> {
                     WorkSpaceResponse workSpaceResponse = new WorkSpaceResponse();
@@ -55,25 +56,25 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
     @Override
     public WorkSpaceResponse getWorkSpaceById(Long workSpaceId) {
         String sql = """
-            SELECT w.id                                                AS id,
-                   w.name                                              AS WorkSpaceName,
-                   u.id                                                AS userId,
-                   CONCAT(u.first_name, ' ', u.last_name)              AS fullName,
-                   u.image                                             AS image,
-                   CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
-            FROM work_spaces w
-                     JOIN users u ON w.admin_id = u.id
-                     LEFT JOIN favorites f ON u.id = f.member_id
-            WHERE u.id = ?
-              AND w.id = ?
-                """;
-        User user = jwtService.getAuthentication();
-        return jdbcTemplate.queryForObject(
+                SELECT w.id                                                AS workSpaceId,
+                       w.name                                              AS WorkSpaceName,
+                       u.id                                                AS userId,
+                       CONCAT(u.first_name, ' ', u.last_name)              AS fullName,
+                       u.image                                             AS image,
+                       CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
+                FROM work_spaces w
+                          JOIN users u ON w.admin_id = u.id
+                         LEFT JOIN favorites f ON u.id = f.member_id
+                WHERE w.id = ?
+                  group by w.id, w.name, u.id, CONCAT(u.first_name, ' ', u.last_name), u.image,
+                                       CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END
+                    """;
+        List<WorkSpaceResponse> result = jdbcTemplate.query(
                 sql,
-                new Object[]{user.getId(), workSpaceId},
+                new Object[]{workSpaceId},
                 (rs, rowNum) -> {
                     WorkSpaceResponse response = new WorkSpaceResponse();
-                    response.setWorkSpaceId(rs.getLong("id"));
+                    response.setWorkSpaceId(rs.getLong("workSpaceId"));
                     response.setWorkSpaceName(rs.getString("workSpaceName"));
                     response.setAdminId(rs.getLong("userId"));
                     response.setAdminFullName(rs.getString("fullName"));
@@ -82,7 +83,7 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
                     return response;
                 }
         );
+        return result.get(0);
     }
 
 }
-
