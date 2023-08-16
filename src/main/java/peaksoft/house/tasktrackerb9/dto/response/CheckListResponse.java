@@ -1,9 +1,6 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,10 +8,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CheckListResponse {
 
     private Long checkListId;
-    private String description;
+    private String title;
     private int percent;
     private String counter;
     private List<ItemResponse> itemResponseList;
