@@ -120,6 +120,4 @@ public class MemberServiceImpl implements MemberService {
         }
         return null;
     }
-
-
 }

@@ -46,14 +46,12 @@ public class MemberApi {
     @Operation(summary = "Change member role", description = "Change member role")
     @PutMapping("/change-role")
     public SimpleResponse changeMemberRole(@RequestBody ChangeRoleRequest changeRoleRequest) {
-       return memberService.changeMemberRole(changeRoleRequest);
+        return memberService.changeMemberRole(changeRoleRequest);
     }
 
     @GetMapping("/get-all-invited/{boardId}")
-    @Operation(summary = "All invited members in board", description = "Get all invited members by board ")
+    @Operation(summary = "All invited members in board", description = "Get all invited members by board id ")
     public List<MemberResponse> getAllMembersFromBoard(@PathVariable Long boardId) {
         return memberService.getAllMembersFromBoard(boardId);
     }
-
-
 }

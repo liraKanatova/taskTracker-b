@@ -22,5 +22,4 @@ public interface MemberService {
 
     List<MemberResponse>getAllMembersFromBoard(Long boardId);
 
-
 }
