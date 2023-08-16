@@ -103,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
         User user = userRepository.findById(request.memberId())
                 .orElseThrow(() -> {
                     log.error("User with id : " + request.memberId() + " not found");
-                    throw new NotFoundException("User with email " + request.memberId() + " not found");
+                    throw new NotFoundException("User with id " + request.memberId() + " not found");
                 });
         List<UserWorkSpaceRole> workSpaceRole = userWorkSpaceRoleRepository.findByUserId(board.getId(), user.getId());
         for (UserWorkSpaceRole w : workSpaceRole) {
