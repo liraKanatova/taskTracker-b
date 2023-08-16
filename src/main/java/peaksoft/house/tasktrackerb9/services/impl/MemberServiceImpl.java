@@ -57,7 +57,10 @@ public class MemberServiceImpl implements MemberService {
 
     public SimpleResponse inviteMemberToBoard(InviteRequest request) throws MessagingException {
         Board board = boardRepository.findById(request.getBoardId())
-                .orElseThrow(() -> new NotFoundException(""));
+                .orElseThrow(() -> {
+                    log.error("Board with id: " + request.getBoardId() + " not found");
+                    throw new NotFoundException("Board with id: " + request.getBoardId() + " not found");
+                });
         if (userRepository.existsByEmail(request.getEmail())) {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
