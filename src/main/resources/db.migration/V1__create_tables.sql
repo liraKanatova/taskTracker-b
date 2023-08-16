@@ -34,7 +34,6 @@ create sequence if not exists users_seq;
 create sequence if not exists user_work_space_role_seq;
 create sequence if not exists work_space_seq;
 
-
 create table labels
 (
     id         bigint not null
@@ -342,4 +341,3 @@ create table users_work_spaces
 
 alter table users_work_spaces
     owner to postgres;
-
