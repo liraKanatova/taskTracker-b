@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomMemberRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomMemberRepository;
+
 import java.util.List;
 
 @Repository
@@ -97,6 +98,34 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 workSpaceId,
                 email
         );
+    }
+
+    @Override
+    public List<MemberResponse> getAllMembersFromBoard(Long boardId) {
+
+        String sql = """
+                SELECT
+                    u.id AS member_id,
+                    u.first_name as first_name,
+                    u.last_name as last_name,
+                    u.email AS email,
+                    u.image as image,
+                    u.role as role
+                FROM users u join boards_members bu on u.id = bu.members_id
+                    
+                WHERE bu.boards_id = ?;
+                               
+                 """;
+      return jdbcTemplate.query(sql,(rs,rowNum)->
+        new MemberResponse(
+                        rs.getLong("member_id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("email"),
+                        rs.getString("image"),
+                        Role.valueOf(rs.getString("role")))
+                , boardId);
+
     }
 }
 

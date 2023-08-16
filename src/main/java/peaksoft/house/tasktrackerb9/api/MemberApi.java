@@ -2,11 +2,15 @@ package peaksoft.house.tasktrackerb9.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
+import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.MemberService;
 
 import java.util.List;
@@ -32,4 +36,24 @@ public class MemberApi {
     public AllMemberResponse getAll(@PathVariable Long cardId) {
         return memberService.getAll(cardId);
     }
+
+    @Operation(summary = "Invite new member to board", description = "Invite new member to board")
+    @PostMapping("/board-invite")
+    public SimpleResponse inviteParticipant(@RequestBody InviteRequest inviteRequest) throws MessagingException {
+        return memberService.inviteMemberToBoard(inviteRequest);
+    }
+
+    @Operation(summary = "Change member role", description = "Change member role")
+    @PutMapping("/change-role")
+    public SimpleResponse changeMemberRole(@RequestBody ChangeRoleRequest changeRoleRequest) {
+       return memberService.changeMemberRole(changeRoleRequest);
+    }
+
+    @GetMapping("/get-all-invited/{boardId}")
+    @Operation(summary = "All invited members in board", description = "Get all invited members by board ")
+    public List<MemberResponse> getAllMembersFromBoard(@PathVariable Long boardId) {
+        return memberService.getAllMembersFromBoard(boardId);
+    }
+
+
 }
