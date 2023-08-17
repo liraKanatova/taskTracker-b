@@ -49,7 +49,7 @@ public class MemberApi {
         return memberService.changeMemberRole(changeRoleRequest);
     }
 
-    @GetMapping("/get-all-invited/{boardId}")
+    @GetMapping("/boards-members/{boardId}")
     @Operation(summary = "All invited members in board", description = "Get all invited members by board id ")
     public List<MemberResponse> getAllMembersFromBoard(@PathVariable Long boardId) {
         return memberService.getAllMembersFromBoard(boardId);

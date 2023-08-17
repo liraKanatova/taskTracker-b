@@ -12,6 +12,7 @@ import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
@@ -27,10 +28,10 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+
     private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-
     private final WorkSpaceRepository workSpaceRepository;
     private final CardRepository cardRepository;
     private final CustomMemberRepositoryImpl customMemberRepository;
@@ -66,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setSubject("Invite new member to board!");
             helper.setTo(request.getEmail());
-            helper.setText("Board id: " + request.getBoardId() + "/n role : " + request.getRole() + "/n link : " + request.getLink());
+            helper.setText("Board id: " + request.getBoardId() + " role : " + request.getRole() + " link : " + request.getLink());
             javaMailSender.send(mimeMessage);
             User user = userRepository.findUserByEmail(request.getEmail())
                     .orElseThrow(() -> new NotFoundException("User with email: " + request.getEmail() + " not found"));
@@ -84,16 +85,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberResponse> getAllMembersFromBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> {
-                    log.error("Board with id: " + boardId + " not found");
-                    throw new NotFoundException("Board with id: " + boardId + " not found");
-                });
-        return customMemberRepository.getAllMembersFromBoard(board.getId());
-    }
-
-    @Override
     public SimpleResponse changeMemberRole(ChangeRoleRequest request) {
         Board board = boardRepository.findById(request.boardId())
                 .orElseThrow(() -> {
@@ -106,6 +97,10 @@ public class MemberServiceImpl implements MemberService {
                     throw new NotFoundException("User with id " + request.memberId() + " not found");
                 });
         List<UserWorkSpaceRole> workSpaceRole = userWorkSpaceRoleRepository.findByUserId(board.getId(), user.getId());
+        WorkSpace workSpace = board.getWorkSpace();
+        if(!workSpace.getMembers().contains(user)){
+            throw new BadCredentialException("You are not a member of this workSpace");
+        }
         for (UserWorkSpaceRole w : workSpaceRole) {
             for (Board b : w.getWorkSpace().getBoards()) {
                 if (b.getId().equals(request.boardId())) {
@@ -118,6 +113,16 @@ public class MemberServiceImpl implements MemberService {
                 }
             }
         }
-        return null;
+        throw  new NotFoundException("Board with id : "+request.boardId()+" not found in the workSpace");
+    }
+
+    @Override
+    public List<MemberResponse> getAllMembersFromBoard(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> {
+                    log.error("Board with id: " + boardId + " not found");
+                    throw new NotFoundException("Board with id: " + boardId + " not found");
+                });
+        return customMemberRepository.getAllMembersFromBoard(board.getId());
     }
 }

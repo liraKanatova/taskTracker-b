@@ -16,10 +16,10 @@ public interface MemberService {
 
     AllMemberResponse getAll(Long cardId);
 
-    SimpleResponse inviteMemberToBoard(InviteRequest inviteRequest) throws MessagingException;
+    SimpleResponse inviteMemberToBoard(InviteRequest request) throws MessagingException;
 
     SimpleResponse changeMemberRole(ChangeRoleRequest request);
 
-    List<MemberResponse>getAllMembersFromBoard(Long boardId);
+    List<MemberResponse> getAllMembersFromBoard(Long boardId);
 
 }

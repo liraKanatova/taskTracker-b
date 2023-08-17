@@ -20,7 +20,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     @Override
     public AllMemberResponse getAll(Long cardId) {
-
         String sql = """
                 SELECT
                     u.id AS member_id,
@@ -34,7 +33,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 WHERE cu.cards_id = ?;
                                
                  """;
-
         List<MemberResponse> boardMembers = jdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new MemberResponse(
@@ -45,7 +43,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                         rs.getString("image"),
                         Role.valueOf(rs.getString("role")))
                 , cardId);
-
         String sql1 = """
                  SELECT
                          u.id AS memberId,
@@ -58,7 +55,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                          join cards_members cu on u.id = cu.members_id
                          where cu.cards_id = ?
                 """;
-
         List<MemberResponse> workSpaceMembers = jdbcTemplate.query(
                 sql1,
                 (rs, rowNum) -> new MemberResponse(
@@ -69,7 +65,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                         rs.getString("image"),
                         Role.valueOf(rs.getString("role")))
                 , cardId);
-
         return AllMemberResponse
                 .builder()
                 .boardMembers(boardMembers)
@@ -79,7 +74,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     @Override
     public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
-
         String sql = """
                 select u.*
                         from users u
@@ -87,7 +81,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                         and uwsr.members_id = u.id
                         where  lower(concat(u.first_name, u.last_name, u.email)) like lower(concat('%',?,'%'));
                   """;
-
         return jdbcTemplate.query(sql, (rs, rowNum) -> new MemberResponse(
                         rs.getLong("id"),
                         rs.getString("first_name"),
@@ -102,7 +95,6 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     @Override
     public List<MemberResponse> getAllMembersFromBoard(Long boardId) {
-
         String sql = """
                 SELECT
                     u.id AS member_id,
@@ -112,20 +104,16 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                     u.image as image,
                     u.role as role
                 FROM users u join boards_members bu on u.id = bu.members_id
-                    
                 WHERE bu.boards_id = ?;
-                               
                  """;
-      return jdbcTemplate.query(sql,(rs,rowNum)->
-        new MemberResponse(
-                        rs.getLong("member_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("image"),
-                        Role.valueOf(rs.getString("role")))
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                        new MemberResponse(
+                                rs.getLong("member_id"),
+                                rs.getString("first_name"),
+                                rs.getString("last_name"),
+                                rs.getString("email"),
+                                rs.getString("image"),
+                                Role.valueOf(rs.getString("role")))
                 , boardId);
-
     }
 }
-
