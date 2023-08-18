@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
 import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
@@ -32,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
     private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
     private final WorkSpaceRepository workSpaceRepository;
     private final CardRepository cardRepository;
     private final CustomMemberRepositoryImpl customMemberRepository;
@@ -62,6 +64,11 @@ public class MemberServiceImpl implements MemberService {
                     log.error("Board with id: " + request.getBoardId() + " not found");
                     throw new NotFoundException("Board with id: " + request.getBoardId() + " not found");
                 });
+        WorkSpace workSpace = workSpaceRepository.findById(board.getWorkSpace().getId())
+                .orElseThrow(() -> {
+                    log.error("WorkSpace with id: " + board.getWorkSpace().getId() + " not found");
+                    throw new NotFoundException("WorkSpace with id: " + board.getWorkSpace().getId() + " not found");
+                });
         if (userRepository.existsByEmail(request.getEmail())) {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -74,10 +81,11 @@ public class MemberServiceImpl implements MemberService {
             UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole();
             userWorkSpace.setMember(user);
             userWorkSpace.setRole(request.getRole());
+            board.setWorkSpace(workSpace);
             userWorkSpace.setWorkSpace(board.getWorkSpace());
             userWorkSpaceRoleRepository.save(userWorkSpace);
             board.getMembers().add(user);
-        } else throw new NotFoundException(String.format("User with email:%s is not found", request.getEmail()));
+        } else throw new NotFoundException(String.format("User with email: %s is not found", request.getEmail()));
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message("Message sent successfully!")
@@ -86,6 +94,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse changeMemberRole(ChangeRoleRequest request) {
+        User u = jwtService.getAuthentication();
         Board board = boardRepository.findById(request.boardId())
                 .orElseThrow(() -> {
                     log.error("Board with id: " + request.boardId() + " not found");
@@ -98,8 +107,8 @@ public class MemberServiceImpl implements MemberService {
                 });
         List<UserWorkSpaceRole> workSpaceRole = userWorkSpaceRoleRepository.findByUserId(board.getId(), user.getId());
         WorkSpace workSpace = board.getWorkSpace();
-        if(!workSpace.getMembers().contains(user)){
-            throw new BadCredentialException("You are not a member of this workSpace");
+        if(!workSpace.getAdminId().equals(u.getId())){
+            throw new BadCredentialException("You are not a admin of this workSpace");
         }
         for (UserWorkSpaceRole w : workSpaceRole) {
             for (Board b : w.getWorkSpace().getBoards()) {
