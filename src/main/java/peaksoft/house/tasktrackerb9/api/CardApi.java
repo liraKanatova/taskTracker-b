@@ -17,9 +17,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/cards")
-@Tag(name = "Card API", description = "API for managing cards")
-@CrossOrigin(origins = "*",maxAge = 3600)
 @PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*",maxAge = 3600)
+@Tag(name = "Card API", description = "API for managing cards")
 public class CardApi {
 
     private final CardService cardService;
