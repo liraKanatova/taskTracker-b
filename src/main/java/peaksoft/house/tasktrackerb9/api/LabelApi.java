@@ -13,11 +13,11 @@ import peaksoft.house.tasktrackerb9.services.LabelService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/labels")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*",maxAge = 3600)
-@Tag(name = "Labels API", description = "All labels endpoints")
+@RequestMapping("/api/labels")
 @PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Labels API", description = "All labels endpoints")
 public class LabelApi {
 
     private final LabelService labelService;
@@ -39,6 +39,7 @@ public class LabelApi {
     public SimpleResponse addLabelsToCard(@PathVariable Long cardId, @PathVariable Long labelId) {
         return labelService.addLabelsToCard(cardId, labelId);
     }
+
     @Operation(summary = "Get by id", description = "Get label by id ")
     @GetMapping("/{labelId}")
     public LabelResponse getLabelById(@PathVariable Long labelId) {

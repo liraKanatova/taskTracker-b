@@ -14,9 +14,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
-@Tag(name = "Member Api", description = "Api methods for members")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Member Api", description = "Api methods for members")
 public class MemberApi {
 
     private final MemberService memberService;
