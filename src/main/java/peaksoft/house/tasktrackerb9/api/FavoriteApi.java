@@ -13,9 +13,9 @@ import peaksoft.house.tasktrackerb9.services.FavoriteService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/favorites")
-@Tag(name = "Favourite Api", description = "Api methods for favorites")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Favourite Api", description = "Api methods for favorites")
 public class FavoriteApi {
 
     private final FavoriteService favoriteService;
