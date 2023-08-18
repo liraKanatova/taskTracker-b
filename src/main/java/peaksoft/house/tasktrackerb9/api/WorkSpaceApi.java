@@ -15,11 +15,11 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/work_spaces")
 @RequiredArgsConstructor
-@Tag(name = "Workspace API", description = "All workspace endpoints")
+@RequestMapping("/api/work_spaces")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
+@Tag(name = "Workspace API", description = "All workspace endpoints")
 public class WorkSpaceApi {
 
     private final WorkSpaceService workSpaceService;

@@ -14,8 +14,8 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/file")
 @Tag(name = "S3 file API")
+@RequestMapping("/api/file")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class S3Api {
     private final S3Service s3Service;
@@ -25,7 +25,7 @@ public class S3Api {
     Map<String, String> upload(@RequestParam(value = "file") MultipartFile multipartFile) throws IOException {
         return s3Service.upload(multipartFile);
     }
-    
+
     @Operation(summary = "This is delete file ")
     @DeleteMapping
     Map<String, String> delete(@RequestParam String fileLink) {
