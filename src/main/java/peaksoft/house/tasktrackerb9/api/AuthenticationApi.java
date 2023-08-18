@@ -17,23 +17,23 @@ import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.AuthenticationService;
 
 @RestController
-@RequestMapping("/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication Api",description = "API - Handles user authentication and access control")
-@CrossOrigin(origins = "*",maxAge = 3600)
+@RequestMapping("/auth")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Authentication Api", description = "API - Handles user authentication and access control")
 public class AuthenticationApi {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
-    @Operation(summary = "SignUp",description = "Register new users")
-    public AuthenticationResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest){
+    @Operation(summary = "SignUp", description = "Register new users")
+    public AuthenticationResponse signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
         return authenticationService.signUp(signUpRequest);
     }
 
     @PostMapping("/signIn")
-    @Operation(summary = "SignIn",description = "Only registered users can login")
-    public  AuthenticationResponse signIn(@RequestBody @Valid SignInRequest signInRequest){
+    @Operation(summary = "SignIn", description = "Only registered users can login")
+    public AuthenticationResponse signIn(@RequestBody @Valid SignInRequest signInRequest) {
         return authenticationService.signIn(signInRequest);
     }
 

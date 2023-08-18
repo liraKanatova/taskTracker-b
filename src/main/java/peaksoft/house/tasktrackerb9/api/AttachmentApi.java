@@ -13,9 +13,9 @@ import peaksoft.house.tasktrackerb9.services.AttachmentService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/attachments")
-@Tag(name = "Attachment Api", description = "Api methods for attachments")
-@CrossOrigin(origins = "*", maxAge = 3600)
 @PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Attachment Api", description = "Api methods for attachments")
 public class AttachmentApi {
 
     private final AttachmentService attachmentService;
