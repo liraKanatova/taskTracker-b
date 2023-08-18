@@ -14,8 +14,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/checkList")
-@Tag(name = "CheckList API", description = "API for managing checkList")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "CheckList API", description = "API for managing checkList")
 public class CheckListApi {
 
     private final CheckListService checkListService;

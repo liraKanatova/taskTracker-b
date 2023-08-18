@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/cards")
 @PreAuthorize("hasAuthority('ADMIN')")
-@CrossOrigin(origins = "*",maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Card API", description = "API for managing cards")
 public class CardApi {
 
