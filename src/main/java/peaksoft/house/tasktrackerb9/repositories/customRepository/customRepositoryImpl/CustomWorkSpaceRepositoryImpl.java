@@ -30,14 +30,11 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
                        u.id                                                AS userId,
                        concat(u.first_name, '  ', u.last_name)             AS fullName,
                        u.image                                             AS image,
-                       CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
-                FROM work_spaces
-                         AS w
-                         JOIN users AS u ON w.admin_id = u.id
-                         LEFT JOIN
-                     favorites f on u.id = f.member_id
-                where u.id = ? group by w.id, w.name, u.id, concat(u.first_name, '  ', u.last_name), u.image,
-                                        CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END
+                       CASE WHEN f.member_id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
+                FROM work_spaces AS w
+                JOIN users AS u ON w.admin_id = u.id
+                LEFT JOIN favorites f ON w.id = f.work_space_id AND u.id = f.member_id
+                WHERE u.id = ?;        
                      """;
         return jdbcTemplate.query(sql,
                 new Object[]{user.getId()}, (rs, rowNum) -> {
@@ -57,17 +54,15 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
     public WorkSpaceResponse getWorkSpaceById(Long workSpaceId) {
         String sql = """
                 SELECT w.id                                                AS workSpaceId,
-                       w.name                                              AS WorkSpaceName,
+                       w.name                                              AS workSpaceName,
                        u.id                                                AS userId,
                        CONCAT(u.first_name, ' ', u.last_name)              AS fullName,
                        u.image                                             AS image,
                        CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
                 FROM work_spaces w
-                          JOIN users u ON w.admin_id = u.id
-                         LEFT JOIN favorites f ON u.id = f.member_id
-                WHERE w.id = ?
-                  group by w.id, w.name, u.id, CONCAT(u.first_name, ' ', u.last_name), u.image,
-                                       CASE WHEN f.id IS NOT NULL THEN TRUE ELSE FALSE END
+                         JOIN users u ON w.admin_id = u.id
+                         LEFT JOIN favorites f ON w.id = f.work_space_id AND u.id = f.member_id
+                WHERE w.id = ?;
                     """;
         List<WorkSpaceResponse> result = jdbcTemplate.query(
                 sql,

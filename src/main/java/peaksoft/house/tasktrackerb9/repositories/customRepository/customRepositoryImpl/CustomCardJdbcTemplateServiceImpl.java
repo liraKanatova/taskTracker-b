@@ -53,7 +53,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             CardInnerPageResponse response = new CardInnerPageResponse();
             response.setCardId(rs.getLong("cardId"));
             response.setTitle(rs.getString("title"));
-            response.setDescription(rs.getString("description"));
+            response.setDescription(rs.getString("title"));
             response.setIsArchive(rs.getBoolean("isArchive"));
             long estimationId = rs.getLong("cardId");
             response.setEstimationResponse(getEstimationByCardId(estimationId));

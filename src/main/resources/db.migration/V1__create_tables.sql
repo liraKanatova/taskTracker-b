@@ -167,7 +167,7 @@ create table check_lists
             references public.cards,
     id          bigint  not null
         primary key,
-    description varchar(255)
+    title varchar(255)
 );
 
 alter table check_lists
