@@ -38,7 +38,7 @@ public class EstimationServiceImpl implements EstimationService {
         if (card.getEstimation() == null) {
             if (request.startDate().isBefore(request.dateOfFinish())) {
                 estimation.setStartDate(request.startDate());
-                estimation.setDuetDate(request.dateOfFinish());
+                estimation.setFinishDate(request.dateOfFinish());
                 String reminder = request.reminder();
                 if ("None".equals(reminder)) {
                     estimation.setReminderType(ReminderType.NONE);
@@ -67,7 +67,7 @@ public class EstimationServiceImpl implements EstimationService {
         return EstimationResponse.builder()
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
-                .duetDate(estimation.getDuetDate().toString())
+                .duetDate(estimation.getFinishDate().toString())
                 .finishTime(estimation.getTime().toString())
                 .reminderType(estimation.getReminderType())
                 .build();
@@ -81,7 +81,7 @@ public class EstimationServiceImpl implements EstimationService {
             return new NotFoundException("Card with id: " + request.cardId() + " id not found");
         });
         estimation.setStartDate(request.startDate());
-        estimation.setDuetDate(request.dateOfFinish());
+        estimation.setFinishDate(request.dateOfFinish());
         String reminder = request.reminder();
         if ("None".equals(reminder)) {
             estimation.setReminderType(ReminderType.NONE);
@@ -103,7 +103,7 @@ public class EstimationServiceImpl implements EstimationService {
         return EstimationResponse.builder()
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
-                .duetDate(estimation.getDuetDate().toString())
+                .duetDate(estimation.getFinishDate().toString())
                 .finishTime(estimation.getTime().toString())
                 .reminderType(estimation.getReminderType())
                 .build();

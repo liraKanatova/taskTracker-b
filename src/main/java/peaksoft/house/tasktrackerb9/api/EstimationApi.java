@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.api;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,7 @@ import peaksoft.house.tasktrackerb9.services.EstimationService;
 import peaksoft.house.tasktrackerb9.services.impl.EstimationServiceImpl;
 
 @RestController
-@RequestMapping("/api/estimation")
+@RequestMapping("/api/estimations")
 @RequiredArgsConstructor
 @Tag(name = "Estimation",description = "Api Estimation to management")
 @CrossOrigin(origins = "*",maxAge = 3600)

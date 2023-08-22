@@ -31,7 +31,7 @@ public class Estimation {
     private ZonedDateTime startDate;
 
     @Column(name = "due_date")
-    private ZonedDateTime duetDate;
+    private ZonedDateTime finishDate;
 
     private ZonedDateTime time;
 

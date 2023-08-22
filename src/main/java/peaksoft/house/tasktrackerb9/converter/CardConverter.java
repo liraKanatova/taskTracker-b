@@ -146,7 +146,7 @@ public class CardConverter {
         EstimationResponse estimationResponse = new EstimationResponse();
         estimationResponse.setEstimationId(estimation.getId());
         estimationResponse.setStartDate(estimation.getStartDate().toString());
-        estimationResponse.setDuetDate(estimation.getDuetDate().toString());
+        estimationResponse.setDuetDate(estimation.getFinishDate().toString());
         estimationResponse.setFinishTime(estimation.getTime().toString());
         estimationResponse.setReminderType(estimation.getReminderType());
         return estimationResponse;
