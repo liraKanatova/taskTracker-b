@@ -54,4 +54,10 @@ public class MemberApi {
     public List<MemberResponse> getAllMembersFromBoard(@PathVariable Long boardId) {
         return memberService.getAllMembersFromBoard(boardId);
     }
+
+    @Operation(summary = "Assign user to card", description = "Assign user to card")
+    @PostMapping("/{memberId}/{cardId}")
+    public SimpleResponse assignToCard(@PathVariable Long memberId, @PathVariable Long cardId) {
+        return memberService.assignMemberToCard(memberId, cardId);
+    }
 }
