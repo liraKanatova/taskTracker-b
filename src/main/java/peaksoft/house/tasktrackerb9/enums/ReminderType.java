@@ -7,15 +7,13 @@ public enum ReminderType {
     FIFTEEN_MINUTE(15),
     THIRD_MINUTE(30);
 
+    final int minute;
 
-
-    final int minutes;
-
-    ReminderType(int minutes) {
-        this.minutes = minutes;
+    ReminderType(int minute) {
+        this.minute = minute;
     }
 
-    public long getMinutes() {
-        return minutes;
+    public int getMinute() {
+        return minute;
     }
 }

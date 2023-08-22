@@ -20,13 +20,13 @@ public class EstimationApi {
     private final EstimationService service;
 
     @PostMapping
-    @Operation(summary = "Create Estimation",description = "Create estimation is the card id")
+    @Operation(summary = "Create estimation",description = "Create estimation is the card id")
     public EstimationResponse createdEstimation(@RequestBody EstimationRequest estimationRequest){
         return service.createdEstimation(estimationRequest);
     }
 
     @PutMapping
-    @Operation(summary = "Update Estimation",description = "Update estimation is the card id")
+    @Operation(summary = "Update estimation",description = "Update estimation is the card id")
     public EstimationResponse updatedEstimation(@RequestBody EstimationRequest estimationRequest){
         return service.updateEstimation(estimationRequest);
     }

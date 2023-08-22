@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.services.impl;
 
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +65,7 @@ public class EstimationServiceImpl implements EstimationService {
                     throw new BadRequestException("Invalid reminder value");
                 }
 
-                ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+                ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinute());
                 estimation.setTime(time);
 
                 card.setEstimation(estimation);
@@ -111,7 +110,7 @@ public class EstimationServiceImpl implements EstimationService {
             throw new BadRequestException("Invalid reminder value");
         }
 
-        ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinutes());
+        ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinute());
         estimation.setTime(time);
         estimationRepository.save(estimation);
         log.info("Successfully estimation updated!");
