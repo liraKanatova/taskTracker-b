@@ -1,7 +1,6 @@
 package peaksoft.house.tasktrackerb9.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import peaksoft.house.tasktrackerb9.enums.ReminderType;
 
 import java.time.ZonedDateTime;
 
