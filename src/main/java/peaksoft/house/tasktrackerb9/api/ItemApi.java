@@ -20,7 +20,7 @@ public class ItemApi {
 
     private final ItemService itemService;
 
-    @PostMapping("/save")
+    @PostMapping
     @Operation(summary = "Save item", description = "save item by checkList id")
     public ItemResponse saveItem(@RequestBody ItemRequest itemRequest) {
         return itemService.saveItem(itemRequest);

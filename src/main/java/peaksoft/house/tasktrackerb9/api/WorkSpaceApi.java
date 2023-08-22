@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceFavoriteResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.services.WorkSpaceService;
 
@@ -32,7 +33,7 @@ public class WorkSpaceApi {
 
     @Operation(summary = "Create workSpace", description = "create workspace by user auth id")
     @PostMapping
-    public SimpleResponse saveWorkSpaces(@RequestBody WorkSpaceRequest workSpaceRequest) throws MessagingException {
+    public WorkSpaceFavoriteResponse saveWorkSpaces(@RequestBody WorkSpaceRequest workSpaceRequest) throws MessagingException {
         return workSpaceService.saveWorkSpace(workSpaceRequest);
     }
 

@@ -35,6 +35,7 @@ public class ItemServiceImpl implements ItemService {
         item.setTitle(itemRequest.title());
         item.setIsDone(false);
         item.setCheckList(checkList);
+        checkList.getItems().add(item);
         itemRepository.save(item);
 
         log.info("Item successfully saved!");
