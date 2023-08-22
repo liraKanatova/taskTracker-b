@@ -26,30 +26,23 @@ import java.time.ZonedDateTime;
 @Slf4j
 public class EstimationServiceImpl implements EstimationService {
 
-    private final JwtService jwtService;
-
     private final EstimationRepository estimationRepository;
 
     private final CardRepository cardRepository;
 
     @Override
     public EstimationResponse createdEstimation(EstimationRequest request) {
-        User user = jwtService.getAuthentication();
         Estimation estimation = new Estimation();
+        ZonedDateTime timer=request.dateOfFinish();
         Card card = cardRepository.findById(request.cardId()).orElseThrow(() -> {
             log.info("Card with id: " + request.cardId() + " id not found");
             return new NotFoundException("Card with id: " + request.cardId() + "  not found");
         });
 
-        if (!user.getCards().contains(card)) {
-            throw new BadCredentialException("This is not your card");
-        }
-
         if (card.getEstimation() == null) {
             if (request.startDate().isBefore(request.dateOfFinish())) {
                 estimation.setStartDate(request.startDate());
                 estimation.setDuetDate(request.dateOfFinish());
-
                 String reminder = request.reminder();
                 if ("None".equals(reminder)) {
                     estimation.setReminderType(ReminderType.NONE);
@@ -65,7 +58,7 @@ public class EstimationServiceImpl implements EstimationService {
                     throw new BadRequestException("Invalid reminder value");
                 }
 
-                ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinute());
+                ZonedDateTime time = timer.minusMinutes(estimation.getReminderType().getMinute());
                 estimation.setTime(time);
 
                 card.setEstimation(estimation);
@@ -88,6 +81,7 @@ public class EstimationServiceImpl implements EstimationService {
 
     @Override
     public EstimationResponse updateEstimation(EstimationRequest request) {
+        ZonedDateTime timer=request.dateOfFinish();
         Estimation estimation = estimationRepository.findById(request.cardId()).orElseThrow(() -> {
             log.info("Card with id: " + request.cardId() + "  not found");
             return new NotFoundException("Card with id: " + request.cardId() + " id not found");
@@ -110,7 +104,7 @@ public class EstimationServiceImpl implements EstimationService {
             throw new BadRequestException("Invalid reminder value");
         }
 
-        ZonedDateTime time = ZonedDateTime.now().minusMinutes(estimation.getReminderType().getMinute());
+        ZonedDateTime time = timer.minusMinutes(estimation.getReminderType().getMinute());
         estimation.setTime(time);
         estimationRepository.save(estimation);
         log.info("Successfully estimation updated!");
