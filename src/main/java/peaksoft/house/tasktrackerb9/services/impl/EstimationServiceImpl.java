@@ -38,7 +38,6 @@ public class EstimationServiceImpl implements EstimationService {
             log.info("Card with id: " + request.cardId() + " id not found");
             return new NotFoundException("Card with id: " + request.cardId() + "  not found");
         });
-
         if (card.getEstimation() == null) {
             if (request.startDate().isBefore(request.dateOfFinish())) {
                 estimation.setStartDate(request.startDate());
@@ -57,10 +56,8 @@ public class EstimationServiceImpl implements EstimationService {
                 } else {
                     throw new BadRequestException("Invalid reminder value");
                 }
-
                 ZonedDateTime time = timer.minusMinutes(estimation.getReminderType().getMinute());
                 estimation.setTime(time);
-
                 card.setEstimation(estimation);
                 estimationRepository.save(estimation);
                 log.info("Successfully saved estimation: " + estimation);
@@ -88,7 +85,6 @@ public class EstimationServiceImpl implements EstimationService {
         });
         estimation.setStartDate(request.startDate());
         estimation.setDuetDate(request.dateOfFinish());
-
         String reminder = request.reminder();
         if ("None".equals(reminder)) {
             estimation.setReminderType(ReminderType.NONE);
@@ -103,12 +99,10 @@ public class EstimationServiceImpl implements EstimationService {
         } else {
             throw new BadRequestException("Invalid reminder value");
         }
-
         ZonedDateTime time = timer.minusMinutes(estimation.getReminderType().getMinute());
         estimation.setTime(time);
         estimationRepository.save(estimation);
         log.info("Successfully estimation updated!");
-
         return EstimationResponse.builder()
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
