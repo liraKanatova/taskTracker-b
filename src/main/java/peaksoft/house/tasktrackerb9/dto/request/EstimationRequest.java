@@ -15,7 +15,15 @@ EstimationRequest(
         ZonedDateTime startDate,
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-        ZonedDateTime dateOfFinish
+        ZonedDateTime dateOfFinish,
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+        ZonedDateTime startTime,
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+        ZonedDateTime finishTime
+
+
 ) {
 
 }

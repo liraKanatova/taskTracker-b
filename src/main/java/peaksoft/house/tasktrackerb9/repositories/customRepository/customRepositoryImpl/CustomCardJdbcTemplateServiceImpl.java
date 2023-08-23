@@ -1,4 +1,4 @@
-package peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl;
+package peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
