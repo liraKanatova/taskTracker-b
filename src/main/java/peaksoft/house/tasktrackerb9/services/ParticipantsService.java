@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.services;
 
 import jakarta.mail.MessagingException;
+import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
@@ -13,9 +14,9 @@ public interface ParticipantsService {
 
     SimpleResponse inviteToWorkSpaces(ParticipantsRequest request) throws MessagingException;
 
-    SimpleResponse removeToWorkSpaces(Long workSpacesId,Long userId);
+    SimpleResponse removeToWorkSpaces(Long workSpaceId,Long userId);
 
-    SimpleResponse changeUpdateRole(Long workSpacesId, Long userId, Role role);
+    SimpleResponse changeUpdateRole(ParticipantsChangeRequest request);
 
     List<ParticipantsResponse>getAllParticipants(Long workSpacesId);
 

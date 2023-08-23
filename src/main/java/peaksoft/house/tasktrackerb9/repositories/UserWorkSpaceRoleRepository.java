@@ -14,4 +14,10 @@ public interface UserWorkSpaceRoleRepository extends JpaRepository<UserWorkSpace
 
     @Query("select u from UserWorkSpaceRole u JOIN u.workSpace w join w.boards b where b.id = :boardId and u.member.id = :userId")
     List<UserWorkSpaceRole> findByUserId(@Param("boardId") Long boardId, @Param("userId") Long userId);
+
+    @Query("select u from UserWorkSpaceRole u where u.member.id = :userId and u.workSpace.id = :workSpaceId")
+    List<UserWorkSpaceRole>findByUserToWorkSpace(@Param("userId") Long userId,@Param("workSpaceId") Long workSpaceId);
+
+    @Query("delete from UserWorkSpaceRole u where u.id=:id")
+    void deleted(@Param("id") Long id);
 }
