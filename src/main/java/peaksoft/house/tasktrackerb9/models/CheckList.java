@@ -26,7 +26,7 @@ public class CheckList {
 
     private int percent;
 
-    @OneToMany(cascade = {MERGE,REFRESH,DETACH},mappedBy = "checkList",orphanRemoval = true)
+    @OneToMany(cascade = {MERGE,REFRESH,DETACH,REMOVE},mappedBy = "checkList",orphanRemoval = true)
     private List<Item>items;
 
     @ManyToOne(cascade = {MERGE,REFRESH,DETACH})
