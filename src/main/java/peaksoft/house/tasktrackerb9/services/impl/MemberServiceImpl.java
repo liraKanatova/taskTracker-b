@@ -140,12 +140,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public SimpleResponse assignMemberToCard(Long memberId, Long cardId) {
         User user = jwtService.getAuthentication();
-        Long AdminId = cardRepository.getUserIdsByCardId(cardId).orElseThrow(() -> {
+        Long adminId = cardRepository.getUserIdByCardId(cardId).orElseThrow(() -> {
                     log.error("This card with id: "+cardId+ " is not present in your workspace!");
                     return new BadCredentialException("This card with id: "+cardId+ " is not present in your workspace!");
                 }
         );
-        if (!user.getId().equals(AdminId)) {
+        if (!user.getId().equals(adminId)) {
             log.error("You do not have permission to assign members to this card!");
             throw new BadCredentialException("You do not have permission to assign members to this card!");
         }
@@ -162,7 +162,7 @@ public class MemberServiceImpl implements MemberService {
             log.error("User with  id: %s is not on your workSpace");
             throw new NotFoundException("User with  id: %s is not on your workSpace".formatted(memberId));
         }
-        List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
+       List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
         boolean isTrue = getUserIdsByCardId.stream().anyMatch(id -> id.equals(memberId));
         if (isTrue) {
             throw new AlreadyExistException("User with id: %d exists".formatted(memberId));

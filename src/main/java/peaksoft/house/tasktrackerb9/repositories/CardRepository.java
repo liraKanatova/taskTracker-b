@@ -15,7 +15,7 @@ public interface CardRepository extends JpaRepository<Card,Long> {
     Optional<WorkSpace> getWorkSpaceByCardId(Long cardId);
 
     @Query("SELECT ws.adminId FROM Card c JOIN c.column co JOIN co.board b JOIN b.workSpace ws WHERE c.id = ?1")
-    Optional<Long> getUserIdsByCardId(Long cardId);
+    Optional<Long> getUserIdByCardId(Long cardId);
 
     @Query("SELECT u.id FROM User u JOIN u.cards c WHERE c.id = ?1")
     List<Long> getMembersByCardId(Long cardId);
