@@ -31,6 +31,13 @@ public class CommentApi {
     }
 
     @PermitAll
+    @Operation(summary = "Get all comments ", description = "Get all your comments")
+    @GetMapping("/user-comments")
+    public List<CommentResponse> getAllUserComments() {
+        return commentService.getAllUserComments();
+    }
+
+    @PermitAll
     @Operation(summary = "Get all comments from card", description = "Get all comments from cards by id")
     @GetMapping("/comments/{cardId}")
     public List<CommentResponse> getAllCommentsByCardId(@PathVariable Long cardId) {

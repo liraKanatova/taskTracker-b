@@ -2,8 +2,6 @@ package peaksoft.house.tasktrackerb9.dto.response;
 
 import lombok.*;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,5 +15,6 @@ public class CommentResponse {
     private Long creatorId;
     private String creatorName;
     private String creatorAvatar;
+    private Boolean isMyComment;
 
 }
