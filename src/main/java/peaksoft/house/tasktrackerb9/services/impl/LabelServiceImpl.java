@@ -56,38 +56,26 @@ public class LabelServiceImpl implements LabelService {
             log.error(String.format("Label with id : %s doesn't exist!", labelId));
             return new NotFoundException(String.format("Label with id : %s doesn't exist!", labelId));
         });
-
-        List<Card> cards = label.getCards();
-        boolean labelFound = false;
-
-        for (Card c : cards) {
-            if (c.getLabels().stream().anyMatch(l -> l.getLabelName().equals(label.getLabelName()) && l.getColor().equals(label.getColor()))) {
-                labelFound = true;
-                break;
+        for (Label l : card.getLabels()) {
+            if (l.getLabelName().equalsIgnoreCase(label.getLabelName()) && l.getColor().equalsIgnoreCase(label.getColor())) {
+                throw new AlreadyExistException(String.format("Label with name '%s' and color '%s' already exists on the card!", label.getLabelName(), label.getColor()));
             }
         }
-
-        if (!labelFound) {
-            throw new AlreadyExistException(String.format("Label with name '%s' and color '%s' already exists in a card!", label.getLabelName(), label.getColor()));
-        } else {
-            cards.add(card);
-            label.setCards(cards);
-
-            List<Label> labels = card.getLabels();
-            if (labels == null) {
-                labels = new ArrayList<>();
-            }
-            labels.add(label);
-            card.setLabels(labels);
-            labelRepository.save(label);
-            cardRepository.save(card);
-            log.info(String.format("Label with name : %s  successfully added to card with name %s ", label.getLabelName(), card.getTitle()));
-            return SimpleResponse.builder()
-                    .status(HttpStatus.OK)
-                    .message(String.format("Label with name : %s  successfully added to card with name %s ", label.getLabelName(), card.getTitle()))
-                    .build();
+        if (card.getLabels().stream().anyMatch(l -> l.getId().equals(labelId))) {
+            throw new AlreadyExistException(String.format("Label with id '%s' already exists on the card!", labelId));
         }
+        label.getCards().add(card);
+        card.getLabels().add(label);
+        cardRepository.save(card);
+        labelRepository.save(label);
+
+        log.info(String.format("Label with name: %s successfully added to card with name: %s", label.getLabelName(), card.getTitle()));
+        return SimpleResponse.builder()
+                .status(HttpStatus.OK)
+                .message(String.format("Label with name: %s successfully added to card with name: %s", label.getLabelName(), card.getTitle()))
+                .build();
     }
+
     @Override
     public LabelResponse getLabelById(Long labelId) {
         return labelJdbcTemplateService.getLabelById(labelId);
@@ -99,12 +87,13 @@ public class LabelServiceImpl implements LabelService {
             log.error(String.format("Label with id: %s doesn't exist !", labelId));
             return new NotFoundException(String.format("Label with id: %s doesn't exist !", labelId));
         });
-        log.info(String.format("Label with name : %s  successfully updated!", label.getLabelName()));
+        log.info(String.format("Label with id : %s  successfully updated!", label.getId()));
         label.setLabelName(labelRequest.description());
         label.setColor(labelRequest.color());
+        labelRepository.save(label);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message(String.format("Label with name : %s  successfully updated!", label.getLabelName()))
+                .message(String.format("Label with id : %s  successfully updated!", label.getId()))
                 .build();
     }
 
@@ -124,6 +113,10 @@ public class LabelServiceImpl implements LabelService {
 
     @Override
     public List<LabelResponse> getAllLabelsByCardId(Long cardId) {
+        cardRepository.findById(cardId).orElseThrow(() -> {
+            log.error(String.format("Card with id: %s doesn't exist !", cardId));
+            return new NotFoundException(String.format("Card with id: %s doesn't exist !", cardId));
+        });
         return labelJdbcTemplateService.getAllLabelsByCardId(cardId);
     }
 }

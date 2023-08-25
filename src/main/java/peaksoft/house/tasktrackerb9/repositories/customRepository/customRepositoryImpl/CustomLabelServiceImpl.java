@@ -10,6 +10,7 @@ import peaksoft.house.tasktrackerb9.dto.response.LabelResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomLabelRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,8 +59,7 @@ public class CustomLabelServiceImpl implements CustomLabelRepository {
                     return labelResponse;
                 });
         if (labelResponses.isEmpty()) {
-            log.error(String.format("Card with id: %s doesn't exist ", cardId));
-            throw new NotFoundException(String.format("Card with id: %s doesn't exist ", cardId));
+            new ArrayList<>();
         }
         return labelResponses;
     }
@@ -72,17 +72,18 @@ public class CustomLabelServiceImpl implements CustomLabelRepository {
                  l.color AS  labelColor 
                  FROM labels AS l where l.id=?
                 """;
-        Optional<LabelResponse> optionalLabelResponse = Optional.ofNullable(
-                jdbcTemplate.queryForObject(query, new Object[]{labelId}, ((rs, rowNum) -> {
-                    LabelResponse labelResponse1 = new LabelResponse();
-                    labelResponse1.setLabelId(rs.getLong("id"));
-                    labelResponse1.setDescription(rs.getString("labelName"));
-                    labelResponse1.setColor(rs.getString("labelColor"));
-                    return labelResponse1;
-                })));
-        return optionalLabelResponse.orElseThrow(() -> {
+        List<LabelResponse> labelResponses = jdbcTemplate.query(query, new Object[]{labelId}, ((rs, rowNum) -> {
+            LabelResponse labelResponse1 = new LabelResponse();
+            labelResponse1.setLabelId(rs.getLong("id"));
+            labelResponse1.setDescription(rs.getString("labelName"));
+            labelResponse1.setColor(rs.getString("labelColor"));
+            return labelResponse1;
+        }));
+        if (labelResponses.isEmpty()) {
             log.error(String.format("Label with id :%s doesn't exist !", labelId));
-            return new NotFoundException(String.format("Label with id :%s doesn't exist !", labelId));
-        });
+            throw new NotFoundException(String.format("Label with id :%s doesn't exist !", labelId));
+        }
+        return labelResponses.get(0);
     }
+
 }
