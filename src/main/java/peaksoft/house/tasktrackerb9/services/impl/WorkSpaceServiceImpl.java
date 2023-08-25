@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.services.impl;
 
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceFavoriteResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -48,7 +48,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     }
 
     @Override
-    public SimpleResponse saveWorkSpace(WorkSpaceRequest request) throws MessagingException {
+    public WorkSpaceFavoriteResponse saveWorkSpace(WorkSpaceRequest request) throws MessagingException {
         User user = jwtService.getAuthentication();
         WorkSpace workspace = new WorkSpace(request.getName(), user.getId());
         UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole(Role.ADMIN, user, workspace);

@@ -5,7 +5,6 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +14,6 @@ import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.User;
@@ -27,7 +25,6 @@ import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomParticipantsRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.ParticipantsService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -83,26 +80,21 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         User token = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> new NotFoundException("Workspace with id " + workSpaceId + " not found"));
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
-
         if (!workSpace.getAdminId().equals(token.getId())) {
             throw new NotFoundException("You are not the admin of this workspace");
         }
-
         List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
         for (UserWorkSpaceRole workSpaceRole : userWorkSpaceRoles) {
             if (workSpaceRole.getWorkSpace().equals(workSpace) && workSpaceRole.getMember().equals(user)) {
-                workSpaceRole.setId(null);
                 userWorkSpaceRoleRepository.deleteById(workSpaceRole.getId());
                 log.info("Successfully deleted");
-
-            }
+            }else throw new BadCredentialException("Not found id");
         }
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("Successfully deleted: " )
+                .message("Successfully deleted" )
                 .build();
     }
 
@@ -126,10 +118,9 @@ public class ParticipantsServiceImpl implements ParticipantsService {
                 log.info("Updated change role");
             }
         }
-
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("Successfully updated")
+                .message("Successfully role  updated")
                 .build();
     }
 

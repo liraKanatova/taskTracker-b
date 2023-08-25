@@ -20,7 +20,6 @@ public class ParticipantsResponse {
 
     private Role role;
 
-
     public ParticipantsResponse(Long id, String fullName, String email, Role role) {
         this.id = id;
         this.fullName = fullName;
