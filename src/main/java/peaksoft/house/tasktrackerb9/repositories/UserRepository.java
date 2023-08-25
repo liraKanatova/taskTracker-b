@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import peaksoft.house.tasktrackerb9.models.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -15,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.email = :email")
     Optional<User> findUserByEmail(String email);
+
+    @Query("SELECT u.id From User u JOIN u.roles r JOIN r.workSpace ws WHERE ws.id = ?1")
+    List<Long> getAllUsersByWorkSpaseId(Long workSpaseId);
 }
