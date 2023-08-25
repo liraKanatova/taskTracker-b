@@ -30,6 +30,7 @@ public class CheckListServiceImpl implements CheckListService {
     private final CardRepository cardRepository;
     private final CheckListRepository checkListRepository;
     private final CustomCheckListRepository customCheckListRepository;
+    private final ItemRepository itemRepository;
 
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -91,9 +92,11 @@ public class CheckListServiceImpl implements CheckListService {
             return new NotFoundException("CheckList with id: " + checkListId + " not found!");
         });
 
-        List<Item> items = checkList.getItems();
-        items.forEach(item -> item.getCheckList().getItems().remove(item));
-
+        List<Item> items = new ArrayList<>(checkList.getItems());
+        for (Item item : items) {
+            item.setCheckList(null);
+            itemRepository.delete(item);
+        }
         checkListRepository.delete(checkList);
 
         log.info("CheckList with id: " + checkListId + " successfully deleted!");

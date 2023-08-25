@@ -69,17 +69,20 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                     helper.setText("/workspaceId/" + workspace.getId() + " Click link to register :" + request.getLink());
                     javaMailSender.send(mimeMessage);
                     log.info(String.format("WorkSpace with name %s successfully saved!", workspace.getName()));
-                    return SimpleResponse.builder()
-                            .status(HttpStatus.OK)
-                            .message(String.format("WorkSpace with name %s successfully saved!", workspace.getName()))
+                    log.info("Workspace is saved!");
+                    return WorkSpaceFavoriteResponse.builder()
+                            .workSpaceId(workspace.getId())
+                            .name(workspace.getName())
+                            .isFavorite(false)
                             .build();
                 }
             }
         }
         log.info("Workspace is saved!");
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Workspace is saved!")
+        return WorkSpaceFavoriteResponse.builder()
+                .workSpaceId(workspace.getId())
+                .name(workspace.getName())
+                .isFavorite(false)
                 .build();
     }
 

@@ -23,14 +23,14 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
         String sql = """
                 SELECT
                     u.id AS member_id,
-                    u.first_name as first_name,
-                    u.last_name as last_name,
+                    u.first_name AS first_name,
+                    u.last_name AS last_name,
                     u.email AS email,
-                    u.image as image,
-                    u.role as role
-                FROM users u join boards_members bu on u.id = bu.members_id
-                             left  join cards_members cu on u.id = cu.members_id
-                WHERE cu.cards_id = ?;
+                    u.image AS image,
+                    u.role AS role
+                    FROM users u JOIN boards_members bu ON u.id = bu.members_id
+                    LEFT  JOIN cards_members cu ON u.id = cu.members_id
+                    WHERE cu.cards_id = ?;
                                
                  """;
         List<MemberResponse> boardMembers = jdbcTemplate.query(
@@ -46,14 +46,14 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
         String sql1 = """
                  SELECT
                          u.id AS memberId,
-                         u.first_name as first_name,
-                         u.last_name as last_name,
+                         u.first_name AS first_name,
+                         u.last_name AS last_name,
                          u.email AS email,
-                         u.role as role,
-                         u.image as image
-                 FROM users u join users_work_spaces wsu on u.id = wsu.members_id
-                         join cards_members cu on u.id = cu.members_id
-                         where cu.cards_id = ?
+                         u.role AS role,
+                         u.image AS image
+                         FROM users u JOIN users_work_spaces wsu ON u.id = wsu.members_id
+                         JOIN cards_members cu ON u.id = cu.members_id
+                         WHERE cu.cards_id = ?
                 """;
         List<MemberResponse> workSpaceMembers = jdbcTemplate.query(
                 sql1,
@@ -75,11 +75,11 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
     @Override
     public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
         String sql = """
-                select u.*
-                        from users u
-                        join users_work_spaces uwsr on uwsr.work_spaces_id = ?
-                        and uwsr.members_id = u.id
-                        where  lower(concat(u.first_name, u.last_name, u.email)) like lower(concat('%',?,'%'));
+                SELECT u.*
+                        FROM users u
+                        JOIN users_work_spaces uwsr ON uwsr.work_spaces_id = ?
+                        AND uwsr.members_id = u.id
+                        WHERE  lower(concat(u.first_name, u.last_name, u.email)) LIKE lower(concat('%',?,'%'));
                   """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> new MemberResponse(
                         rs.getLong("id"),
@@ -98,13 +98,13 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
         String sql = """
                 SELECT
                     u.id AS member_id,
-                    u.first_name as first_name,
-                    u.last_name as last_name,
+                    u.first_name AS first_name,
+                    u.last_name AS last_name,
                     u.email AS email,
-                    u.image as image,
-                    u.role as role
-                FROM users u join boards_members bu on u.id = bu.members_id
-                WHERE bu.boards_id = ?;
+                    u.image AS image,
+                    u.role AS role
+                    FROM users u JOIN boards_members bu ON u.id = bu.members_id
+                    WHERE bu.boards_id = ?;
                  """;
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                         new MemberResponse(

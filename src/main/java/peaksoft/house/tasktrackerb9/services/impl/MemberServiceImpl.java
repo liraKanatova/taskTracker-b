@@ -13,6 +13,7 @@ import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
@@ -107,7 +108,7 @@ public class MemberServiceImpl implements MemberService {
                 });
         List<UserWorkSpaceRole> workSpaceRole = userWorkSpaceRoleRepository.findByUserId(board.getId(), user.getId());
         WorkSpace workSpace = board.getWorkSpace();
-        if(!workSpace.getAdminId().equals(u.getId())){
+        if (!workSpace.getAdminId().equals(u.getId())) {
             throw new BadCredentialException("You are not a admin of this workSpace");
         }
         for (UserWorkSpaceRole w : workSpaceRole) {
@@ -122,7 +123,7 @@ public class MemberServiceImpl implements MemberService {
                 }
             }
         }
-        throw  new NotFoundException("Board with id : "+request.boardId()+" not found in the workSpace");
+        throw new NotFoundException("Board with id : " + request.boardId() + " not found in the workSpace");
     }
 
     @Override
@@ -133,5 +134,55 @@ public class MemberServiceImpl implements MemberService {
                     throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
         return customMemberRepository.getAllMembersFromBoard(board.getId());
+    }
+
+
+    @Override
+    public SimpleResponse assignMemberToCard(Long memberId, Long cardId) {
+        User user = jwtService.getAuthentication();
+        Long adminId = cardRepository.getUserIdByCardId(cardId).orElseThrow(() -> {
+                    log.error("This card with id: "+cardId+ " is not present in your workspace!");
+                    return new BadCredentialException("This card with id: "+cardId+ " is not present in your workspace!");
+                }
+        );
+        if (!user.getId().equals(adminId)) {
+            log.error("You do not have permission to assign members to this card!");
+            throw new BadCredentialException("You do not have permission to assign members to this card!");
+        }
+        WorkSpace workSpace = cardRepository.getWorkSpaceByCardId(cardId).orElseThrow(() -> {
+            log.error("This card with id: %s not in this workSpace ".formatted(cardId));
+            return new NotFoundException("This card with id: %s not in this workSpace ".formatted(cardId));
+        });
+        List<Long> userIds = userRepository.getAllUsersByWorkSpaseId(workSpace.getId());
+        boolean isFalse = false;
+        for (Long l : userIds) {
+            isFalse = !memberId.equals(l);
+        }
+        if (isFalse) {
+            log.error("User with  id: %s is not on your workSpace");
+            throw new NotFoundException("User with  id: %s is not on your workSpace".formatted(memberId));
+        }
+       List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
+        boolean isTrue = getUserIdsByCardId.stream().anyMatch(id -> id.equals(memberId));
+        if (isTrue) {
+            throw new AlreadyExistException("User with id: %d exists".formatted(memberId));
+        }
+        User newMember = userRepository.findById(memberId).orElseThrow(
+                () -> {
+                    log.error("User with id: %s not found".formatted(memberId));
+                    return new NotFoundException("User with id: %s not found".formatted(memberId));
+                });
+        Card card = cardRepository.findById(cardId).orElseThrow(() -> {
+            log.error("Card with id: %s not found".formatted(cardId));
+            return new NotFoundException("Card with id: %s not found".formatted(cardId));
+        });
+        card.getMembers().add(newMember);
+        newMember.getCards().add(card);
+        userRepository.save(newMember);
+        cardRepository.save(card);
+        return SimpleResponse.builder()
+                .status(HttpStatus.OK)
+                .message(String.format("User with id : %d successfully assigned to card with id : %d", memberId, cardId))
+                .build();
     }
 }
