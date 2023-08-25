@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
 import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
-import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
@@ -51,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public AllMemberResponse getAll(Long cardId) {
+    public List<MemberResponse> getAll(Long cardId) {
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
             log.error("Card with id: " + cardId + " not found");
             throw new NotFoundException("Card with id: " + cardId + " not found");
@@ -133,6 +132,7 @@ public class MemberServiceImpl implements MemberService {
                     log.error("Board with id: " + boardId + " not found");
                     throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
+
         return customMemberRepository.getAllMembersFromBoard(board.getId());
     }
 

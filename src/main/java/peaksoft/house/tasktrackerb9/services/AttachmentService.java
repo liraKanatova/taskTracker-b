@@ -8,5 +8,7 @@ public interface AttachmentService {
 
     AttachmentResponse saveAttachmentToCard(AttachmentRequest attachmentRequest);
 
+    AttachmentResponse getAttachmentByCardId(Long cardId);
+
     SimpleResponse deleteAttachment(Long attachmentId);
 }

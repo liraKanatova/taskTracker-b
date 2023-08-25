@@ -26,6 +26,12 @@ public class AttachmentApi {
         return attachmentService.saveAttachmentToCard(attachmentRequest);
     }
 
+    @GetMapping("/{cardId}")
+    @Operation(summary = "Get attachment ", description = "Get attachment with id")
+    public AttachmentResponse getAttachmentByCardId(@PathVariable Long cardId) {
+        return attachmentService.getAttachmentByCardId(cardId);
+    }
+
     @DeleteMapping("/{attachmentId}")
     @Operation(summary = "Delete attachment", description = "Delete attachment with id")
     public SimpleResponse deleteAttachment(@PathVariable Long attachmentId) {

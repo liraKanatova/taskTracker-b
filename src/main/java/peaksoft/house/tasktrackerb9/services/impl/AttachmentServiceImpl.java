@@ -18,6 +18,7 @@ import peaksoft.house.tasktrackerb9.models.WorkSpace;
 import peaksoft.house.tasktrackerb9.repositories.AttachmentRepository;
 import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.WorkSpaceRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomAttachmentRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.AttachmentService;
 
 import java.time.ZoneId;
@@ -33,6 +34,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     private final CardRepository cardRepository;
     private final AttachmentRepository attachmentRepository;
     private final JwtService service;
+    private final CustomAttachmentRepositoryImpl customAttachmentRepository;
 
     @Override
     public AttachmentResponse saveAttachmentToCard(AttachmentRequest attachmentRequest) {
@@ -61,6 +63,16 @@ public class AttachmentServiceImpl implements AttachmentService {
                 .documentLink(attachment.getDocumentLink())
                 .createdAt(attachment.getCreatedAt())
                 .build();
+    }
+
+    @Override
+    public AttachmentResponse getAttachmentByCardId(Long cardId) {
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> {
+                    log.error("Card with id: " + cardId + " not found");
+                    return new NotFoundException("Card with id: " + cardId + " not found");
+                });
+        return customAttachmentRepository.getAttachmentByCardId(cardId);
     }
 
     @Override

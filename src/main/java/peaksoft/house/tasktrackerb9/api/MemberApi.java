@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
 import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
-import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.MemberService;
@@ -33,7 +32,7 @@ public class MemberApi {
 
     @GetMapping("/{cardId}")
     @Operation(summary = "All members", description = "Get all members by board and work_space")
-    public AllMemberResponse getAll(@PathVariable Long cardId) {
+    public List<MemberResponse> getAll(@PathVariable Long cardId) {
         return memberService.getAll(cardId);
     }
 
