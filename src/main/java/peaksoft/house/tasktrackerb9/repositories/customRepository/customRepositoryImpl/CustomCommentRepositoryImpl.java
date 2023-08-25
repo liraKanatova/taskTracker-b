@@ -112,7 +112,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public List<CommentResponse> getAllComments() {
-        User uu = jwtService.getAuthentication();
+        User user = jwtService.getAuthentication();
         String sqlQuery = """
                 SELECT DISTINCT c.id                             AS id,
                        c.comment                                 AS comment,
@@ -125,7 +125,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                          JOIN users AS u ON u.id = c.member_id
                     """;
         return jdbcTemplate.query
-                (sqlQuery, new Object[]{uu.getId()}, new CommentResponseRowMap());
+                (sqlQuery, new Object[]{user.getId()}, new CommentResponseRowMap());
     }
 
     private class CommentResponseRowMap implements RowMapper<CommentResponse> {
@@ -151,7 +151,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public CommentResponse getCommentById(Long commentId) {
-        User u = jwtService.getAuthentication();
+        User user = jwtService.getAuthentication();
         String sqlQuery = """
                 SELECT c.id                                     AS id,
                        c.comment                                AS comment,
@@ -165,7 +165,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                     AND c.id = ?
                   """;
         return jdbcTemplate.queryForObject
-                (sqlQuery, new Object[]{u.getId(), commentId}, new CommentResponseRowMapper());
+                (sqlQuery, new Object[]{user.getId(), commentId}, new CommentResponseRowMapper());
     }
 
     private class CommentResponseRowMapper implements RowMapper<CommentResponse> {
