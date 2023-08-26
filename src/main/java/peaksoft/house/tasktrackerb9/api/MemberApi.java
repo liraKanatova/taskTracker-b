@@ -60,6 +60,7 @@ public class MemberApi {
         return memberService.assignMemberToCard(memberId, cardId);
     }
 
+    @Operation(summary = "Remove member from board", description = "Removes a member from a board.")
     @DeleteMapping("/remove/{memberId}/{boardId}")
     public SimpleResponse removeMemberFromBoard(@PathVariable Long memberId, @PathVariable Long boardId) {
         return memberService.removeMemberFromBoard(memberId, boardId);
