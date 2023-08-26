@@ -27,7 +27,7 @@ public class AttachmentApi {
     }
 
     @GetMapping("/{cardId}")
-    @Operation(summary = "Get attachment ", description = "Get attachment with id")
+    @Operation(summary = "Get attachment ", description = "Get attachment with card id")
     public AttachmentResponse getAttachmentByCardId(@PathVariable Long cardId) {
         return attachmentService.getAttachmentByCardId(cardId);
     }

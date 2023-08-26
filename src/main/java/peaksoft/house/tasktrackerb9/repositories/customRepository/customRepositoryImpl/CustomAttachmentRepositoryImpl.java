@@ -8,6 +8,8 @@ import peaksoft.house.tasktrackerb9.dto.response.AttachmentResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomAttachmentRepository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,7 +31,6 @@ public class CustomAttachmentRepositoryImpl implements CustomAttachmentRepositor
                     FROM attachments a
                     WHERE a.card_id = ?;
                 """;
-
         List<AttachmentResponse> attachments = jdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new AttachmentResponse(
@@ -38,16 +39,20 @@ public class CustomAttachmentRepositoryImpl implements CustomAttachmentRepositor
                         convertStringToZonedDateTime(rs.getString("created_at"))),
                 cardId
         );
-
         if (attachments.isEmpty()) {
             throw new NotFoundException("Attachments not found for card with id: " + cardId);
         }
-
         return attachments.get(0);
     }
 
     private ZonedDateTime convertStringToZonedDateTime(String timestampString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        return ZonedDateTime.parse(timestampString, formatter);
+        String[] parts = timestampString.split("\\.");
+        LocalDateTime localDateTime = LocalDateTime.parse(parts[0], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        int microseconds = Integer.parseInt(parts[1].substring(0, 6));
+        int nanoseconds = microseconds * 1000;
+
+        ZoneOffset zoneOffset = ZoneOffset.of(parts[1].substring(6));
+        return ZonedDateTime.of(localDateTime, zoneOffset).withNano(nanoseconds);
     }
 }

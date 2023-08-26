@@ -22,4 +22,6 @@ public interface MemberService {
 
     SimpleResponse assignMemberToCard(Long memberId,Long cardId);
 
+    SimpleResponse removeMemberFromBoard(Long memberId,Long boardId);
+
 }

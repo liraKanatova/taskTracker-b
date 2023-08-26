@@ -59,4 +59,9 @@ public class MemberApi {
     public SimpleResponse assignToCard(@PathVariable Long memberId, @PathVariable Long cardId) {
         return memberService.assignMemberToCard(memberId, cardId);
     }
+
+    @DeleteMapping("/remove/{memberId}/{boardId}")
+    public SimpleResponse removeMemberFromBoard(@PathVariable Long memberId, @PathVariable Long boardId) {
+        return memberService.removeMemberFromBoard(memberId, boardId);
+    }
 }
