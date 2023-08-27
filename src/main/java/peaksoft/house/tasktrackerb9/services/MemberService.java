@@ -12,7 +12,7 @@ public interface MemberService {
 
     List<MemberResponse> searchByEmail(Long workSpaceId, String email);
 
-    List<MemberResponse> getAll(Long cardId);
+    List<MemberResponse> getAllMembersByCardId(Long cardId);
 
     SimpleResponse inviteMemberToBoard(InviteRequest request) throws MessagingException;
 

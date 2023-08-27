@@ -31,9 +31,9 @@ public class MemberApi {
     }
 
     @GetMapping("/{cardId}")
-    @Operation(summary = "All members", description = "Get all members by board and work_space")
-    public List<MemberResponse> getAll(@PathVariable Long cardId) {
-        return memberService.getAll(cardId);
+    @Operation(summary = "All members", description = "Get members by card id")
+    public List<MemberResponse> getAllMembers(@PathVariable Long cardId) {
+        return memberService.getAllMembersByCardId(cardId);
     }
 
     @Operation(summary = "Invite new member to board", description = "Invite new member to board")
@@ -60,8 +60,8 @@ public class MemberApi {
         return memberService.assignMemberToCard(memberId, cardId);
     }
 
-    @Operation(summary = "Remove member from board", description = "Removes a member from a board.")
-    @DeleteMapping("/remove/{memberId}/{boardId}")
+    @Operation(summary = "Remove member", description = "Remove members by id from board ")
+    @DeleteMapping("/{memberId}/{boardId}")
     public SimpleResponse removeMemberFromBoard(@PathVariable Long memberId, @PathVariable Long boardId) {
         return memberService.removeMemberFromBoard(memberId, boardId);
     }

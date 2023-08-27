@@ -50,12 +50,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberResponse> getAll(Long cardId) {
+    public List<MemberResponse> getAllMembersByCardId(Long cardId) {
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
             log.error("Card with id: " + cardId + " not found");
             throw new NotFoundException("Card with id: " + cardId + " not found");
         });
-        return customMemberRepository.getAll(card.getId());
+        return customMemberRepository.getAllMembersByCardId(card.getId());
     }
 
     public SimpleResponse inviteMemberToBoard(InviteRequest request) throws MessagingException {
@@ -162,7 +162,7 @@ public class MemberServiceImpl implements MemberService {
             isFalse = !memberId.equals(l);
         }
         if (isFalse) {
-            log.error("User with  id: %s is not on your workSpace");
+            log.error("User with  id: %s is not on your workSpace".formatted(memberId));
             throw new NotFoundException("User with  id: %s is not on your workSpace".formatted(memberId));
         }
         List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
@@ -192,7 +192,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse removeMemberFromBoard(Long memberId, Long boardId) {
-        User u = jwtService.getAuthentication();
+        User admin = jwtService.getAuthentication();
         log.info("Removing member with id: {} from board with id: {}", memberId, boardId);
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
@@ -205,8 +205,8 @@ public class MemberServiceImpl implements MemberService {
                     throw new NotFoundException("User with id " + memberId + " not found");
                 });
         WorkSpace workSpace = board.getWorkSpace();
-        if (!workSpace.getAdminId().equals(u.getId())) {
-            log.error("User with id : {} is not an admin of this workSpace", u.getId());
+        if (!workSpace.getAdminId().equals(admin.getId())) {
+            log.error("User with id : {} is not an admin of this workSpace", admin.getId());
             throw new BadCredentialException("You are not a admin of this workSpace");
         }
         List<UserWorkSpaceRole> workSpaceRole = userWorkSpaceRoleRepository.findByUserId(board.getId(), user.getId());

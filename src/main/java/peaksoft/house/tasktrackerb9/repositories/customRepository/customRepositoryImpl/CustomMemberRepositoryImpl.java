@@ -18,7 +18,7 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<MemberResponse> getAll(Long cardId) {
+    public List<MemberResponse> getAllMembersByCardId(Long cardId) {
         String sql = """
                   SELECT
                       u.id ,
