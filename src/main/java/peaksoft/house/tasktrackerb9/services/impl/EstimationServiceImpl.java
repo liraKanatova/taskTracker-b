@@ -15,6 +15,7 @@ import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
+import java.time.ZonedDateTime;
 
 @Service
 @Transactional
@@ -39,16 +40,25 @@ public class EstimationServiceImpl implements EstimationService {
                 estimation.setFinishDate(request.dateOfFinish());
                 estimation.setStartTime(request.startTime());
                 estimation.setFinishTime(request.finishTime());
-                if ("None".equals(request.reminder())) {
+                ZonedDateTime timer=estimation.getStartTime();
+                if (request.reminder().equals("NONE")) {
                     estimation.setReminderType(ReminderType.NONE);
-                } else if ("5".equals(request.reminder())) {
+                } else if (request.reminder().equals("5")) {
                     estimation.setReminderType(ReminderType.FIVE_MINUTE);
-                } else if ("10".equals(request.reminder())) {
+                    ZonedDateTime time = timer.minusMinutes(ReminderType.FIFTEEN_MINUTE.getMinute());
+                    estimation.setFinishTime(time);
+                } else if (request.reminder().equals("10")) {
                     estimation.setReminderType(ReminderType.TEN_MINUTE);
-                } else if ("15".equals(request.reminder())) {
+                    ZonedDateTime time = timer.minusMinutes(ReminderType.TEN_MINUTE.getMinute());
+                    estimation.setFinishTime(time);
+                } else if (request.reminder().equals("15")) {
                     estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-                } else if ("30".equals(request.reminder())) {
+                    ZonedDateTime time = timer.minusMinutes(ReminderType.FIFTEEN_MINUTE.getMinute());
+                    estimation.setFinishTime(time);
+                } else if (request.reminder().equals("30")) {
                     estimation.setReminderType(ReminderType.THIRD_MINUTE);
+                    ZonedDateTime time = timer.minusMinutes(ReminderType.THIRD_MINUTE.getMinute());
+                    estimation.setFinishTime(time);
                 } else {
                     throw new BadRequestException("Invalid reminder value");
                 }
@@ -75,6 +85,7 @@ public class EstimationServiceImpl implements EstimationService {
             log.info("Card with id: " + request.cardId() + "  not found");
             return new NotFoundException("Card with id: " + request.cardId() + " id not found");
         });
+        ZonedDateTime timer=estimation.getStartTime();
         if (request.startDate() != null || !request.startDate().toString().isEmpty()) {
             estimation.setStartDate(request.startDate());
         } else {
@@ -95,16 +106,24 @@ public class EstimationServiceImpl implements EstimationService {
         } else {
             estimation.setFinishTime(estimation.getFinishTime());
         }
-        if ("None".equals(request.reminder())) {
+        if (request.reminder().equals("NONE")) {
             estimation.setReminderType(ReminderType.NONE);
-        } else if ("5".equals(request.reminder())) {
+        } else if (request.reminder().equals("5")) {
             estimation.setReminderType(ReminderType.FIVE_MINUTE);
-        } else if ("10".equals(request.reminder())) {
+            ZonedDateTime time = timer.minusMinutes(ReminderType.FIVE_MINUTE.getMinute());
+            estimation.setFinishTime(time);
+        } else if (request.reminder().equals("10")){
             estimation.setReminderType(ReminderType.TEN_MINUTE);
-        } else if ("15".equals(request.reminder())) {
+            ZonedDateTime time = timer.minusMinutes(ReminderType.TEN_MINUTE.getMinute());
+            estimation.setFinishTime(time);
+        } else if (request.reminder().equals("15")) {
             estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-        } else if ("30".equals(request.reminder())) {
+            ZonedDateTime time = timer.minusMinutes(ReminderType.FIFTEEN_MINUTE.getMinute());
+            estimation.setFinishTime(time);
+        } else if (request.reminder().equals("30")) {
             estimation.setReminderType(ReminderType.THIRD_MINUTE);
+            ZonedDateTime time = timer.minusMinutes(ReminderType.THIRD_MINUTE.getMinute());
+            estimation.setFinishTime(time);
         } else {
             throw new BadRequestException("Invalid reminder value");
         }
