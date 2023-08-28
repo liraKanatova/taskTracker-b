@@ -125,17 +125,17 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     }
 
     @Override
-    public List<ParticipantsResponse> getAllParticipants(Long workSpacesId) {
-        return customParticipantsRepository.getAllParticipants(workSpacesId);
+    public List<ParticipantsResponse> getAllParticipants(Long workSpaceId) {
+        return customParticipantsRepository.getAllParticipants(workSpaceId);
     }
 
     @Override
-    public List<ParticipantsResponse> getAllAdminParticipants(Long workSpacesId) {
-        return customParticipantsRepository.getAllAdminParticipants(workSpacesId);
+    public List<ParticipantsResponse> getAllAdminParticipants(Long workSpaceId) {
+        return customParticipantsRepository.getAllAdminParticipants(workSpaceId);
     }
 
     @Override
-    public List<ParticipantsResponse> getAllMemberParticipants(Long workSpacesId) {
-        return customParticipantsRepository.getAllMemberParticipants(workSpacesId);
+    public List<ParticipantsResponse> getAllMemberParticipants(Long workSpaceId) {
+        return customParticipantsRepository.getAllMemberParticipants(workSpaceId);
     }
 }

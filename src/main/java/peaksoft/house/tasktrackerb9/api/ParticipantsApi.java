@@ -26,7 +26,7 @@ public class ParticipantsApi {
 
     @Operation(summary = "Invite participants",description = "Invite participants to workSpace id")
     @PostMapping
-    public SimpleResponse inviteToWorkSpaces(@RequestBody ParticipantsRequest participantsRequest) throws MessagingException {
+    public SimpleResponse inviteToWorkSpace(@RequestBody ParticipantsRequest participantsRequest) throws MessagingException {
         return participantsService.inviteToWorkSpaces(participantsRequest);
     }
 
@@ -37,26 +37,25 @@ public class ParticipantsApi {
     }
 
     @Operation(summary = "Get all participants", description = "Get all participants to workSpace id")
-    @GetMapping("/getAll/{workSpacesId}")
-    public List<ParticipantsResponse> getAllParticipants(@PathVariable Long workSpacesId) {
-        return participantsService.getAllParticipants(workSpacesId);
+    @GetMapping("/getAll/{workSpaceId}")
+    public List<ParticipantsResponse> getAllParticipants(@PathVariable Long workSpaceId) {
+        return participantsService.getAllParticipants(workSpaceId);
     }
 
     @Operation(summary = "Get all admin", description = "Get all participants admin to workSpace id")
-    @GetMapping("/getAll-Admin/{workSpacesId}")
-    public List<ParticipantsResponse> getAllAdminParticipants(@PathVariable Long workSpacesId) {
-        return participantsService.getAllAdminParticipants(workSpacesId);
+    @GetMapping("/getAll-Admin/{workSpaceId}")
+    public List<ParticipantsResponse> getAllAdminParticipants(@PathVariable Long workSpaceId) {
+        return participantsService.getAllAdminParticipants(workSpaceId);
     }
 
     @Operation(summary = "Get all member", description = "Get all participants member to workSpace id")
-    @GetMapping("/getAll-Member/{workSpacesId}")
-    public List<ParticipantsResponse> getAllMemberParticipants(@PathVariable Long workSpacesId) {
-        return participantsService.getAllMemberParticipants(workSpacesId);
+    @GetMapping("/getAll-Member/{workSpaceId}")
+    public List<ParticipantsResponse> getAllMemberParticipants(@PathVariable Long workSpaceId) {
+        return participantsService.getAllMemberParticipants(workSpaceId);
     }
-
-    @DeleteMapping("/remove/{workSpacesId}/{userId}")
-    public SimpleResponse removeParticipants(@PathVariable Long workSpacesId, @PathVariable Long userId) {
-        return participantsService.removeToWorkSpaces(workSpacesId, userId);
+    @Operation(summary = "Remove participants",description = "Remove participants to workSpace id")
+    @DeleteMapping("/remove/{workSpaceId}/{userId}")
+    public SimpleResponse removeParticipants(@PathVariable Long workSpaceId, @PathVariable Long userId) {
+        return participantsService.removeToWorkSpaces(workSpaceId, userId);
     }
-
 }

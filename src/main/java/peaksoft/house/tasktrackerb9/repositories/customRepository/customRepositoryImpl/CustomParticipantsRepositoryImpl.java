@@ -19,8 +19,8 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<ParticipantsResponse> getAllParticipants(Long workSpacesId) {
-        if (workSpacesId != null) {
+    public List<ParticipantsResponse> getAllParticipants(Long workSpaceId) {
+        if (workSpaceId != null) {
             throw new NotFoundException("This user not found in this workSpace");
         }
         String sql = """
@@ -37,13 +37,13 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
                                 rs.getString("email"),
                                 Role.valueOf(rs.getString("role"))
                         ),
-                workSpacesId);
+                workSpaceId);
 
     }
 
     @Override
-    public List<ParticipantsResponse> getAllAdminParticipants(Long workSpacesId) {
-        if (workSpacesId != null) {
+    public List<ParticipantsResponse> getAllAdminParticipants(Long workSpaceId) {
+        if (workSpaceId != null) {
             throw new NotFoundException("This user not found in this workSpace");
         }
         String sql = """
@@ -60,13 +60,13 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
                                 rs.getString("email"),
                                 Role.valueOf(rs.getString("role"))
                         ),
-                workSpacesId
+                workSpaceId
         );
     }
 
     @Override
-    public List<ParticipantsResponse> getAllMemberParticipants(Long workSpacesId) {
-        if (workSpacesId != null) {
+    public List<ParticipantsResponse> getAllMemberParticipants(Long workSpaceId) {
+        if (workSpaceId != null) {
             throw new NotFoundException("This user not found in this workSpace");
         }
         String sql = """
@@ -83,7 +83,7 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
                                 rs.getString("email"),
                                 Role.valueOf(rs.getString("role"))
                         ),
-                workSpacesId
+                workSpaceId
         );
     }
 }

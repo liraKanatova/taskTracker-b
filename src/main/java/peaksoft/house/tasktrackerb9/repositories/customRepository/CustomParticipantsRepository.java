@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface CustomParticipantsRepository {
 
-    List<ParticipantsResponse> getAllParticipants(Long workSpacesId);
+    List<ParticipantsResponse> getAllParticipants(Long workSpaceId);
 
-    List<ParticipantsResponse>getAllAdminParticipants(Long workSpacesId);
+    List<ParticipantsResponse>getAllAdminParticipants(Long workSpaceId);
 
-    List<ParticipantsResponse>getAllMemberParticipants(Long workSpacesId);
+    List<ParticipantsResponse>getAllMemberParticipants(Long workSpaceId);
 }
