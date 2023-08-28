@@ -96,7 +96,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse changeMemberRole(ChangeRoleRequest request) {
-        User u = jwtService.getAuthentication();
+        User admin = jwtService.getAuthentication();
         log.info("Changing member role in board with id: {}", request.boardId());
         Board board = boardRepository.findById(request.boardId())
                 .orElseThrow(() -> {
@@ -110,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
                 });
         List<UserWorkSpaceRole> workSpaceRole = userWorkSpaceRoleRepository.findByUserId(board.getId(), user.getId());
         WorkSpace workSpace = board.getWorkSpace();
-        if (!workSpace.getAdminId().equals(u.getId())) {
+        if (!workSpace.getAdminId().equals(admin.getId())) {
             throw new BadCredentialException("You are not a admin of this workSpace");
         }
         for (UserWorkSpaceRole w : workSpaceRole) {
