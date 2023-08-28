@@ -21,8 +21,4 @@ public interface ParticipantsService {
     List<ParticipantsResponse>getAllAdminParticipants(Long workSpaceId);
 
     List<ParticipantsResponse>getAllMemberParticipants(Long workSpaceId);
-
-
-
-
 }
