@@ -2,7 +2,9 @@ package peaksoft.house.tasktrackerb9.repositories.customRepository;
 
 import peaksoft.house.tasktrackerb9.dto.response.AttachmentResponse;
 
+import java.util.List;
+
 public interface CustomAttachmentRepository {
 
-    AttachmentResponse getAttachmentByCardId(Long cardId);
+    List<AttachmentResponse> getAttachmentsByCardId(Long cardId);
 }

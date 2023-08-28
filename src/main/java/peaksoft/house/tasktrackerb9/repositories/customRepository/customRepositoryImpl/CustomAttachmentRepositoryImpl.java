@@ -22,7 +22,7 @@ public class CustomAttachmentRepositoryImpl implements CustomAttachmentRepositor
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public AttachmentResponse getAttachmentByCardId(Long cardId) {
+    public List<AttachmentResponse> getAttachmentsByCardId(Long cardId) {
         String sql = """
                     SELECT
                         a.id,
@@ -42,7 +42,7 @@ public class CustomAttachmentRepositoryImpl implements CustomAttachmentRepositor
         if (attachments.isEmpty()) {
             throw new NotFoundException("Attachments not found for card with id: " + cardId);
         }
-        return attachments.get(0);
+        return attachments;
     }
 
     private ZonedDateTime convertStringToZonedDateTime(String timestampString) {

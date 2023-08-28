@@ -23,6 +23,7 @@ import peaksoft.house.tasktrackerb9.services.AttachmentService;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -68,13 +69,13 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public AttachmentResponse getAttachmentByCardId(Long cardId) {
+    public List<AttachmentResponse> getAttachmentsByCardId(Long cardId){
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> {
                     log.error("Card with id: " + cardId + " not found");
                     return new NotFoundException("Card with id: " + cardId + " not found");
                 });
-        return customAttachmentRepository.getAttachmentByCardId(card.getId());
+        return customAttachmentRepository.getAttachmentsByCardId(card.getId());
     }
 
     @Override

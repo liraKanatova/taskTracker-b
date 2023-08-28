@@ -10,6 +10,8 @@ import peaksoft.house.tasktrackerb9.dto.response.AttachmentResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.AttachmentService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/attachments")
@@ -28,8 +30,8 @@ public class AttachmentApi {
 
     @GetMapping("/{cardId}")
     @Operation(summary = "Get attachment ", description = "Get attachment with card id")
-    public AttachmentResponse getAttachmentByCardId(@PathVariable Long cardId) {
-        return attachmentService.getAttachmentByCardId(cardId);
+    public List<AttachmentResponse> getAttachmentsByCardId(@PathVariable Long cardId) {
+        return attachmentService.getAttachmentsByCardId(cardId);
     }
 
     @DeleteMapping("/{attachmentId}")
