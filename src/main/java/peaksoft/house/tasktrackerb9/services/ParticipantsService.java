@@ -5,6 +5,7 @@ import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.Role;
 
 import java.util.List;
 
@@ -16,9 +17,5 @@ public interface ParticipantsService {
 
     SimpleResponse changeUpdateRole(ParticipantsChangeRequest request);
 
-    List<ParticipantsResponse>getAllParticipants(Long workSpaceId);
-
-    List<ParticipantsResponse>getAllAdminParticipants(Long workSpaceId);
-
-    List<ParticipantsResponse>getAllMemberParticipants(Long workSpaceId);
+    List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role);
 }

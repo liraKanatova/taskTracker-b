@@ -12,7 +12,7 @@ import peaksoft.house.tasktrackerb9.enums.Role;
 @NoArgsConstructor
 public class ParticipantsResponse {
 
-    private Long id;
+    private Long userId;
 
     private String fullName;
 
@@ -20,8 +20,8 @@ public class ParticipantsResponse {
 
     private Role role;
 
-    public ParticipantsResponse(Long id, String fullName, String email, Role role) {
-        this.id = id;
+    public ParticipantsResponse(Long userId, String fullName, String email, Role role) {
+        this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;

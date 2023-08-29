@@ -19,17 +19,19 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<ParticipantsResponse> getAllParticipants(Long workSpaceId) {
-        if (workSpaceId != null) {
-            throw new NotFoundException("This user not found in this workSpace");
+    public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
+        if (workSpaceId == null) {
+            throw new NotFoundException("WorkSpace ID cannot be null");
         }
+
         String sql = """
-                SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
-                FROM user_work_space_roles uwsr
-                JOIN work_spaces ws ON ws.id = uwsr.work_space_id
-                JOIN users u ON uwsr.member_id = u.id
-                WHERE ws.id = ?;
-                   """;
+        SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
+        FROM user_work_space_roles uwsr
+        JOIN work_spaces ws ON ws.id = uwsr.work_space_id
+        JOIN users u ON uwsr.member_id = u.id
+        WHERE ws.id = ? AND uwsr.role = ?;
+    """;
+
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                         new ParticipantsResponse(
                                 rs.getLong("id"),
@@ -37,53 +39,8 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
                                 rs.getString("email"),
                                 Role.valueOf(rs.getString("role"))
                         ),
-                workSpaceId);
-
-    }
-
-    @Override
-    public List<ParticipantsResponse> getAllAdminParticipants(Long workSpaceId) {
-        if (workSpaceId != null) {
-            throw new NotFoundException("This user not found in this workSpace");
-        }
-        String sql = """
-                SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
-                   FROM user_work_space_roles uwsr
-                   JOIN work_spaces ws ON ws.id = uwsr.work_space_id
-                   JOIN users u ON uwsr.member_id = u.id
-                   WHERE ws.id = ? AND uwsr.role='ADMIN';      
-                   """;
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                        new ParticipantsResponse(
-                                rs.getLong("id"),
-                                rs.getString("fullname"),
-                                rs.getString("email"),
-                                Role.valueOf(rs.getString("role"))
-                        ),
-                workSpaceId
-        );
-    }
-
-    @Override
-    public List<ParticipantsResponse> getAllMemberParticipants(Long workSpaceId) {
-        if (workSpaceId != null) {
-            throw new NotFoundException("This user not found in this workSpace");
-        }
-        String sql = """
-                 SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
-                FROM user_work_space_roles uwsr
-                JOIN work_spaces ws ON ws.id = uwsr.work_space_id
-                JOIN users u ON uwsr.member_id = u.id
-                WHERE ws.id = ? AND uwsr.role='MEMBER';            
-                """;
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                        new ParticipantsResponse(
-                                rs.getLong("id"),
-                                rs.getString("fullname"),
-                                rs.getString("email"),
-                                Role.valueOf(rs.getString("role"))
-                        ),
-                workSpaceId
+                workSpaceId,
+                role.toString()
         );
     }
 }

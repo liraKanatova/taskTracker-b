@@ -14,6 +14,7 @@ import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.User;
@@ -77,12 +78,12 @@ public class ParticipantsServiceImpl implements ParticipantsService {
 
     @Override
     public SimpleResponse removeToWorkSpaces(Long workSpaceId,Long userId) {
-        User token = jwtService.getAuthentication();
+        User authentication = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> new NotFoundException("Workspace with id " + workSpaceId + " not found"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
-        if (!workSpace.getAdminId().equals(token.getId())) {
+        if (!workSpace.getAdminId().equals(authentication.getId())) {
             throw new NotFoundException("You are not the admin of this workspace");
         }
         List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
@@ -100,14 +101,14 @@ public class ParticipantsServiceImpl implements ParticipantsService {
 
     @Override
     public SimpleResponse changeUpdateRole(ParticipantsChangeRequest request) {
-        User token = jwtService.getAuthentication();
+        User authentication = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(request.workSpacesId())
                 .orElseThrow(() -> new NotFoundException("Workspace with id " + request.workSpacesId() + " not found"));
 
         User user = userRepository.findById(request.memberId())
                 .orElseThrow(() -> new NotFoundException("User with id " + request.memberId() + " not found"));
 
-        if (!workSpace.getAdminId().equals(token.getId())) {
+        if (!workSpace.getAdminId().equals(authentication.getId())) {
             throw new NotFoundException("You are not the admin of this workspace");
         }
         List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
@@ -125,17 +126,9 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     }
 
     @Override
-    public List<ParticipantsResponse> getAllParticipants(Long workSpaceId) {
-        return customParticipantsRepository.getAllParticipants(workSpaceId);
+    public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
+        return customParticipantsRepository.getParticipantsByRole(workSpaceId,role);
     }
 
-    @Override
-    public List<ParticipantsResponse> getAllAdminParticipants(Long workSpaceId) {
-        return customParticipantsRepository.getAllAdminParticipants(workSpaceId);
-    }
 
-    @Override
-    public List<ParticipantsResponse> getAllMemberParticipants(Long workSpaceId) {
-        return customParticipantsRepository.getAllMemberParticipants(workSpaceId);
-    }
 }

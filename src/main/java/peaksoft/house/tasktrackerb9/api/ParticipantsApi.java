@@ -10,6 +10,7 @@ import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.services.ParticipantsService;
 
 import java.util.List;
@@ -24,37 +25,26 @@ public class ParticipantsApi {
 
     private final ParticipantsService participantsService;
 
-    @Operation(summary = "Invite participants",description = "Invite participants to workSpace id")
+    @Operation(summary = "Invite participants", description = "Invite participants to workSpace by workSpace id")
     @PostMapping
     public SimpleResponse inviteToWorkSpace(@RequestBody ParticipantsRequest participantsRequest) throws MessagingException {
         return participantsService.inviteToWorkSpaces(participantsRequest);
     }
 
-    @Operation(summary = "Change role update", description = "Participants change role update to workspace id")
+    @Operation(summary = "Change role", description = "Participants change role update to workspace by workSpace id")
     @PutMapping
     public SimpleResponse changeUpdateRole(@RequestBody ParticipantsChangeRequest request) {
         return participantsService.changeUpdateRole(request);
     }
 
-    @Operation(summary = "Get all participants", description = "Get all participants to workSpace id")
-    @GetMapping("/getAll/{workSpaceId}")
-    public List<ParticipantsResponse> getAllParticipants(@PathVariable Long workSpaceId) {
-        return participantsService.getAllParticipants(workSpaceId);
+    @Operation(summary = "Get all participants",description = "you can get all participants with workSpace id and sort by their roles")
+    @GetMapping("/{wokSpaceId}")
+    public List<ParticipantsResponse> getAllParticipants(@PathVariable Long wokSpaceId, @RequestParam Role role) {
+        return participantsService.getParticipantsByRole(wokSpaceId, role);
     }
 
-    @Operation(summary = "Get all admin", description = "Get all participants admin to workSpace id")
-    @GetMapping("/getAll-Admin/{workSpaceId}")
-    public List<ParticipantsResponse> getAllAdminParticipants(@PathVariable Long workSpaceId) {
-        return participantsService.getAllAdminParticipants(workSpaceId);
-    }
-
-    @Operation(summary = "Get all member", description = "Get all participants member to workSpace id")
-    @GetMapping("/getAll-Member/{workSpaceId}")
-    public List<ParticipantsResponse> getAllMemberParticipants(@PathVariable Long workSpaceId) {
-        return participantsService.getAllMemberParticipants(workSpaceId);
-    }
-    @Operation(summary = "Remove participants",description = "Remove participants to workSpace id")
-    @DeleteMapping("/remove/{workSpaceId}/{userId}")
+    @Operation(summary = "Remove participants", description = "Remove participants to workSpace id")
+    @DeleteMapping("/{workSpaceId}/{userId}")
     public SimpleResponse removeParticipants(@PathVariable Long workSpaceId, @PathVariable Long userId) {
         return participantsService.removeToWorkSpaces(workSpaceId, userId);
     }
