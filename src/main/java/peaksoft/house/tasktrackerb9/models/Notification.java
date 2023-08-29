@@ -26,8 +26,6 @@ public class Notification {
 
     private String text;
 
-    private String image;
-
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
@@ -44,6 +42,12 @@ public class Notification {
     private Card card;
 
     @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
-
     private Estimation estimation;
+
+    private Long boardId;
+
+    private Long fromUserId;
+
+    private Long columnId;
+
 }

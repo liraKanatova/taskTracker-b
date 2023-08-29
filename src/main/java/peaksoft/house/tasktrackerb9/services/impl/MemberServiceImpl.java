@@ -12,7 +12,9 @@ import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
 import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
+import peaksoft.house.tasktrackerb9.dto.response.NotificationResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.NotificationType;
 import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -23,6 +25,7 @@ import peaksoft.house.tasktrackerb9.services.MemberService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Slf4j
@@ -39,6 +42,7 @@ public class MemberServiceImpl implements MemberService {
     private final CardRepository cardRepository;
     private final CustomMemberRepositoryImpl customMemberRepository;
     private final JavaMailSender javaMailSender;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
@@ -176,6 +180,23 @@ public class MemberServiceImpl implements MemberService {
             log.error("Card with id: %s not found".formatted(cardId));
             return new NotFoundException("Card with id: %s not found".formatted(cardId));
         });
+        Notification assignNotification = new Notification();
+        assignNotification.setCard(card);
+        assignNotification.setType(NotificationType.ASSIGN);
+        assignNotification.setText(String.format("User with id %d has been assigned to card with id %d", memberId, cardId));
+        assignNotification.setCreatedDate(ZonedDateTime.now());
+        assignNotification.setIsRead(false);
+        assignNotification.setFromUserId(workSpace.getAdminId());
+        assignNotification.setColumnId(card.getColumn().getId());
+        assignNotification.setBoardId(card.getColumn().getBoard().getId());
+        card.getNotifications().add(assignNotification);
+
+        for (User member : card.getMembers()) {
+            member.getNotifications().add(assignNotification);
+        }
+        notificationRepository.save(assignNotification);
+        userRepository.saveAll(card.getMembers());
+
         card.getMembers().add(newMember);
         newMember.getCards().add(card);
         userRepository.save(newMember);

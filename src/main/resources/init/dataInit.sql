@@ -134,12 +134,12 @@ values (1,'title','for work',false,now(),1,1),
        (17,'title','words',false,now(),7,2),
        (18,'word','words',false,now(),5,5);
 
-insert into notifications(id,text,image,type,is_read,created_date,card_id)
-values (1,'batyraak bol','img','MOVE',false,now(),2),
-       (2,'vnimanie','img','MOVE',false,now(),1),
-       (3,'vas dobavili','img','ASSIGN',false,now(),3),
-       (4,'pravilno','img','REMINDER',false,now(),4),
-       (5,'normalno','img','REMINDER',false,now(),5);
+insert into notifications(id,text,type,is_read,created_date,card_id,board_id,column_id,from_user_id)
+values (1,'batyraak bol','MOVE',false,now(),2,2,2,2),
+       (2,'vnimanie','MOVE',false,now(),1,1,1,1),
+       (3,'vas dobavili','ASSIGN',false,now(),3,3,3,3),
+       (4,'pravilno','ASSIGN',false,now(),4,4,4,4),
+       (5,'normalno','REMINDER',false,now(),5,5,5,5);
 
 insert into labels(id,color,label_name)
 values (1,'Green','Done'),

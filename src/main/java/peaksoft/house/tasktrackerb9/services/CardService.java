@@ -26,4 +26,6 @@ public interface CardService {
 
     SimpleResponse archiveAllCardsInColumn(Long columnId);
 
+    SimpleResponse moveCard(Long cardId, Long columnId);
+
 }
