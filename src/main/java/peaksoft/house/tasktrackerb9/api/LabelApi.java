@@ -3,6 +3,7 @@ package peaksoft.house.tasktrackerb9.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.LabelRequest;
 import peaksoft.house.tasktrackerb9.dto.response.LabelResponse;
@@ -12,16 +13,17 @@ import peaksoft.house.tasktrackerb9.services.LabelService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/labels")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*",maxAge = 3600)
+@RequestMapping("/api/labels")
+@PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Labels API", description = "All labels endpoints")
 public class LabelApi {
 
     private final LabelService labelService;
 
     @Operation(summary = "Get all labels", description = "Get all labels ")
-    @GetMapping("/labels")
+    @GetMapping()
     public List<LabelResponse> getAllLabels() {
         return labelService.getAllLabels();
     }
@@ -37,6 +39,7 @@ public class LabelApi {
     public SimpleResponse addLabelsToCard(@PathVariable Long cardId, @PathVariable Long labelId) {
         return labelService.addLabelsToCard(cardId, labelId);
     }
+
     @Operation(summary = "Get by id", description = "Get label by id ")
     @GetMapping("/{labelId}")
     public LabelResponse getLabelById(@PathVariable Long labelId) {

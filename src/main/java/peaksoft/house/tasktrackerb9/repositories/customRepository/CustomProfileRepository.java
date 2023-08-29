@@ -12,5 +12,7 @@ public interface CustomProfileRepository {
 
     ProfileResponse getProfileById(Long userId);
 
+    ProfileResponse getMyProfile();
+
     GlobalSearchResponse search(String search);
 }

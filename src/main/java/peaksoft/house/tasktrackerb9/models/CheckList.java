@@ -22,11 +22,11 @@ public class CheckList {
     initialValue = 6)
     private Long id;
 
-    private String description;
+    private String title;
 
     private int percent;
 
-    @OneToMany(cascade = {MERGE,REFRESH,DETACH},mappedBy = "checkList",orphanRemoval = true)
+    @OneToMany(cascade = {MERGE,REFRESH,DETACH,REMOVE},mappedBy = "checkList",orphanRemoval = true)
     private List<Item>items;
 
     @ManyToOne(cascade = {MERGE,REFRESH,DETACH})

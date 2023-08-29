@@ -23,7 +23,7 @@ public class S3Service {
     private String bucketPath;
     private final S3Client s3Client;
 
-    public Map<String, String> upload(MultipartFile file) throws IOException {
+    public Map<String, String>  upload(MultipartFile file) throws IOException {
         String key = System.currentTimeMillis() + file.getOriginalFilename();
         PutObjectRequest p = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -40,7 +40,8 @@ public class S3Service {
                 .key(key)
                 .build();
         s3Client.putObject(p, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-        return Map.of("Link", bucketPath + key);
+       return Map.of("Link", bucketPath + key);
+
     }
 
     public Map<String, String> delete(String fileLink) {

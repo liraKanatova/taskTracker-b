@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.UserRequest;
 import peaksoft.house.tasktrackerb9.dto.response.GlobalSearchResponse;
@@ -12,10 +13,11 @@ import peaksoft.house.tasktrackerb9.dto.response.UserResponse;
 import peaksoft.house.tasktrackerb9.services.impl.ProfileServiceImpl;
 
 @RestController
-@RequestMapping("/api/profile")
 @RequiredArgsConstructor
-@Tag(name = "Profile Api",description = "Api Profile to management")
-@CrossOrigin(origins = "*",maxAge = 3600)
+@RequestMapping("/api/profile")
+@PreAuthorize("hasAuthority('ADMIN')")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Profile Api", description = "Api Profile to management")
 public class ProfileApi {
 
     private final ProfileServiceImpl userService;
@@ -28,25 +30,25 @@ public class ProfileApi {
 
     @PutMapping("/avatar")
     @Operation(summary = "Update image", description = "User updating profile image")
-    public UserResponse updateImage(@RequestBody String userRequestImage) {
+    public UserResponse updateImage(@RequestParam String userRequestImage) {
         return userService.updateImageUserId(userRequestImage);
     }
 
     @GetMapping("/{userId}")
-    @Operation(summary = "Profile",description = "Profile user get by id")
-    public ProfileResponse getProfileById(@PathVariable Long userId){
+    @Operation(summary = "Profile", description = "Profile user get by id")
+    public ProfileResponse getProfileById(@PathVariable Long userId) {
         return userService.getProfileById(userId);
     }
 
 
     @GetMapping("/me")
-    @Operation(summary = "My profile",description = "Get my profile")
-    public UserResponse getMyProfile(){
+    @Operation(summary = "My profile", description = "Get my profile")
+    public ProfileResponse getMyProfile() {
         return userService.getMyProfile();
     }
 
     @GetMapping("/global-search")
-    public GlobalSearchResponse search(@RequestParam  String search){
+    public GlobalSearchResponse search(@RequestParam String search) {
         return userService.search(search);
     }
 

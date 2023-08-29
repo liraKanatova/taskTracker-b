@@ -14,10 +14,11 @@ import javax.annotation.security.PermitAll;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/comments")
-@Tag(name = "Comments API", description = "All comments endpoints !")
 @RequiredArgsConstructor
+@RequestMapping("/api/comments")
+@PreAuthorize("hasAuthority('ADMIN')")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Comments API", description = "All comments endpoints !")
 public class CommentApi {
 
     private final CommentService commentService;

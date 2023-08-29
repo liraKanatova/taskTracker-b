@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceFavoriteResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -21,6 +22,7 @@ import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomWorkSpaceRepository;
 import peaksoft.house.tasktrackerb9.services.WorkSpaceService;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,12 +49,13 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     }
 
     @Override
-    public SimpleResponse saveWorkSpace(WorkSpaceRequest request) throws MessagingException {
+    public WorkSpaceFavoriteResponse saveWorkSpace(WorkSpaceRequest request) throws MessagingException {
         User user = jwtService.getAuthentication();
         WorkSpace workspace = new WorkSpace(request.getName(), user.getId());
         UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole(Role.ADMIN, user, workspace);
         user.setRoles(List.of(userWorkSpace));
         user.setWorkSpaces(List.of(workspace));
+        workspace.setCreatedDate(ZonedDateTime.now());
         workspace.setMembers(List.of(user));
         workSpaceRepository.save(workspace);
         List<String> invitationEmails = request.getEmails();
@@ -67,23 +70,29 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
                     helper.setText("/workspaceId/" + workspace.getId() + " Click link to register :" + request.getLink());
                     javaMailSender.send(mimeMessage);
                     log.info(String.format("WorkSpace with name %s successfully saved!", workspace.getName()));
-                    return SimpleResponse.builder()
-                            .status(HttpStatus.OK)
-                            .message(String.format("WorkSpace with name %s successfully saved!", workspace.getName()))
+                    log.info("Workspace is saved!");
+                    return WorkSpaceFavoriteResponse.builder()
+                            .workSpaceId(workspace.getId())
+                            .name(workspace.getName())
+                            .isFavorite(false)
                             .build();
                 }
             }
         }
         log.info("Workspace is saved!");
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Workspace is saved!")
+        return WorkSpaceFavoriteResponse.builder()
+                .workSpaceId(workspace.getId())
+                .name(workspace.getName())
+                .isFavorite(false)
                 .build();
     }
 
     @Override
     public WorkSpaceResponse getWorkSpaceById(Long id) {
-
+        workSpaceRepository.findById(id).orElseThrow(() -> {
+            log.error("WorkSpace with id " + id + " not found ! ");
+            return new NotFoundException("WorkSpace with id " + id + " not found ! ");
+        });
         return workSpaceJdbcTemplateService.getWorkSpaceById(id);
     }
 
@@ -109,47 +118,45 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
         User user = jwtService.getAuthentication();
 
         WorkSpace workSpace = workSpaceRepository.getWorkSpaceByAdminIdAndId(user.getId(), id).orElseThrow(() -> {
-            log.error("WorkSpace with id " + id + " not found ! ");
-            return new NotFoundException("WorkSpace with id " + id + " not found ! ");
+            log.error("You can't delete this workSpace with id: " + id + " !");
+            return new NotFoundException("You can't delete this workSpace with id: " + id + " !");
         });
-        List<Card> cardsToDelete = new ArrayList<>();
+
+        List<User> usersToRemoveWorkspace = new ArrayList<>();
+
+        for (User user1 : workSpace.getMembers()) {
+            user1.getWorkSpaces().remove(workSpace);
+            usersToRemoveWorkspace.add(user1);
+        }
 
         for (Board board : workSpace.getBoards()) {
             for (Column c : board.getColumns()) {
-                for (Card card : c.getCards()) {
-                    Card cardToUpdate = cardRepository.findById(card.getId())
-                            .orElseThrow(() -> new NotFoundException("Card with id " + card.getId() + " not found"));
+                List<Card> cardsToDelete = new ArrayList<>(c.getCards());
 
-                    for (Label label : cardToUpdate.getLabels()) {
-                        label.getCards().remove(cardToUpdate);
-                    }
-                    cardToUpdate.getLabels().clear();
-
-                    cardsToDelete.add(cardToUpdate);
+                for (Card card : cardsToDelete) {
+                    removeNotificationsForCard(card);
+                    c.getCards().remove(card);
+                    cardRepository.delete(card);
                 }
             }
         }
-        for (Card card : cardsToDelete) {
-            removeNotificationsForCard(card);
-        }
-        user.setWorkSpaces(null);
-        userRepository.save(user);
-        cardRepository.deleteAll(cardsToDelete);
+
+        userRepository.saveAll(usersToRemoveWorkspace);
         workSpaceRepository.delete(workSpace);
-        log.info(String.format("WorkSpace with id %s  successfully deleted !", id));
+        log.info(String.format("WorkSpace with id %s successfully deleted!", id));
+
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message(String.format("WorkSpace with id %s  successfully deleted !", id))
+                .message(String.format("WorkSpace with id %s successfully deleted!", id))
                 .build();
-
     }
 
     private void removeNotificationsForCard(Card card) {
         List<Notification> notifications = notificationRepository.findByCard(card);
         for (Notification notification : notifications) {
             notification.setCard(null);
-            notificationRepository.save(notification);
         }
         notificationRepository.deleteAll(notifications);
     }
+
 }

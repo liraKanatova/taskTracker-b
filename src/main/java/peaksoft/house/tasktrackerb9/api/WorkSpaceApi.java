@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.WorkSpaceRequest;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceFavoriteResponse;
 import peaksoft.house.tasktrackerb9.dto.response.WorkSpaceResponse;
 import peaksoft.house.tasktrackerb9.services.WorkSpaceService;
 
@@ -14,10 +16,11 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/work_spaces")
 @RequiredArgsConstructor
-@Tag(name = "Workspace API", description = "All workspace endpoints")
+@RequestMapping("/api/work_spaces")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
+@Tag(name = "Workspace API", description = "All workspace endpoints")
 public class WorkSpaceApi {
 
     private final WorkSpaceService workSpaceService;
@@ -30,7 +33,7 @@ public class WorkSpaceApi {
 
     @Operation(summary = "Create workSpace", description = "create workspace by user auth id")
     @PostMapping
-    public SimpleResponse saveWorkSpaces(@RequestBody WorkSpaceRequest workSpaceRequest) throws MessagingException {
+    public WorkSpaceFavoriteResponse saveWorkSpaces(@RequestBody WorkSpaceRequest workSpaceRequest) throws MessagingException {
         return workSpaceService.saveWorkSpace(workSpaceRequest);
     }
 

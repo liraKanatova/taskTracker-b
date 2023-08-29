@@ -131,9 +131,6 @@ public class BoardServiceImpl implements BoardService {
                     log.error("Board with id: " + boardId + " not found");
                     throw new NotFoundException("Board with id: " + boardId + " not found");
                 });
-        if(!user.getBoards().contains(board)){
-            throw new BadRequestException("Board not found");
-        }else {
             boolean isFavorite = false;
             if (board.getFavorites() != null) {
                 for (Favorite favorite : user.getFavorites()) {
@@ -149,6 +146,6 @@ public class BoardServiceImpl implements BoardService {
                     .backGround(board.getBackGround())
                     .isFavorite(isFavorite)
                     .build();
-        }
+
     }
 }
