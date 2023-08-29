@@ -35,7 +35,9 @@ public class Estimation {
 
     private ZonedDateTime startTime;
 
-    private ZonedDateTime finishTime;
+    private ZonedDateTime time;
+
+    private ZonedDateTime notificationTime;
 
     @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;

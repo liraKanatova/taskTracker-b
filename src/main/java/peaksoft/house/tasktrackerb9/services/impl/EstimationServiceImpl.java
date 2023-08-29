@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.dto.request.EstimationRequest;
 import peaksoft.house.tasktrackerb9.dto.response.EstimationResponse;
 import peaksoft.house.tasktrackerb9.enums.ReminderType;
+import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.BadRequestException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.Card;
@@ -14,8 +15,6 @@ import peaksoft.house.tasktrackerb9.models.Estimation;
 import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
-
-import java.time.ZonedDateTime;
 
 @Service
 @Transactional
@@ -39,44 +38,47 @@ public class EstimationServiceImpl implements EstimationService {
                 estimation.setStartDate(request.startDate());
                 estimation.setFinishDate(request.dateOfFinish());
                 estimation.setStartTime(request.startTime());
-                estimation.setFinishTime(request.finishTime());
-                ZonedDateTime timer=estimation.getStartTime();
+                estimation.setTime(request.finishTime());
                 if (request.reminder().equals("NONE")) {
                     estimation.setReminderType(ReminderType.NONE);
-                } else if (request.reminder().equals("5")) {
+                }
+                if (request.reminder().equals("5")) {
                     estimation.setReminderType(ReminderType.FIVE_MINUTE);
-                    ZonedDateTime time = timer.minusMinutes(ReminderType.FIFTEEN_MINUTE.getMinute());
-                    estimation.setFinishTime(time);
-                } else if (request.reminder().equals("10")) {
+                    if (estimation.getTime() != null) {
+                        estimation.setNotificationTime(estimation.getTime().minusMinutes(5));
+                    } else throw new BadCredentialException("Notification finish time must be not null");
+                }
+                if (request.reminder().equals("10")) {
                     estimation.setReminderType(ReminderType.TEN_MINUTE);
-                    ZonedDateTime time = timer.minusMinutes(ReminderType.TEN_MINUTE.getMinute());
-                    estimation.setFinishTime(time);
-                } else if (request.reminder().equals("15")) {
+                    if (estimation.getTime() != null) {
+                        estimation.setNotificationTime(estimation.getTime().minusMinutes(10));
+                    } else throw new BadCredentialException("Notification finish time must be not null");
+
+                }
+                if (request.reminder().equals("15")) {
                     estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-                    ZonedDateTime time = timer.minusMinutes(ReminderType.FIFTEEN_MINUTE.getMinute());
-                    estimation.setFinishTime(time);
-                } else if (request.reminder().equals("30")) {
+                    if (estimation.getTime() != null) {
+                        estimation.setNotificationTime(estimation.getTime().minusMinutes(15));
+                    } else throw new BadCredentialException("Notification finish time must be not null");
+                }
+                if (request.reminder().equals("30")) {
                     estimation.setReminderType(ReminderType.THIRD_MINUTE);
-                    ZonedDateTime time = timer.minusMinutes(ReminderType.THIRD_MINUTE.getMinute());
-                    estimation.setFinishTime(time);
-                } else {
-                    throw new BadRequestException("Invalid reminder value");
+                    if (estimation.getTime() != null) {
+                        estimation.setNotificationTime(estimation.getTime().minusMinutes(30));
+                    } else throw new BadCredentialException("Notification finish time must be not null");
                 }
                 card.setEstimation(estimation);
                 estimationRepository.save(estimation);
                 log.info("Successfully saved estimation: " + estimation);
-            } else {
-                throw new BadRequestException("The start date must not be before the finish date");
-            }
-        } else {
-            throw new BadRequestException("This card already has an estimation");
-        }
-        return EstimationResponse.builder()
-                .estimationId(estimation.getId())
-                .startDate(estimation.getStartDate().toString())
-                .duetDate(estimation.getFinishDate().toString())
-                .finishTime(estimation.getFinishTime().toString())
-                .reminderType(estimation.getReminderType()).build();
+            } else throw new BadRequestException("The start date must not be before the finish date");
+        } else throw new BadRequestException("This card already has an estimation");
+        return EstimationResponse.builder().
+                estimationId(estimation.getId()).
+                startDate(estimation.getStartDate().toString()).
+                duetDate(estimation.getFinishDate().toString()).
+                finishTime(estimation.getTime().toString()).
+                reminderType(estimation.getReminderType()).
+                build();
     }
 
     @Override
@@ -85,7 +87,6 @@ public class EstimationServiceImpl implements EstimationService {
             log.info("Card with id: " + request.cardId() + "  not found");
             return new NotFoundException("Card with id: " + request.cardId() + " id not found");
         });
-        ZonedDateTime timer=estimation.getStartTime();
         if (request.startDate() != null || !request.startDate().toString().isEmpty()) {
             estimation.setStartDate(request.startDate());
         } else {
@@ -97,43 +98,50 @@ public class EstimationServiceImpl implements EstimationService {
             estimation.setFinishDate(estimation.getFinishDate());
         }
         if (request.startTime() != null || !request.startTime().toString().isEmpty()) {
-            estimation.setFinishTime(request.finishTime());
+            estimation.setTime(request.finishTime());
         } else {
-            estimation.setFinishTime(estimation.getFinishTime());
+            estimation.setTime(estimation.getTime());
         }
         if (request.finishTime() != null || !request.finishTime().toString().isEmpty()) {
-            estimation.setFinishTime(request.finishTime());
+            estimation.setTime(request.finishTime());
         } else {
-            estimation.setFinishTime(estimation.getFinishTime());
+            estimation.setTime(estimation.getTime());
         }
         if (request.reminder().equals("NONE")) {
             estimation.setReminderType(ReminderType.NONE);
-        } else if (request.reminder().equals("5")) {
+        }
+        if (request.reminder().equals("5")) {
             estimation.setReminderType(ReminderType.FIVE_MINUTE);
-            ZonedDateTime time = timer.minusMinutes(ReminderType.FIVE_MINUTE.getMinute());
-            estimation.setFinishTime(time);
-        } else if (request.reminder().equals("10")){
+            if (estimation.getTime() != null) {
+                estimation.setNotificationTime(estimation.getTime().minusMinutes(5));
+            } else throw new BadCredentialException("Notification finish time must be not null");
+        }
+        if (request.reminder().equals("10")) {
             estimation.setReminderType(ReminderType.TEN_MINUTE);
-            ZonedDateTime time = timer.minusMinutes(ReminderType.TEN_MINUTE.getMinute());
-            estimation.setFinishTime(time);
-        } else if (request.reminder().equals("15")) {
+            if (estimation.getTime() != null) {
+                estimation.setNotificationTime(estimation.getTime().minusMinutes(10));
+            } else throw new BadCredentialException("Notification finish time must be not null");
+        }
+        if (request.reminder().equals("15")) {
             estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-            ZonedDateTime time = timer.minusMinutes(ReminderType.FIFTEEN_MINUTE.getMinute());
-            estimation.setFinishTime(time);
-        } else if (request.reminder().equals("30")) {
+            if (estimation.getTime() != null) {
+                estimation.setNotificationTime(estimation.getTime().minusMinutes(15));
+            } else throw new BadCredentialException("Notification finish time must be not null");
+        }
+        if (request.reminder().equals("30")) {
             estimation.setReminderType(ReminderType.THIRD_MINUTE);
-            ZonedDateTime time = timer.minusMinutes(ReminderType.THIRD_MINUTE.getMinute());
-            estimation.setFinishTime(time);
-        } else {
-            throw new BadRequestException("Invalid reminder value");
+            if (estimation.getTime() != null) {
+                estimation.setNotificationTime(estimation.getTime().minusMinutes(5));
+            } else throw new BadCredentialException("Notification finish time must be not null");
         }
         estimationRepository.save(estimation);
         log.info("Successfully estimation updated!");
-        return EstimationResponse.builder()
-                .estimationId(estimation.getId())
-                .startDate(estimation.getStartDate().toString())
-                .duetDate(estimation.getFinishDate().toString())
-                .finishTime(estimation.getFinishTime().toString())
-                .reminderType(estimation.getReminderType()).build();
+        return EstimationResponse.builder().
+                estimationId(estimation.getId()).
+                startDate(estimation.getStartDate().toString()).
+                duetDate(estimation.getFinishDate().toString()).
+                finishTime(estimation.getTime().toString()).
+                reminderType(estimation.getReminderType()).
+                build();
     }
 }
