@@ -215,7 +215,9 @@ create table estimations
     notification_id bigint
         unique,
     start_date      timestamp(6) with time zone,
+    start_time      timestamp(6) with time zone,
     time            timestamp(6) with time zone,
+    notification_time timestamp(6)with time zone,
     reminder_type   varchar(255)
         constraint estimations_reminder_type_check
             check ((reminder_type)::text = ANY
