@@ -129,6 +129,4 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
         return customParticipantsRepository.getParticipantsByRole(workSpaceId,role);
     }
-
-
 }
