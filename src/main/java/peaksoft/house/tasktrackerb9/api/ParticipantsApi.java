@@ -37,7 +37,7 @@ public class ParticipantsApi {
         return participantsService.changeUpdateRole(request);
     }
 
-    @Operation(summary = "Get all participants",description = "you can get all participants with workSpace id and sort by their roles")
+    @Operation(summary = "Get all participants",description = "You can get all participants with workSpace id and sort by their roles")
     @GetMapping("/{wokSpaceId}")
     public List<ParticipantsResponse> getAllParticipants(@PathVariable Long wokSpaceId, @RequestParam Role role) {
         return participantsService.getParticipantsByRole(wokSpaceId, role);
