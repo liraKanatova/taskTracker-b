@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ResetPasswordRequest;
 import peaksoft.house.tasktrackerb9.dto.request.SignInRequest;
@@ -23,6 +24,8 @@ import peaksoft.house.tasktrackerb9.services.AuthenticationService;
 @Tag(name = "Authentication Api", description = "API - Handles user authentication and access control")
 public class AuthenticationApi {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationApi.class.getName());
+
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
@@ -34,6 +37,7 @@ public class AuthenticationApi {
     @PostMapping("/signIn")
     @Operation(summary = "SignIn", description = "Only registered users can login")
     public AuthenticationResponse signIn(@RequestBody @Valid SignInRequest signInRequest) {
+        logger.info("Sign in");
         return authenticationService.signIn(signInRequest);
     }
 

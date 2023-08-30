@@ -87,10 +87,18 @@ public class BoardServiceImpl implements BoardService {
         if(!user.getBoards().contains(board)){
             throw new BadRequestException("Board not found");
         }else {
-            board.setTitle(boardUpdateRequest.title());
-            board.setBackGround(boardUpdateRequest.backGround());
+            if (boardUpdateRequest.title() != null) {
+                board.setTitle(boardUpdateRequest.title());
+            }else{
+                board.setTitle(board.getTitle());
+            }
+            if (boardUpdateRequest.backGround() != null) {
+                board.setBackGround(boardUpdateRequest.backGround());
+            }else{
+                board.setBackGround(board.getBackGround());
+            }
             boardRepository.save(board);
-            return SimpleResponse.builder()
+        return SimpleResponse.builder()
                     .status(HttpStatus.OK)
                     .message("Board updated successfully ")
                     .build();
