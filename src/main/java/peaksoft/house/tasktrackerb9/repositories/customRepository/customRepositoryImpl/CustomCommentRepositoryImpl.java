@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.response.CommentResponse;
+import peaksoft.house.tasktrackerb9.models.User;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomCommentRepository;
 
 import java.sql.ResultSet;
@@ -23,6 +25,7 @@ import java.util.List;
 public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final JwtService jwtService;
 
     @Override
     public List<CommentResponse> getAllUserComments(Long userId) {
@@ -32,13 +35,15 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                        c.created_date                          AS date,
                        u.id                                    AS creatorId,
                        concat(u.first_name, '  ', u.last_name) AS fullName,
-                       u.image                                 AS avatar
+                       u.image                                 AS avatar,
+                       CASE WHEN u.id = cu.members_id THEN TRUE ELSE FALSE END AS isMine
                 FROM comments AS c
                          JOIN users u ON u.id = c.member_id
-                         LEFT JOIN cards_members cu
-                                   ON u.id = cu.members_id
-                WHERE u.id=?
-                """;
+                         LEFT JOIN cards_members cu ON u.id = cu.members_id
+                WHERE u.id= ? group by c.id, c.comment, c.created_date, u.id,
+                concat(u.first_name, '  ', u.last_name), u.image,
+                CASE WHEN u.id = cu.members_id THEN TRUE ELSE FALSE END;
+                 """;
         return jdbcTemplate.query(sqlQuery, new Object[]{userId}, new CommentResponseRowMapperr());
     }
 
@@ -51,6 +56,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
             commentResponse.setCreatorAvatar(rs.getString("avatar"));
+            commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -62,23 +68,25 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
         }
     }
 
-
     @Override
     public List<CommentResponse> getAllCommentByCardId(Long cardId) {
+        User user = jwtService.getAuthentication();
         String sqlQuery = """
-               SELECT c.id                                     AS id,
-                      c.comment                                AS comment,
-                      c.created_date                           AS date,
-                      u.id                                     AS creatorId,
-                      concat(u.first_name, '   ', u.last_name) AS fullName,
-                      u.image                                  AS image
-               FROM comments AS c
-                        JOIN users AS u ON u.id = c.member_id
-                        JOIN cards AS c2 ON c2.id = c.card_id
-               WHERE c2.id=?
-                  """;
+                SELECT DISTINCT c.id                            AS id,
+                       c.comment                                AS comment,
+                       c.created_date                           AS date,
+                       u.id                                     AS creatorId,
+                       concat(u.first_name, '  ', u.last_name) AS fullName,
+                       u.image                                  AS image,
+                       CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine
+                FROM comments AS c
+                         JOIN users AS u ON u.id = c.member_id
+                         JOIN comments com on u.id = com.member_id
+                         JOIN cards AS c2 ON c2.id = c.card_id
+                WHERE c2.id= ?;
+                       """;
         return jdbcTemplate.query
-                (sqlQuery, new Object[]{cardId}, new CommentResponseRowMapperer());
+                (sqlQuery, new Object[]{user.getId(), cardId}, new CommentResponseRowMapperer());
     }
 
     private class CommentResponseRowMapperer implements RowMapper<CommentResponse> {
@@ -90,6 +98,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
             commentResponse.setCreatorAvatar(rs.getString("image"));
+            commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -103,21 +112,20 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public List<CommentResponse> getAllComments() {
-
+        User user = jwtService.getAuthentication();
         String sqlQuery = """
-               SELECT c.id                                     AS id,
-                      c.comment                                AS comment,
-                      c.created_date                           AS date,
-                      u.id                                     AS creatorId,
-                      concat(u.first_name, '   ', u.last_name) AS fullName,
-                      u.image                                  AS image
-               FROM comments AS c
-                        JOIN users AS u ON u.id = c.member_id
-                      
-               
-                  """;
+                SELECT DISTINCT c.id                             AS id,
+                       c.comment                                 AS comment,
+                       c.created_date                           AS date,
+                       u.id                                     AS creatorId,
+                       concat(u.first_name, '   ', u.last_name) AS fullName,
+                       u.image                                  AS image,
+                       CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine
+                FROM comments AS c
+                         JOIN users AS u ON u.id = c.member_id
+                    """;
         return jdbcTemplate.query
-                (sqlQuery, new CommentResponseRowMap());
+                (sqlQuery, new Object[]{user.getId()}, new CommentResponseRowMap());
     }
 
     private class CommentResponseRowMap implements RowMapper<CommentResponse> {
@@ -129,6 +137,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
             commentResponse.setCreatorAvatar(rs.getString("image"));
+            commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
@@ -142,19 +151,21 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 
     @Override
     public CommentResponse getCommentById(Long commentId) {
+        User user = jwtService.getAuthentication();
         String sqlQuery = """
                 SELECT c.id                                     AS id,
                        c.comment                                AS comment,
                        c.created_date                           AS date,
                        u.id                                     AS creatorId,
                        concat(u.first_name, '   ', u.last_name) AS fullName,
-                       u.image                                  AS image
+                       u.image                                  AS image,
+                       CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine
                 FROM comments AS c
                          JOIN users u ON u.id = c.member_id
                     AND c.id = ?
                   """;
         return jdbcTemplate.queryForObject
-                (sqlQuery, new Object[]{commentId}, new CommentResponseRowMapper());
+                (sqlQuery, new Object[]{user.getId(), commentId}, new CommentResponseRowMapper());
     }
 
     private class CommentResponseRowMapper implements RowMapper<CommentResponse> {
@@ -166,6 +177,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
             commentResponse.setCreatorName(rs.getString("fullName"));
             commentResponse.setCreatorId(rs.getLong("creatorId"));
             commentResponse.setCreatorAvatar(rs.getString("image"));
+            commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             java.sql.Timestamp timestamp = rs.getTimestamp("date");
             if (timestamp != null) {
                 ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());

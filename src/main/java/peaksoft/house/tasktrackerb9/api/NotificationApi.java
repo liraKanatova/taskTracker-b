@@ -20,7 +20,7 @@ public class NotificationApi {
 
     private final NotificationService notificationService;
 
-    @GetMapping("/get-all")
+    @GetMapping
     @Operation(summary = "Get all", description = "Get all notifications")
     public List<NotificationResponse> getAllNotifications(){
         return notificationService.getAllNotifications();

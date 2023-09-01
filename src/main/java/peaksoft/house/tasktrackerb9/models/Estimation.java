@@ -31,9 +31,13 @@ public class Estimation {
     private ZonedDateTime startDate;
 
     @Column(name = "due_date")
-    private ZonedDateTime duetDate;
+    private ZonedDateTime finishDate;
+
+    private ZonedDateTime startTime;
 
     private ZonedDateTime time;
+
+    private ZonedDateTime notificationTime;
 
     @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;
