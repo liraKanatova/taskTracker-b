@@ -5,7 +5,7 @@ values (1,'Abdumalik','Turatbek uulu','asanbekovmalik2@gmail.com', '$2a$12$6RFdM
        (4,'Adilet','Islambek uulu','adilet@gmail.com', '$2a$12$xYXRx6kjHtxqb0sV1jLrh.WrcfmoVazuwqLY1YmVjHlGjcHroICVO',  'https://biogr.net/wp-content/uploads/2022/02/63463463.jpg','ADMIN'),
        (5,'Manas','Abdugani uulu','manas@gmail.com', '$2a$12$egcK6uZ5RlHPgEzEEczyM.VVX33yCsgyH2Kdw4m.lJk7Bl2pnE39.',  'https://kai.kg/public/images/2021/12/1638521287.png','ADMIN'),
        (6,'Ruslan','Manas uulu','rusi.studio.kgz@gmail.com', '$2a$12$gXZ4PqsbtIRLo3jzhYbEuu4buoTi6QuNDziF9Wbv5IOL0s8k2BnbO',  'https://fikiwiki.com/uploads/posts/2022-02/1644971529_1-fikiwiki-com-p-smeshnie-kartinki-muzhchin-1.jpg','ADMIN'),
-       (7,'Gulira','Abdukerim','gulira.abdukerimkyzy.jk@gmail.com', '$2a$12$2iwD0wgV3wXR6s5NUo5UN./cL.IT.5WIJBJFL14Y.NQvPw20UEejm',  'https://uhd.name/uploads/posts/2022-09/1662489129_2-uhd-name-p-odezhda-iz-kirgizii-devushka-pinterest-2.jpg','ADMIN'),
+       (7,'Gulira','Abdukerim','gulira@gmail.com', '$2a$12$2iwD0wgV3wXR6s5NUo5UN./cL.IT.5WIJBJFL14Y.NQvPw20UEejm',  'https://uhd.name/uploads/posts/2022-09/1662489129_2-uhd-name-p-odezhda-iz-kirgizii-devushka-pinterest-2.jpg','ADMIN'),
        (8,'Aizat','Duiheeva','aizat@gmail.com', '$2a$12$UARP9TLJMXtcEMGcPqhdQu3cmKgbLWVujV5EBqXzvVT8j119gBh9a',  'https://almode.ru/uploads/posts/2021-03/thumbs/1615893140_3-p-natsionalnaya-odezhda-v-kirgizii-7.jpg','ADMIN'),
        (9,'Sanjar','Abdimomunov','sanjar@gmail.com', '$2a$12$cHRllZJmiH1BRFS9YRBDHO7TkiKaN4yysFA2tXmGqb/ugiGRBQIPO',  'https://weblinks.ru/wp-content/uploads/2022/11/1-4.jpeg','ADMIN'),
        (10,'Davran','Joldoshbaev','davran@gmail.com', '$2a$12$p8SDxF12xsfCFPnjDJFlQebSSGetlVCCUFxGFeuJ2gzm1uO9Tvk3O',  'https://png.pngtree.com/png-clipart/20210502/original/pngtree-fashion-male-wearing-a-charming-model-png-image_6257513.jpg','ADMIN'),
@@ -238,52 +238,28 @@ values (1,1),
        (2,2),
        (3,3),
        (4,4),
-       (5,5),
-       (6,6),
-       (7,7),
-       (8,8),
-       (9,9),
-       (10,10),
-       (11,11);
+       (5,5);
 
 insert into labels_cards(cards_id,labels_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
-       (5,5),
-       (6,6),
-       (7,7),
-       (8,8),
-       (9,9),
-       (10,10),
-       (11,11);
+       (5,5);
 
 insert into columns_members(columns_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
-       (5,5),
-       (6,6),
-       (7,7),
-       (8,8),
-       (9,9),
-       (10,10),
-       (11,11);
+       (5,5);
 
 insert into cards_members(cards_id,members_id)
 values (1,1),
        (2,2),
        (3,3),
        (4,4),
-       (5,5),
-       (6,6),
-       (7,7),
-       (8,8),
-       (9,9),
-       (10,10),
-       (11,11);
+       (5,5);
 
 insert into boards_members(boards_id,members_id)
 values (1,1),
