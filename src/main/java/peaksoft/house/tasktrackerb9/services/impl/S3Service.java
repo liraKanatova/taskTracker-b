@@ -36,6 +36,7 @@ public class S3Service {
                 .contentType("m4a")
                 .contentType("oga")
                 .contentType("pdf")
+                .contentType("jpg")
                 .contentLength(file.getSize())
                 .key(key)
                 .build();
