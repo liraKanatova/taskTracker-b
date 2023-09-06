@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.ZonedDateTime;
 
-public record
-EstimationRequest(
+public record EstimationRequest(
 
         Long cardId,
 
@@ -22,7 +21,5 @@ EstimationRequest(
 
 //        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
         ZonedDateTime finishTime
-
 ) {
-
 }

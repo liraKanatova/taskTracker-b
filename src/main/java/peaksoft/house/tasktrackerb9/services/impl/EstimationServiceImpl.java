@@ -34,7 +34,8 @@ public class EstimationServiceImpl implements EstimationService {
             return new NotFoundException("Card with id: " + request.cardId() + "  not found");
         });
         if (card.getEstimation() == null) {
-            if (request.startDate().isBefore(request.dateOfFinish())) {
+            log.info("start time: " + request.startTime().toLocalTime());
+            if (!request.startTime().toLocalTime().equals(request.finishTime().toLocalTime()) && !request.finishTime().toLocalTime().isBefore(request.startTime().toLocalTime())) {
                 estimation.setStartDate(request.startDate());
                 estimation.setFinishDate(request.dateOfFinish());
                 estimation.setStartTime(request.startTime());
@@ -67,10 +68,10 @@ public class EstimationServiceImpl implements EstimationService {
                         estimation.setNotificationTime(estimation.getTime().minusMinutes(30));
                     } else throw new BadCredentialException("Notification finish time must be not null");
                 }
-                card.setEstimation(estimation);
                 estimationRepository.save(estimation);
+                card.setEstimation(estimation);
                 log.info("Successfully saved estimation: " + estimation);
-            } else throw new BadRequestException("The start date must not be before the finish date");
+            } else throw new BadRequestException("The finish date can't be before then start time or finish time can't equals with start time!");
         } else throw new BadRequestException("This card already has an estimation");
         return EstimationResponse.builder().
                 estimationId(estimation.getId()).
