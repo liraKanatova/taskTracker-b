@@ -17,36 +17,36 @@ values (1,'Abdumalik','Turatbek uulu','asanbekovmalik2@gmail.com', '$2a$12$6RFdM
 
 
 insert into work_spaces(id,name,admin_id,created_date)
-values (1,'Taigan',1,now()),
-       (2,'LMS',2,now()),
-       (3,'Gadgetarium',3,now()),
-       (4,'AirBnb',4,now()),
-       (5,'Legend',5,now()),
-       (6,'NASA',6,now()),
-       (7,'Tesla',7,now()),
-       (8,'ᏤᎪᏒᎶᎪᏚ',8,now()),
-       (9,'ᴏtσͷɢ乂',9,now()),
-       (10,'ʜᴇᴀᴅsʜᴏᴛ',10,now()),
-       (11,'•P£R$£B∆Y∆•',11,now()),
-       (12,'AldyyExtece',2,now()),
-       (13,'ωαнуυsu',1,now()),
-       (14,'Bama.Boy',2,now()),
-       (15,'maratha',2,now()),
-       (16,'VEŇØM',2,now()),
-       (17,'Divâgar',3,now()),
-       (18,'Baby°Killer™',3,now()),
-       (19,'ᴺᴸsᴇᴠᴇɴ°ᴵᴰ',3,now()),
-       (20,'PrettyFreefire',3,now()),
-       (21,'B.K.Mästër',3,now()),
-       (22,'Shroud',3,now()),
-       (23,'Sunny',4,now()),
-       (24,'Headhunter',4,now()),
-       (25,'Zimmer',4,now()),
-       (26,'Doter',4,now()),
-       (27,'~Real Man~',5,now()),
-       (28,'FlaxPlayer',5,now()),
-       (29,'ApostaL',5,now()),
-       (30,'MedCheck',5,now());
+values (1,'Taigan','2023-09-07T23:00:00'),
+       (2,'LMS',2,'2023-09-07T12:00:00'),
+       (3,'Gadgetarium',3,'2023-09-09T00:00:00'),
+       (4,'AirBnb',4,'2023-09-10T00:00:00'),
+       (5,'Legend',5,'2023-09-11T00:00:00'),
+       (6,'NASA',6,'2023-09-12T00:00:00'),
+       (7,'Tesla',7,'2023-09-13T00:00:00'),
+       (8,'ᏤᎪᏒᎶᎪᏚ',8,'2023-09-14T00:00:00'),
+       (9,'ᴏtσͷɢ乂',9,'2023-09-15T00:00:00'),
+       (10,'ʜᴇᴀᴅsʜᴏᴛ',10,'2023-09-16T00:00:00'),
+       (11,'•P£R$£B∆Y∆•',11,'2023-09-16T00:00:00'),
+       (12,'AldyyExtece',2,'2023-09-18T00:00:00'),
+       (13,'ωαнуυsu',1,'2023-09-19T00:00:00'),
+       (14,'Bama.Boy',2,'2023-09-20T00:00:00'),
+       (15,'maratha',2,'2023-09-21T00:00:00'),
+       (16,'VEŇØM',2,'2023-09-22T00:00:00'),
+       (17,'Divâgar',3,'2023-09-23T00:00:00'),
+       (18,'Baby°Killer™',3,'2023-09-24T00:00:00'),
+       (19,'ᴺᴸsᴇᴠᴇɴ°ᴵᴰ',3,'2023-09-25T00:00:00'),
+       (20,'PrettyFreefire',3,'2023-09-26T00:00:00'),
+       (21,'B.K.Mästër',3,'2023-09-27T00:00:00'),
+       (22,'Shroud',3,'2023-09-28T00:00:00'),
+       (23,'Sunny',4,'2023-09-29T00:00:00'),
+       (24,'Headhunter',4,'2023-09-30T00:00:00'),
+       (25,'Zimmer',4,'2023-10-01T00:00:00'),
+       (26,'Doter',4,'2023-10-02T00:00:00'),
+       (27,'~Real Man~',5,'2023-10-03T00:00:00'),
+       (28,'FlaxPlayer',5,'2023-10-04T00:00:00'),
+       (29,'ApostaL',5,'2023-10-05T00:00:00'),
+       (30,'MedCheck',5,'2023-10-06T00:00:00');
 
 insert into boards(id,title,back_ground,work_space_id)
 values (1,'word','img',1),
@@ -81,24 +81,24 @@ values (1,'word','img',1),
        (30,'Fine Dine','color',20);
 
 insert into favorites(id,member_id,board_id,work_space_id)
-values (1,5,null,5),
-       (2,5,5,null),
-       (3,4,null,4),
-       (4,4,4,null),
-       (5,3,null,3),
-       (6,3,3,null),
-       (7,1,null,1),
-       (8,1,1,null),
-       (9,2,null,1),
-       (10,2,null,2),
-       (11,2,null,3),
-       (12,2,null,4),
-       (13,2,null,5),
-       (14,2,1,null),
-       (15,2,2,null),
-       (16,2,3,null),
-       (17,2,4,null),
-       (18,2,5,null);
+values (1,5,1,5),
+       (2,5,5,1),
+       (3,4,3,4),
+       (4,4,4,4),
+       (5,3,6,3),
+       (6,3,3,6),
+       (7,1,6,1),
+       (8,1,1,3),
+       (9,2,6,1),
+       (10,2,7,2),
+       (11,2,4,3),
+       (12,2,5,4),
+       (13,2,2,5),
+       (14,2,1,7),
+       (15,2,2,10),
+       (16,2,3,11),
+       (17,2,4,12),
+       (18,2,5,13);
 
 insert into user_work_space_roles(id,role,member_id,work_space_id)
 values (1,'ADMIN',5,5),
@@ -133,31 +133,31 @@ values (1,'Done',false,1),
 
 
 insert into cards(id,title,description,is_archive,created_date,column_id,creator_id)
-values (1,'title','for work',false,now(),1,1),
-       (2,'word','words',false,now(),2,1),
-       (3,'title','tasks',false,now(),3,1),
-       (4,'word','words',false,now(),4,4),
-       (5,'title','words',false,now(),4,2),
-       (6,'word','words',false,now(),7,4),
-       (7,'title','words',false,now(),9,5),
-       (8,'word','words',false,now(),1,2),
-       (9,'title','words',false,now(),6,4),
-       (10,'word','words',false,now(),9,5),
-       (11,'title','words',false,now(),2,3),
-       (12,'word','words',false,now(),12,3),
-       (13,'title','words',false,now(),10,5),
-       (14,'word','words',false,now(),15,2),
-       (15,'title','words',false,now(),3,4),
-       (16,'word','words',false,now(),2,2),
-       (17,'title','words',false,now(),7,2),
-       (18,'word','words',false,now(),5,5);
+values (1,'title','for work ',false,'2023-09-07T23:00:00',1,1),
+       (2,'word','words',false,'2023-09-07T12:00:00',2,1),
+       (3,'title','tasks',false,'2023-09-09T00:00:00',3,1),
+       (4,'word','words',false,'2023-09-10T00:00:00',4,4),
+       (5,'title','words',false,'2023-09-11T00:00:00',4,2),
+       (6,'word','words',false,'2023-09-12T00:00:00',7,4),
+       (7,'title','words',false,'2023-09-13T00:00:00',9,5),
+       (8,'word','words',false,'2023-09-14T00:00:00',1,2),
+       (9,'title','words',false,'2023-09-15T00:00:00',6,4),
+       (10,'word','words',false,'2023-09-16T00:00:00',9,5),
+       (11,'title','words',false,'2023-09-18T00:00:00',2,3),
+       (12,'word','words',false,'2023-09-19T00:00:00',12,3),
+       (13,'title','words',false,'2023-09-20T00:00:00',10,5),
+       (14,'word','words',false,'2023-09-21T00:00:00',15,2),
+       (15,'title','words',false,'2023-09-22T00:00:00',3,4),
+       (16,'word','words',false,'2023-09-23T00:00:00',2,2),
+       (17,'title','words',false,'2023-09-24T00:00:00',7,2),
+       (18,'word','words',false,'2023-09-29T00:00:00',5,5);
 
 insert into notifications(id,text,image,type,is_read,created_date,card_id)
-values (1,'batyraak bol','img','MOVE',false,now(),2),
-       (2,'vnimanie','img','MOVE',false,now(),1),
-       (3,'vas dobavili','img','ASSIGN',false,now(),3),
-       (4,'pravilno','img','REMINDER',false,now(),4),
-       (5,'normalno','img','REMINDER',false,now(),5);
+values (1,'batyraak bol','img','MOVE',false,'2023-09-11T00:00:00',2),
+       (2,'vnimanie','img','MOVE',false,'2023-09-11T00:00:00',1),
+       (3,'vas dobavili','img','ASSIGN',false,'2023-09-11T00:00:00',3),
+       (4,'pravilno','img','REMINDER',false,'2023-09-11T00:00:00',4),
+       (5,'normalno','img','REMINDER',false,'2023-09-11T00:00:00',5);
 
 insert into labels(id,color,label_name)
 values (1,'Green','Done'),
@@ -174,11 +174,11 @@ values (1,10,'writing',1),
        (5,70,'task',5);
 
 insert into comments(id,comment,created_date,card_id,member_id)
-  values (1,'Kachan butot',now(),1,1),
-         (2,'Tuura emesko brat',now(),2,2),
-         (3,'tutorial please',now(),3,3),
-         (4,'Harosh',now(),4,4),
-         (5,'Good job',now(),5,5);
+  values (1,'Kachan butot','2023-09-07T12:00:00',1,1),
+         (2,'Tuura emesko brat','2023-09-07T12:00:00',2,2),
+         (3,'tutorial please','2023-09-07T12:00:00',3,3),
+         (4,'Harosh','2023-09-07T12:00:00',4,4),
+         (5,'Good job','2023-09-07T12:00:00',5,5);
 
 insert into estimations(id,reminder_type,start_date,due_date,start_time,time,notification_time,card_id)
 values (1,'NONE','2023-07-10T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00',1),
@@ -195,11 +195,11 @@ values (1,false,'word',1),
        (5,false,'word',5);
 
 insert into attachments(id,created_at,document_link,card_id)
-values (1,now(),'link',1),
-       (2,now(),'link',2),
-       (3,now(),'link',3),
-       (4,now(),'link',4),
-       (5,now(),'link',5);
+values (1,'2023-09-07T12:00:00','link',1),
+       (2,'2023-09-07T12:00:00','link',2),
+       (3,'2023-09-07T23:00:00','link',3),
+       (4,'2023-09-07T23:00:00','link',4),
+       (5,'2023-09-07T23:00:00','link',5);
 
 insert into users_work_spaces(members_id,work_spaces_id)
 values (1,1),
