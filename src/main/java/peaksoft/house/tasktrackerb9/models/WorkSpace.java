@@ -27,6 +27,7 @@ public class WorkSpace {
 
     @Column(name = "admin_id")
     private Long adminId;
+
     private ZonedDateTime createdDate;
 
     @ManyToMany(mappedBy = "workSpaces",cascade ={DETACH,REFRESH,MERGE})
@@ -45,5 +46,4 @@ public class WorkSpace {
         this.name = name;
         this.adminId = adminId;
     }
-
 }
