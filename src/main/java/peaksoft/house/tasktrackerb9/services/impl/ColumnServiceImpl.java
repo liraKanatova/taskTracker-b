@@ -97,6 +97,7 @@ public class ColumnServiceImpl implements ColumnService {
         }
     }
 
+
     @Override
     public SimpleResponse removeColumn(Long columnId) {
         User user = jwtService.getAuthentication();
