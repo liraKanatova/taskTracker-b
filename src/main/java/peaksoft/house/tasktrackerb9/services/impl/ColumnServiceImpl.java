@@ -87,14 +87,17 @@ public class ColumnServiceImpl implements ColumnService {
             log.error("You are not a member of this workspace!");
             throw new BadCredentialException("You are not a member of this workspace!");
         }
-        if (user.getRole().equals(Role.ADMIN)) {
-            column.setTitle(columUpdateRequest.newTitle());
-            columnsRepository.save(column);
-        return new ColumnResponse(column.getId(), column.getTitle(), column.getIsArchive());
-    }else {
-            log.error("You can't update this column!");
-            throw new BadCredentialException("You can't update this column!");
+        if (!user.getRole().equals(Role.ADMIN)) {
+            throw new BadCredentialException("You are not authorized to update this column");
         }
+            column.setTitle(columUpdateRequest.newTitle());
+        Column updatedColumn = columnsRepository.save(column);
+        log.info("Column with id: {} successfully updated", columUpdateRequest.columId());
+        return ColumnResponse.builder()
+                .columnId(updatedColumn.getId())
+                .title(updatedColumn.getTitle())
+                .isArchive(updatedColumn.getIsArchive())
+                .build();
     }
 
 
