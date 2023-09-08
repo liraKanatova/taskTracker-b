@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
+import peaksoft.house.tasktrackerb9.dto.request.ColumUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
@@ -19,7 +20,6 @@ import peaksoft.house.tasktrackerb9.services.ColumnService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -75,20 +75,26 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public ColumnResponse update(Long columnId, ColumnRequest columnRequest) {
+    public ColumnResponse update(ColumUpdateRequest columUpdateRequest) {
         User user = jwtService.getAuthentication();
-        Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
+        Column column = columnsRepository.findById(columUpdateRequest.columId()).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column with id: "+columnId+" not found");
+            return new NotFoundException("Column with id: " + columUpdateRequest.columId() + " not found");
         });
-        if (user.getRole().equals(Role.ADMIN)) {
-            column.setTitle(columnRequest.title());
-            columnsRepository.save(column);
-             log.info("Column successfully updated");
-        } else {
-            throw new BadCredentialException("You are not member");
+        WorkSpace workSpace = column.getBoard().getWorkSpace();
+        UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
+        if (userWorkSpaceRole == null) {
+            log.error("You are not a member of this workspace!");
+            throw new BadCredentialException("You are not a member of this workspace!");
         }
-        return new ColumnResponse(column.getId(), column.getTitle(),column.getIsArchive());
+        if (user.getRole().equals(Role.ADMIN)) {
+            column.setTitle(columUpdateRequest.newTitle());
+            columnsRepository.save(column);
+        return new ColumnResponse(column.getId(), column.getTitle(), column.getIsArchive());
+    }else {
+            log.error("You can't update this column!");
+            throw new BadCredentialException("You can't update this column!");
+        }
     }
 
     @Override
