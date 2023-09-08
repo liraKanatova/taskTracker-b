@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.services;
 
-import peaksoft.house.tasktrackerb9.dto.request.ColumUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
@@ -13,7 +12,7 @@ public interface ColumnService {
 
     List<ColumnResponse>getAllColumns(Long boardId);
 
-    ColumnResponse update(ColumUpdateRequest columUpdateRequest);
+    ColumnResponse update(Long columnId,ColumnRequest columnRequest);
 
     SimpleResponse removeColumn(Long columnId);
 

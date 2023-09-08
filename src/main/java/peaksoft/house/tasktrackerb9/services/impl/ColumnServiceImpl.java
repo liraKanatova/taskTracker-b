@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
-import peaksoft.house.tasktrackerb9.dto.request.ColumUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
@@ -75,32 +74,21 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public ColumnResponse update(ColumUpdateRequest columUpdateRequest) {
+    public ColumnResponse update(Long columnId,ColumnRequest columnRequest) {
         User user = jwtService.getAuthentication();
-        Column column = columnsRepository.findById(columUpdateRequest.columId()).orElseThrow(() -> {
+        Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column with id: " + columUpdateRequest.columId() + " not found");
+            return new NotFoundException("Column with id: " + columnId + " not found");
         });
-        WorkSpace workSpace = column.getBoard().getWorkSpace();
-        UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
-        if (userWorkSpaceRole == null) {
-            log.error("You are not a member of this workspace!");
-            throw new BadCredentialException("You are not a member of this workspace!");
+        if (user.getRole().equals(Role.ADMIN)) {
+            column.setTitle(columnRequest.title());
+            columnsRepository.save(column);
+            log.info("Column successfully update");
+        }else {
+            throw new BadCredentialException("You are not member");
         }
-        if (!user.getRole().equals(Role.ADMIN)) {
-            throw new BadCredentialException("You are not authorized to update this column");
-        }
-            column.setTitle(columUpdateRequest.newTitle());
-        Column updatedColumn = columnsRepository.save(column);
-        log.info("Column with id: {} successfully updated", columUpdateRequest.columId());
-        return ColumnResponse.builder()
-                .columnId(updatedColumn.getId())
-                .title(updatedColumn.getTitle())
-                .isArchive(updatedColumn.getIsArchive())
-                .build();
+          return new ColumnResponse(column.getId(),column.getTitle(),column.getIsArchive());
     }
-
-
     @Override
     public SimpleResponse removeColumn(Long columnId) {
         User user = jwtService.getAuthentication();

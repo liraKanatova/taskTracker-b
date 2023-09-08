@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import peaksoft.house.tasktrackerb9.dto.request.ColumUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
@@ -36,10 +35,10 @@ public class ColumnApi {
         return columnService.getAllColumns(boardId);
     }
 
-    @PutMapping()
+    @PutMapping("/{columnId}")
     @Operation(summary = "Update column", description = "Update column by columnId")
-    public ColumnResponse updateColumn(@RequestBody ColumUpdateRequest columUpdateRequest) {
-        return columnService.update(columUpdateRequest);
+    public ColumnResponse updateColumn(@PathVariable Long columnId, @RequestBody @Valid ColumnRequest columnRequest) {
+        return columnService.update(columnId, columnRequest);
     }
 
     @DeleteMapping("/{columnId}")
