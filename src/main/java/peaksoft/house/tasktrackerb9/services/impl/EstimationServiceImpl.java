@@ -25,7 +25,7 @@ public class EstimationServiceImpl implements EstimationService {
     private final EstimationRepository estimationRepository;
 
     private final CardRepository cardRepository;
-
+    
     @Override
     public EstimationResponse createdEstimation(EstimationRequest request) {
         Estimation estimation = new Estimation();
@@ -35,43 +35,52 @@ public class EstimationServiceImpl implements EstimationService {
         });
         if (card.getEstimation() == null) {
             log.info("start time: " + request.startTime().toLocalTime());
-            if (!request.startTime().toLocalTime().equals(request.finishTime().toLocalTime()) && !request.finishTime().toLocalTime().isBefore(request.startTime().toLocalTime())) {
-                estimation.setStartDate(request.startDate());
-                estimation.setFinishDate(request.dateOfFinish());
-                estimation.setStartTime(request.startTime());
-                estimation.setTime(request.finishTime());
-                if (request.reminder().equals("NONE")) {
-                    estimation.setReminderType(ReminderType.NONE);
+            if (!request.startDate().toLocalDate().isAfter(request.dateOfFinish().toLocalDate())) {
+                if (request.startDate().toLocalDate().equals(request.dateOfFinish().toLocalDate())) {
+                    if (request.startTime().toLocalTime().equals(request.finishTime().toLocalTime())) {
+                        throw new BadRequestException("Date of start and date finish and time of start and time finish can't be equals!");
+                    }
                 }
-                if (request.reminder().equals("5")) {
-                    estimation.setReminderType(ReminderType.FIVE_MINUTE);
-                    if (estimation.getTime() != null) {
-                        estimation.setNotificationTime(estimation.getTime().minusMinutes(5));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
-                }
-                if (request.reminder().equals("10")) {
-                    estimation.setReminderType(ReminderType.TEN_MINUTE);
-                    if (estimation.getTime() != null) {
-                        estimation.setNotificationTime(estimation.getTime().minusMinutes(10));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
+                if (!request.finishTime().toLocalTime().isBefore(request.startTime().toLocalTime())) {
+                    estimation.setStartDate(request.startDate());
+                    estimation.setFinishDate(request.dateOfFinish());
+                    estimation.setStartTime(request.startTime());
+                    estimation.setTime(request.finishTime());
+                    if (request.reminder().equals("NONE")) {
+                        estimation.setReminderType(ReminderType.NONE);
+                    }
+                    if (request.reminder().equals("5")) {
+                        estimation.setReminderType(ReminderType.FIVE_MINUTE);
+                        if (estimation.getTime() != null) {
+                            estimation.setNotificationTime(estimation.getTime().minusMinutes(5));
+                        } else throw new BadCredentialException("Notification finish time must be not null");
+                    }
+                    if (request.reminder().equals("10")) {
+                        estimation.setReminderType(ReminderType.TEN_MINUTE);
+                        if (estimation.getTime() != null) {
+                            estimation.setNotificationTime(estimation.getTime().minusMinutes(10));
+                        } else throw new BadCredentialException("Notification finish time must be not null");
 
-                }
-                if (request.reminder().equals("15")) {
-                    estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-                    if (estimation.getTime() != null) {
-                        estimation.setNotificationTime(estimation.getTime().minusMinutes(15));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
-                }
-                if (request.reminder().equals("30")) {
-                    estimation.setReminderType(ReminderType.THIRD_MINUTE);
-                    if (estimation.getTime() != null) {
-                        estimation.setNotificationTime(estimation.getTime().minusMinutes(30));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
-                }
-                estimationRepository.save(estimation);
-                card.setEstimation(estimation);
-                log.info("Successfully saved estimation: " + estimation);
-            } else throw new BadRequestException("The finish date can't be before then start time or finish time can't equals with start time!");
+                    }
+                    if (request.reminder().equals("15")) {
+                        estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
+                        if (estimation.getTime() != null) {
+                            estimation.setNotificationTime(estimation.getTime().minusMinutes(15));
+                        } else throw new BadCredentialException("Notification finish time must be not null");
+                    }
+                    if (request.reminder().equals("30")) {
+                        estimation.setReminderType(ReminderType.THIRD_MINUTE);
+                        if (estimation.getTime() != null) {
+                            estimation.setNotificationTime(estimation.getTime().minusMinutes(30));
+                        } else throw new BadCredentialException("Notification finish time must be not null");
+                    }
+                    estimation.setCard(card);
+                    estimationRepository.save(estimation);
+                    card.setEstimation(estimation);
+                    log.info("Successfully saved estimation: " + estimation);
+                } else
+                    throw new BadRequestException("The finish time can't be before then start time!");
+            } else throw new BadRequestException("Finish date can't be before then start date");
         } else throw new BadRequestException("This card already has an estimation");
         return EstimationResponse.builder().
                 estimationId(estimation.getId()).
