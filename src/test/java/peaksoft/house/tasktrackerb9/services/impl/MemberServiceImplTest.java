@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -29,7 +28,6 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
 @RequiredArgsConstructor
@@ -41,7 +39,7 @@ class MemberServiceImplTest {
     private WorkSpaceRepository workSpaceRepository;
     @Mock
     private CustomMemberRepositoryImpl customMemberRepository;
-    @Autowired
+    @Mock
     private CardRepository cardRepository;
     @Mock
     private JwtService jwtService;
@@ -88,34 +86,26 @@ class MemberServiceImplTest {
 
     @Test
     void getAllMembersByCardId() {
-        Long memberId = 1L;
-        Long cardId = 2L;
-
-        User user = new User();
-        user.setId(memberId);
-
+        Long cardId = 1L;
         Card card = new Card();
         card.setId(cardId);
 
-        Column column = new Column();
-        card.setColumn(column);
+        MemberResponse member1 = new MemberResponse(1L, "Abdumalik", "Turatbek uulu", "asanbekovmalik2@gmail.com", "image1.jpg", Role.ADMIN);
+        MemberResponse member2 = new MemberResponse(2L, "Manas", "Abdugani uulu", "manas@gmail.com", "image2.jpg", Role.ADMIN);
 
-        Board board = new Board();
-        column.setBoard(board);
+        List<MemberResponse> expectedMembers = new ArrayList<>();
+        expectedMembers.add(member1);
+        expectedMembers.add(member2);
 
-        WorkSpace workSpace = new WorkSpace();
-        board.setWorkSpace(workSpace);
+        when(cardRepository.findById(cardId)).thenReturn(Optional.of(card));
+        when(customMemberRepository.getAllMembersByCardId(card.getId())).thenReturn(expectedMembers);
+        List<MemberResponse> actualMembers = memberService.getAllMembersByCardId(cardId);
 
-        when(userRepository.getAllUsersByWorkSpaseId(workSpace.getId())).thenReturn(List.of(memberId));
-        when(cardRepository.getMembersByCardId(card.getId())).thenReturn(List.of(memberId));
+        assertEquals(expectedMembers.size(), actualMembers.size());
+        assertEquals(expectedMembers, actualMembers);
 
-        when(jwtService.getAuthentication()).thenReturn(user);
-
-        SimpleResponse response = memberService.assignMemberToCard(memberId, cardId);
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatus());
-        assertEquals("User with id : 1 successfully assigned to card with id : 2", response.getMessage());
+        verify(cardRepository, times(1)).findById(cardId);
+        verify(customMemberRepository, times(1)).getAllMembersByCardId(card.getId());
     }
 
     @Test
@@ -125,12 +115,18 @@ class MemberServiceImplTest {
 
         User admin = new User();
         admin.setId(1L);
+        List<Card> cards = new ArrayList<>();
+        admin.setCards(cards);
 
         User member = new User();
         member.setId(memberId);
+        List<User> members = new ArrayList<>();
+        members.add(member);
+        member.setCards(cards);
 
         Card card = new Card();
         card.setId(cardId);
+        card.setMembers(members);
 
         WorkSpace workSpace = new WorkSpace();
         workSpace.setAdminId(admin.getId());
@@ -157,9 +153,7 @@ class MemberServiceImplTest {
         verify(cardRepository, times(1)).findById(cardId);
         verify(userRepository, times(1)).save(member);
         verify(cardRepository, times(1)).save(card);
-
     }
-
 
     @Test
     void inviteMemberToBoard() throws MessagingException {
