@@ -14,7 +14,7 @@ import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ColumnsJdbcTemplateServiceImpl;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomColumnRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.ColumnService;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class ColumnServiceImpl implements ColumnService {
 
     private final BoardRepository boardRepository;
 
-    private final ColumnsJdbcTemplateServiceImpl columns;
+    private final CustomColumnRepositoryImpl columns;
 
     private final JwtService jwtService;
 
