@@ -21,8 +21,11 @@ import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomMemberRepositoryImpl;
+
 import static org.mockito.ArgumentMatchers.*;
+
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -32,7 +35,7 @@ import static org.mockito.Mockito.*;
 @RequiredArgsConstructor
 class MemberServiceImplTest {
 
-   @InjectMocks
+    @InjectMocks
     private MemberServiceImpl memberService;
     @Mock
     private WorkSpaceRepository workSpaceRepository;
@@ -82,6 +85,81 @@ class MemberServiceImplTest {
         Mockito.verify(workSpaceRepository, times(1)).findById(workSpaceId);
         Mockito.verify(customMemberRepository, times(1)).searchByEmail(workSpace.getId(), email);
     }
+
+    @Test
+    void getAllMembersByCardId() {
+        Long memberId = 1L;
+        Long cardId = 2L;
+
+        User user = new User();
+        user.setId(memberId);
+
+        Card card = new Card();
+        card.setId(cardId);
+
+        Column column = new Column();
+        card.setColumn(column);
+
+        Board board = new Board();
+        column.setBoard(board);
+
+        WorkSpace workSpace = new WorkSpace();
+        board.setWorkSpace(workSpace);
+
+        when(userRepository.getAllUsersByWorkSpaseId(workSpace.getId())).thenReturn(List.of(memberId));
+        when(cardRepository.getMembersByCardId(card.getId())).thenReturn(List.of(memberId));
+
+        when(jwtService.getAuthentication()).thenReturn(user);
+
+        SimpleResponse response = memberService.assignMemberToCard(memberId, cardId);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatus());
+        assertEquals("User with id : 1 successfully assigned to card with id : 2", response.getMessage());
+    }
+
+    @Test
+    void assignMemberToCard() {
+        Long memberId = 2L;
+        Long cardId = 3L;
+
+        User admin = new User();
+        admin.setId(1L);
+
+        User member = new User();
+        member.setId(memberId);
+
+        Card card = new Card();
+        card.setId(cardId);
+
+        WorkSpace workSpace = new WorkSpace();
+        workSpace.setAdminId(admin.getId());
+
+        when(jwtService.getAuthentication()).thenReturn(admin);
+        when(cardRepository.getUserIdByCardId(cardId)).thenReturn(Optional.of(admin.getId()));
+        when(cardRepository.getWorkSpaceByCardId(cardId)).thenReturn(Optional.of(workSpace));
+        when(userRepository.getAllUsersByWorkSpaseId(workSpace.getId())).thenReturn(List.of(memberId));
+        when(cardRepository.getMembersByCardId(cardId)).thenReturn(List.of());
+        when(userRepository.findById(memberId)).thenReturn(Optional.of(member));
+        when(cardRepository.findById(cardId)).thenReturn(Optional.of(card));
+
+        SimpleResponse response = memberService.assignMemberToCard(memberId, cardId);
+
+        assertEquals(HttpStatus.OK, response.getStatus());
+        assertEquals("User with id : 2 successfully assigned to card with id : 3", response.getMessage());
+
+        verify(jwtService, times(1)).getAuthentication();
+        verify(cardRepository, times(1)).getUserIdByCardId(cardId);
+        verify(cardRepository, times(1)).getWorkSpaceByCardId(cardId);
+        verify(userRepository, times(1)).getAllUsersByWorkSpaseId(workSpace.getId());
+        verify(cardRepository, times(1)).getMembersByCardId(cardId);
+        verify(userRepository, times(1)).findById(memberId);
+        verify(cardRepository, times(1)).findById(cardId);
+        verify(userRepository, times(1)).save(member);
+        verify(cardRepository, times(1)).save(card);
+
+    }
+
 
     @Test
     void inviteMemberToBoard() throws MessagingException {
@@ -240,5 +318,5 @@ class MemberServiceImplTest {
         verify(userRepository, times(1)).findById(member.getId());
         verify(userWorkSpaceRoleRepository, times(1)).findByUserId(board.getId(), member.getId());
         verify(userWorkSpaceRoleRepository, times(1)).delete(workSpaceRole);
-  }
+    }
 }

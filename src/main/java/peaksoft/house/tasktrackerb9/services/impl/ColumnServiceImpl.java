@@ -14,7 +14,7 @@ import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ColumnsJdbcTemplateServiceImpl;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.ColumnsJdbcTemplateServiceImpl;
 import peaksoft.house.tasktrackerb9.services.ColumnService;
 
 import java.util.ArrayList;
