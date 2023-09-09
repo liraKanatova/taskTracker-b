@@ -24,7 +24,7 @@ public class CustomColumnRepositoryImpl implements CustomColumnRepository {
         String sql = """
                 select c.id,c.title,c.is_archive  from boards b
                 join columns c on b.id = c.board_id
-                where b.id=? and c.is_archive=false order by c.id desc""";
+                where b.id=? and c.is_archive=false order by c.id asc """;
         List<ColumnResponse> columnResponses = jdbcTemplate.query(sql, ((rs, rowNum) ->
                         new ColumnResponse(
                                 rs.getLong("id"),
