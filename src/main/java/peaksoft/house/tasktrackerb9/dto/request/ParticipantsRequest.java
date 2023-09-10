@@ -4,6 +4,6 @@ import lombok.*;
 import peaksoft.house.tasktrackerb9.enums.Role;
 
 @Builder
-public record ParticipantsRequest(Long workSpacesId,String email,String link){
+public record ParticipantsRequest(Long workSpacesId,String email,String link,Role role){
 
 }

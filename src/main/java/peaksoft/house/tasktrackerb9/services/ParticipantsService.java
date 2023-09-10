@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ParticipantsService {
 
-    SimpleResponse inviteToWorkSpaces(ParticipantsRequest request,Role role) throws MessagingException;
+    SimpleResponse inviteToWorkSpaces(ParticipantsRequest request) throws MessagingException;
 
     SimpleResponse removeToWorkSpaces(Long workSpaceId,Long userId);
 

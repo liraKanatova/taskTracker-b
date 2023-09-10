@@ -27,8 +27,8 @@ public class ParticipantsApi {
 
     @Operation(summary = "Invite participants", description = "Invite participants to workSpace by workSpace id")
     @PostMapping
-    public SimpleResponse inviteToWorkSpace(@RequestBody ParticipantsRequest participantsRequest,@RequestParam Role role) throws MessagingException {
-        return participantsService.inviteToWorkSpaces(participantsRequest,role);
+    public SimpleResponse inviteToWorkSpace(@RequestBody ParticipantsRequest participantsRequest) throws MessagingException {
+        return participantsService.inviteToWorkSpaces(participantsRequest);
     }
 
     @Operation(summary = "Change role", description = "Participants change role update to workspace by workSpace id")

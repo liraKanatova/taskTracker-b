@@ -47,7 +47,7 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     private final UserRepository userRepository;
 
     @Override
-    public SimpleResponse inviteToWorkSpaces(ParticipantsRequest request,Role role) throws MessagingException {
+    public SimpleResponse inviteToWorkSpaces(ParticipantsRequest request) throws MessagingException {
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(request.workSpacesId()).orElseThrow(() ->
                 new NotFoundException("Workspace with id " + request.workSpacesId() + " not found"));
@@ -63,12 +63,12 @@ public class ParticipantsServiceImpl implements ParticipantsService {
           MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
           helper.setSubject("Invite to workspace");
           helper.setTo(request.email());
-          String invitationText = request.link() + "/" +role + "/workspaceId/" + request.workSpacesId();
+          String invitationText = request.link() + "/" +request.role() + "/workspaceId/" + request.workSpacesId();
           helper.setText(invitationText);
           javaMailSender.send(mimeMessage);
           UserWorkSpaceRole userWorkSpaceRole = new UserWorkSpaceRole();
           userWorkSpaceRole.setMember(user1);
-          userWorkSpaceRole.setRole(role);
+          userWorkSpaceRole.setRole(request.role());
           userWorkSpaceRole.setWorkSpace(workSpace);
           userWorkSpaceRoleRepository.save(userWorkSpaceRole);
           return SimpleResponse.builder()
