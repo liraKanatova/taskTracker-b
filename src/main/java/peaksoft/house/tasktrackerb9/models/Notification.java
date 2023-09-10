@@ -20,8 +20,8 @@ import static jakarta.persistence.CascadeType.*;
 public class Notification {
 
     @Id
-    @GeneratedValue(generator = "notification_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "notification_gen",sequenceName = "notification_seq",allocationSize = 1,initialValue = 6)
+    @GeneratedValue(generator = "notification_gen", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "notification_gen", sequenceName = "notification_seq", allocationSize = 1, initialValue = 6)
     private Long id;
 
     private String text;
@@ -37,13 +37,13 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
-    @ManyToMany(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToMany(cascade = {DETACH, MERGE, REFRESH})
     private List<User> members;
 
-    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private Card card;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
+    @OneToOne(cascade = {DETACH, MERGE, REFRESH, REMOVE})
 
     private Estimation estimation;
 }

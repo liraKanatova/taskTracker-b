@@ -21,6 +21,7 @@ import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomCardJdbcTemplateService;
 import peaksoft.house.tasktrackerb9.services.CardService;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -174,7 +175,7 @@ public class CardServiceImpl implements CardService {
         card.setTitle(cardRequest.title());
         card.setDescription(cardRequest.description());
         card.setIsArchive(false);
-        card.setCreatedDate(ZonedDateTime.now());
+        card.setCreatedDate(LocalDate.now());
         card.setCreatorId(user.getId());
         user.setCards(List.of(card));
         card.setColumn(column);
@@ -193,7 +194,7 @@ public class CardServiceImpl implements CardService {
         });
         card.setTitle(updateCardRequest.title());
         card.setDescription(updateCardRequest.description());
-        card.setCreatedDate(ZonedDateTime.now());
+        card.setCreatedDate(LocalDate.now());
         cardRepository.save(card);
 
         log.info("Card with id: " + updateCardRequest.cardId() + " successfully updated!");

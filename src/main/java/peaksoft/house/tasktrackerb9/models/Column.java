@@ -2,7 +2,9 @@ package peaksoft.house.tasktrackerb9.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
+
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
@@ -16,8 +18,7 @@ public class Column {
 
     @Id
     @GeneratedValue(generator = "column_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "column_gen", sequenceName = "column_seq", allocationSize = 1,
-    initialValue = 17)
+    @SequenceGenerator(name = "column_gen", sequenceName = "column_seq", allocationSize = 1, initialValue = 17)
     private Long id;
 
     private String title;
@@ -28,7 +29,7 @@ public class Column {
     @ManyToMany(cascade = {DETACH, MERGE, REFRESH})
     private List<User> members;
 
-    @OneToMany(cascade = {ALL},mappedBy = "column")
+    @OneToMany(cascade = {ALL}, mappedBy = "column")
     private List<Card> cards;
 
     @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
