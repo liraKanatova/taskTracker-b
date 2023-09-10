@@ -47,7 +47,7 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     private final UserRepository userRepository;
 
     @Override
-    public SimpleResponse inviteToWorkSpaces(ParticipantsRequest request) throws MessagingException {
+    public SimpleResponse inviteToWorkSpaces(ParticipantsRequest request,Role role) throws MessagingException {
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(request.workSpacesId()).orElseThrow(() ->
                 new NotFoundException("Workspace with id " + request.workSpacesId() + " not found"));
@@ -58,22 +58,24 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         if (user1 == null) {
             throw new NotFoundException("User with email " + request.email() + " not found");
         }
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-        helper.setSubject("Invite to workspace");
-        helper.setTo(request.email());
-        String invitationText = request.link() + "/" + request.role() + "/workspaceId/" + request.workSpacesId();
-        helper.setText(invitationText);
-        javaMailSender.send(mimeMessage);
-        UserWorkSpaceRole userWorkSpaceRole = new UserWorkSpaceRole();
-        userWorkSpaceRole.setMember(user1);
-        userWorkSpaceRole.setRole(request.role());
-        userWorkSpaceRole.setWorkSpace(workSpace);
-        userWorkSpaceRoleRepository.save(userWorkSpaceRole);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Successfully invited")
-                .build();
+      if (user.getRole().equals(Role.ADMIN)) {
+          MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+          MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+          helper.setSubject("Invite to workspace");
+          helper.setTo(request.email());
+          String invitationText = request.link() + "/" +role + "/workspaceId/" + request.workSpacesId();
+          helper.setText(invitationText);
+          javaMailSender.send(mimeMessage);
+          UserWorkSpaceRole userWorkSpaceRole = new UserWorkSpaceRole();
+          userWorkSpaceRole.setMember(user1);
+          userWorkSpaceRole.setRole(role);
+          userWorkSpaceRole.setWorkSpace(workSpace);
+          userWorkSpaceRoleRepository.save(userWorkSpaceRole);
+          return SimpleResponse.builder()
+                  .status(HttpStatus.OK)
+                  .message("Successfully invited")
+                  .build();
+      }else throw new BadCredentialException("You are not member");
     }
 
     @Override
@@ -86,7 +88,10 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         if (!workSpace.getAdminId().equals(authentication.getId())) {
             throw new NotFoundException("You are not the admin of this workspace");
         }
-        List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
+        if (!user.getRole().equals(Role.ADMIN)) {
+            throw new BadCredentialException("You are not member");
+        }
+            List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
         for (UserWorkSpaceRole workSpaceRole : userWorkSpaceRoles) {
             if (workSpaceRole.getWorkSpace().equals(workSpace) && workSpaceRole.getMember().equals(user)) {
                 userWorkSpaceRoleRepository.deleteById(workSpaceRole.getId());
@@ -111,7 +116,11 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         if (!workSpace.getAdminId().equals(authentication.getId())) {
             throw new NotFoundException("You are not the admin of this workspace");
         }
-        List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
+        if (!user.getRole().equals(Role.ADMIN)) {
+         throw new BadCredentialException("You are not member");
+        }
+
+    List<UserWorkSpaceRole> userWorkSpaceRoles = userWorkSpaceRoleRepository.findByUserToWorkSpace(user.getId(), workSpace.getId());
         for (UserWorkSpaceRole userWorkSpaceRole : userWorkSpaceRoles) {
             if (userWorkSpaceRole.getWorkSpace().getId().equals(request.workSpacesId())) {
                 userWorkSpaceRole.setRole(request.role());
@@ -119,6 +128,7 @@ public class ParticipantsServiceImpl implements ParticipantsService {
                 log.info("Updated change role");
             }
         }
+
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message("Successfully role  updated")
