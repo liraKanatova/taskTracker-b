@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -15,7 +15,7 @@ import java.util.List;
 public class AllIssuesResponse {
 
     private Long cardId;
-    private Date created;
+    private LocalDate created;
     private String durationDay;
     private Long creatorId;
     private String creatorFullName;
@@ -24,6 +24,16 @@ public class AllIssuesResponse {
     private List<LabelResponse> labelResponses;
     private String checkListResponse;
     private String description;
-    private int countOfCards;
+//    private int countOfCards;
 
+    public AllIssuesResponse(Long cardId, LocalDate created, String durationDay, Long creatorId, String creatorFullName, String column, String checkListResponse, String description) {
+        this.cardId = cardId;
+        this.created = created;
+        this.durationDay = durationDay;
+        this.creatorId = creatorId;
+        this.creatorFullName = creatorFullName;
+        this.column = column;
+        this.checkListResponse = checkListResponse;
+        this.description = description;
+    }
 }

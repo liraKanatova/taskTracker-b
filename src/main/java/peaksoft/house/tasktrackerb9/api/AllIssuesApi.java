@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.response.AllIssuesResponse;
 import peaksoft.house.tasktrackerb9.services.AllIssuesService;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/all-issues")
 @RequiredArgsConstructor
-@Tag(name = "All Issues Api", description = "All Issues endpoints")
+@RequestMapping("/all-issues")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "All issues Api", description = "All issues endpoints")
 public class AllIssuesApi {
 
     private final AllIssuesService allIssuesService;
@@ -24,10 +24,10 @@ public class AllIssuesApi {
     @Operation(summary = "Filter all Issues", description = "Retrieve a filtered list of issues (cards) within a workspace, using criteria such as date range, labels, and assignees.")
     public List<AllIssuesResponse> filterCards(
             @RequestParam(value = "workSpaceId") Long workSpaceId,
-            @RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-            @RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date to,
-            @RequestParam(value = "labels", required = false) List<String> labelResponses,
-            @RequestParam(value = "assignees", required = false) List<String> assigneeSearchQueries) {
-        return allIssuesService.filterIssues(workSpaceId, from, to, labelResponses, assigneeSearchQueries);
+            @RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate from,
+            @RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate to,
+            @RequestParam(value = "labels", required = false) List<Long> labelIds,
+            @RequestParam(value = "assignees", required = false) List<Long> assigneeMemberIds) {
+        return allIssuesService.filterIssues(workSpaceId, from, to, labelIds, assigneeMemberIds);
     }
 }

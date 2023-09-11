@@ -3,6 +3,7 @@ package peaksoft.house.tasktrackerb9.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import peaksoft.house.tasktrackerb9.dto.response.UserAllIssuesResponse;
 import peaksoft.house.tasktrackerb9.models.User;
 
 import java.util.List;
@@ -22,6 +23,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<Long> getAllUsersByWorkSpaseId(Long workSpaseId);
 
     @Query("SELECT u FROM User u WHERE u.email =:email")
-   User findUserByEmailParticipants(@Param("email") String email);
+    User findUserByEmailParticipants(@Param("email") String email);
 
+    @Query("""
+            select new peaksoft.house.tasktrackerb9.dto.response.UserAllIssuesResponse(
+            u.id,
+            concat(u.firstName, ' ', u.lastName),
+            u.image)
+            from User u
+            join u.cards c
+            where c.id = :cardId
+            """)
+    List<UserAllIssuesResponse> findAllParticipantByCardId(Long cardId);
 }

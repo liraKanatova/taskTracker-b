@@ -24,8 +24,8 @@ import static jakarta.persistence.CascadeType.*;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(generator = "users_gen",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "users_gen",sequenceName = "users_seq",allocationSize = 1,initialValue = 6)
+    @GeneratedValue(generator = "users_gen", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "users_gen", sequenceName = "users_seq", allocationSize = 1, initialValue = 6)
     private Long id;
 
     @jakarta.persistence.Column(name = "first_name")
@@ -40,34 +40,25 @@ public class User implements UserDetails {
 
     private String image;
 
-
-    public User(Long id, String firstName, String lastName, String email, String image) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.image = image;
-    }
-
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH})
+    @ManyToMany(cascade = {MERGE, DETACH, REFRESH})
     private List<WorkSpace> workSpaces;
 
     @OneToMany(cascade = {ALL}, mappedBy = "member")
     private List<Favorite> favorites;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
+    @ManyToMany(cascade = {MERGE, DETACH, REFRESH}, mappedBy = "members")
     private List<Column> columns;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
+    @ManyToMany(cascade = {MERGE, DETACH, REFRESH}, mappedBy = "members")
     private List<Card> cards;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
+    @ManyToMany(cascade = {MERGE, DETACH, REFRESH}, mappedBy = "members")
     private List<Notification> notifications;
 
     @OneToMany(cascade = {ALL}, mappedBy = "member")
     private List<Comment> comments;
 
-    @ManyToMany(cascade = {MERGE,DETACH,REFRESH}, mappedBy = "members")
+    @ManyToMany(cascade = {MERGE, DETACH, REFRESH}, mappedBy = "members")
     private List<Board> boards;
 
     @Enumerated(EnumType.STRING)
@@ -109,5 +100,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User(Long id, String firstName, String lastName, String email, String image) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.image = image;
     }
 }
