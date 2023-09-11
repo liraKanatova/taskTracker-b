@@ -3,9 +3,12 @@ package peaksoft.house.tasktrackerb9.services.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.dto.request.EstimationRequest;
+import peaksoft.house.tasktrackerb9.dto.request.UpdateEstimationRequest;
 import peaksoft.house.tasktrackerb9.dto.response.EstimationResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.ReminderType;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.BadRequestException;
@@ -16,10 +19,10 @@ import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
-@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class EstimationServiceImpl implements EstimationService {
 
     private final EstimationRepository estimationRepository;
@@ -37,7 +40,7 @@ public class EstimationServiceImpl implements EstimationService {
         );
 
         if (card.getEstimation() == null) {
-
+            log.info("start time: " + request.getStartTime().toLocalTime());
             if (!request.getStartDate().toLocalDate().isAfter(request.getDateOfFinish().toLocalDate())) {
 
                 if (request.getStartDate().toLocalDate().equals(request.getDateOfFinish().toLocalDate())) {
@@ -136,14 +139,11 @@ public class EstimationServiceImpl implements EstimationService {
     }
 
     @Override
-    public EstimationResponse updateEstimation(EstimationRequest request) {
-
-        Estimation estimation = estimationRepository.findById(request.getCardId()).orElseThrow(() -> {
-                    log.info("Card with id: " + request.getCardId() + "  not found");
-                    return new NotFoundException("Card with id: " + request.getCardId() + " id not found");
-                }
-        );
-
+    public SimpleResponse updateEstimation(Long estimationId, UpdateEstimationRequest request) {
+        Estimation estimation = estimationRepository.findById(estimationId).orElseThrow(() -> {
+            log.info("Card with id: " + estimationId + "  not found");
+            return new NotFoundException("Card with id: " + estimationId + " id not found");
+        });
         if (request.getStartDate() != null || !request.getStartDate().toString().isEmpty()) {
             estimation.setStartDate(request.getStartDate());
         } else {
@@ -210,15 +210,11 @@ public class EstimationServiceImpl implements EstimationService {
                 );
             } else throw new BadCredentialException("Notification finish time must be not null");
         }
-
         estimationRepository.save(estimation);
-        log.info("Successfully estimation updated!");
-        return EstimationResponse.builder().
-                estimationId(estimation.getId()).
-                startDate(estimation.getStartDate().toString()).
-                duetDate(estimation.getFinishDate().toString()).
-                finishTime(estimation.getFinishTime().toString()).
-                reminderType(estimation.getReminderType()).
-                build();
+        return SimpleResponse.builder()
+                .status(HttpStatus.OK)
+                .message("Successfully estimation updated!")
+                .build();
+
     }
 }
