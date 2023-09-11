@@ -173,8 +173,8 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
     public GlobalSearchResponse search(String search) {
         String sql = """      
                 SELECT u.id, email, first_name, image, last_name FROM users u
-                WHERE u.first_name ilike (concat('%',?,'%'))
-                OR u.last_name ilike (concat('%',?,'%'))
+                WHERE u.first_name ILIKE (CONCAT('%',?,'%'))
+                OR u.last_name ILIKE (CONCAT('%',?,'%'))
                 """;
 
         List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rusNum) -> new UserResponse(rs.getLong("id")
@@ -194,16 +194,17 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
         String sql3 = """                            
                 SELECT c.is_archive, id, title FROM columns c
-                WHERE c.title ILIKE (concat('%',?,'%'))
+                WHERE c.title ILIKE (CONCAT('%',?,'%'))
                 """;
 
         List<ColumnResponse> columnResponses = jdbcTemplate.query(sql3, ((rs, rowNum) -> new ColumnResponse(rs.getLong("id")
                 , rs.getString("title"), rs.getBoolean("is_archive"))), search);
 
         String sql4 = """
-                SELECT  w.admin_id, concat(u.first_name, ' ', u.last_name) as fullNaem, u.image,w.id, name FROM work_spaces w
-                Join user_work_space_roles uwsr on w.id = uwsr.work_space_id join users u on u.id = uwsr.member_id
-                WHERE w.name ILIKE (concat('%',?,'%'))
+                SELECT  w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullNaem, u.image,w.id, name FROM work_spaces w
+                JOIN user_work_space_roles uwsr ON w.id = uwsr.work_space_id
+                JOIN users u ON u.id = uwsr.member_id
+                WHERE w.name ILIKE (CONCAT('%',?,'%'))
                 """;
 
         List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql4, ((rs, rowNum) -> WorkSpaceResponse.builder()
