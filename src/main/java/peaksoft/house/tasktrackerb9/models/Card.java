@@ -5,7 +5,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
@@ -31,30 +33,40 @@ public class Card {
 
     private LocalDate createdDate;
 
-    @ManyToMany(cascade ={DETACH,MERGE,REFRESH})
-    private List<User>members;
+    @ManyToMany(cascade = {DETACH, MERGE, REFRESH})
+    private List<User> members;
 
-    @ManyToMany(cascade = {ALL},mappedBy = "cards")
-    private List<Label>labels;
+    @ManyToMany(cascade = {ALL}, mappedBy = "cards")
+    private List<Label> labels;
 
-    @OneToMany(cascade = {ALL},mappedBy = "card")
+    @OneToMany(cascade = {ALL}, mappedBy = "card")
 
-    private List<Notification>notifications;
+    private List<Notification> notifications;
 
-    @OneToMany(cascade = {ALL},mappedBy = "card")
-    private List<Attachment>attachments;
+    @OneToMany(cascade = {ALL}, mappedBy = "card")
+    private List<Attachment> attachments;
 
-    @OneToMany(cascade = {ALL},mappedBy = "card")
-    private List<Comment>comments;
+    @OneToMany(cascade = {ALL}, mappedBy = "card")
+    private List<Comment> comments;
 
-    @OneToMany(cascade = {ALL},mappedBy = "card",orphanRemoval = true)
-    private List<CheckList>checkLists;
+    @OneToMany(cascade = {ALL}, mappedBy = "card", orphanRemoval = true)
+    private List<CheckList> checkLists;
 
-    @OneToOne(cascade = {ALL},mappedBy = "card")
+    @OneToOne(cascade = {ALL}, mappedBy = "card")
     private Estimation estimation;
 
-    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private Column column;
 
     private Long creatorId;
+
+    public void addNotification(Notification notification) {
+
+        if (notifications == null) {
+
+            notifications = new ArrayList<>();
+        }
+        notifications.add(notification);
+    }
+
 }

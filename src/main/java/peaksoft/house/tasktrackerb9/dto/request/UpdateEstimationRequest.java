@@ -16,20 +16,15 @@ import java.time.ZonedDateTime;
 public class UpdateEstimationRequest {
     private String reminder;
 
-    //        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private ZonedDateTime startDate;
 
-    //        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private ZonedDateTime dateOfFinish;
 
-    //        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private ZonedDateTime startTime;
 
-    //        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private ZonedDateTime finishTime;
 
     @Builder
-
     public UpdateEstimationRequest(String reminder, ZonedDateTime startDate, ZonedDateTime dateOfFinish, ZonedDateTime startTime, ZonedDateTime finishTime) {
         this.reminder = reminder;
         this.startDate = startDate;

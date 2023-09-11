@@ -6,6 +6,7 @@ import lombok.*;
 import peaksoft.house.tasktrackerb9.enums.NotificationType;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -46,4 +47,20 @@ public class Notification {
     @OneToOne(cascade = {DETACH, MERGE, REFRESH, REMOVE})
 
     private Estimation estimation;
+
+    private Long fromUserId;
+
+    private Long boardId;
+
+    private Long columnId;
+
+    public void addMembers(List<User> members) {
+
+        if (this.members == null) {
+
+            this.members = new ArrayList<>();
+        }
+
+        this.members.addAll(members);
+    }
 }
