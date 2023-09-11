@@ -64,13 +64,3 @@ public class Notification {
         this.members.addAll(members);
     }
 }
-
-
-//    @OneToOne(cascade = {DETACH, REFRESH, MERGE})
-//    private Board board;
-//
-//    @OneToOne
-//    private User fromUser;
-//
-//    @OneToOne(cascade = {DETACH, REFRESH, MERGE})
-//    private peaksoft.house.tasktrackerb9.models.Column column;
