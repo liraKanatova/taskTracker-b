@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.converter.CardConverter;
 import peaksoft.house.tasktrackerb9.dto.request.CardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.UpdateCardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.NotificationType;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -265,5 +267,4 @@ public class CardServiceImpl implements CardService {
                 .message("Card with id: " + id + " successfully deleted!")
                 .build();
     }
-
 }

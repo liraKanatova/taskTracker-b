@@ -6,6 +6,7 @@ import lombok.*;
 import peaksoft.house.tasktrackerb9.enums.NotificationType;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
@@ -26,6 +27,8 @@ public class Notification {
 
     private String text;
 
+    private String image;
+
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
@@ -41,13 +44,33 @@ public class Notification {
     @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private Card card;
 
-    @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
-    private Estimation estimation;
+    @OneToOne(cascade = {DETACH, MERGE, REFRESH, REMOVE})
 
-    private Long boardId;
+    private Estimation estimation;
 
     private Long fromUserId;
 
+    private Long boardId;
+
     private Long columnId;
 
+    public void addMembers(List<User> members) {
+
+        if (this.members == null) {
+
+            this.members = new ArrayList<>();
+        }
+
+        this.members.addAll(members);
+    }
 }
+
+
+//    @OneToOne(cascade = {DETACH, REFRESH, MERGE})
+//    private Board board;
+//
+//    @OneToOne
+//    private User fromUser;
+//
+//    @OneToOne(cascade = {DETACH, REFRESH, MERGE})
+//    private peaksoft.house.tasktrackerb9.models.Column column;

@@ -16,10 +16,10 @@ import peaksoft.house.tasktrackerb9.repositories.CardRepository;
 import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class EstimationServiceImpl implements EstimationService {
 
     private final EstimationRepository estimationRepository;
@@ -31,148 +31,186 @@ public class EstimationServiceImpl implements EstimationService {
     public EstimationResponse createdEstimation(EstimationRequest request) {
         Estimation estimation = new Estimation();
         Card card = cardRepository.findById(request.getCardId()).orElseThrow(() -> {
-            log.info("Card with id: " + request.getCardId() + " not found");
-            return new NotFoundException("Card with id: " + request.getCardId() + " not found");
-        });
+                    log.info("Card with id: " + request.getCardId() + " not found");
+                    return new NotFoundException("Card with id: " + request.getCardId() + " not found");
+                }
+        );
 
         if (card.getEstimation() == null) {
-            if (request.startDate().isBefore(request.dateOfFinish())) {
-                estimation.setStartDate(request.startDate());
-                estimation.setFinishDate(request.dateOfFinish());
-                estimation.setStartTime(request.startTime());
-                estimation.setFinishTime(request.finishTime());
-                if (request.reminder().equals("NONE")) {
-                    estimation.setReminderType(ReminderType.NONE);
-                }
-                if (request.reminder().equals("5")) {
-                    estimation.setReminderType(ReminderType.FIVE_MINUTE);
-                    if (estimation.getFinishTime() != null) {
-                        estimation.setNotificationTime(estimation
-                                .getFinishTime()
-                                .minusMinutes(5)
-                                .with(ChronoField.MILLI_OF_SECOND, 0)
-                                .with(ChronoField.SECOND_OF_MINUTE, 0));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
-                }
-                if (request.reminder().equals("10")) {
-                    estimation.setReminderType(ReminderType.TEN_MINUTE);
-                    if (estimation.getFinishTime() != null) {
-                        estimation.setNotificationTime(estimation
-                                .getFinishTime()
-                                .minusMinutes(10)
-                                .with(ChronoField.MILLI_OF_SECOND, 0)
-                                .with(ChronoField.SECOND_OF_MINUTE, 0));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
+
+            if (!request.getStartDate().toLocalDate().isAfter(request.getDateOfFinish().toLocalDate())) {
+
+                if (request.getStartDate().toLocalDate().equals(request.getDateOfFinish().toLocalDate())) {
+
+                    if (request.getStartTime().toLocalTime().equals(request.getFinishTime().toLocalTime())) {
+
+                        throw new BadRequestException("Date of start and date finish and time of start and time finish can't be equal!");
+                    }
                 }
 
-                if (request.reminder().equals("15")) {
-                    estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
-                    if (estimation.getFinishTime() != null) {
-                        estimation.setNotificationTime(estimation
-                                .getFinishTime()
-                                .minusMinutes(15)
-                                .with(ChronoField.MILLI_OF_SECOND, 0)
-                                .with(ChronoField.SECOND_OF_MINUTE, 0));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
+                if (!request.getFinishTime().toLocalTime().isBefore(request.getStartTime().toLocalTime())) {
+                    estimation.setStartDate(request.getStartDate());
+                    estimation.setFinishDate(request.getDateOfFinish());
+                    estimation.setStartTime(request.getStartTime());
+                    estimation.setFinishTime(request.getFinishTime());
+
+                    if ("NONE".equals(request.getReminder())) {
+                        estimation.setReminderType(ReminderType.NONE);
+
+                    } else if ("5".equals(request.getReminder())) {
+                        estimation.setReminderType(ReminderType.FIVE_MINUTE);
+
+                        if (estimation.getFinishTime() != null) {
+                            estimation.setNotificationTime(estimation
+                                    .getFinishTime()
+                                    .minusMinutes(5)
+                            );
+
+                        } else {
+                            throw new BadCredentialException("Notification finish time must not be null");
+                        }
+
+                    } else if ("10".equals(request.getReminder())) {
+                        estimation.setReminderType(ReminderType.TEN_MINUTE);
+
+                        if (estimation.getFinishTime() != null) {
+                            estimation.setNotificationTime(estimation
+                                    .getFinishTime()
+                                    .minusMinutes(10)
+                            );
+
+                        } else {
+                            throw new BadCredentialException("Notification finish time must not be null");
+                        }
+
+                    } else if ("15".equals(request.getReminder())) {
+                        estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
+
+                        if (estimation.getFinishTime() != null) {
+                            estimation.setNotificationTime(estimation
+                                    .getFinishTime()
+                                    .minusMinutes(15)
+                            );
+
+                        } else {
+                            throw new BadCredentialException("Notification finish time must not be null");
+                        }
+
+                    } else if ("30".equals(request.getReminder())) {
+                        estimation.setReminderType(ReminderType.TEN_MINUTE);
+                        if (estimation.getFinishTime() != null) {
+                            estimation.setNotificationTime(estimation
+                                    .getFinishTime()
+                                    .minusMinutes(30)
+                            );
+
+                        } else {
+                            throw new BadCredentialException("Notification finish time must not be null");
+                        }
+                    }
+
+                    estimation.setCard(card);
+                    estimationRepository.save(estimation);
+                    card.setEstimation(estimation);
+                    log.info("Successfully saved estimation: " + estimation);
+
+                } else {
+                    throw new BadRequestException("The finish time can't be before the start time!");
                 }
 
-                if (request.reminder().equals("30")) {
-                    estimation.setReminderType(ReminderType.THIRD_MINUTE);
-                    if (estimation.getFinishTime() != null) {
-                        estimation.setNotificationTime(estimation
-                                .getFinishTime()
-                                .minusMinutes(30)
-                                .with(ChronoField.MILLI_OF_SECOND, 0)
-                                .with(ChronoField.SECOND_OF_MINUTE, 0));
-                    } else throw new BadCredentialException("Notification finish time must be not null");
-                }
+            } else {
+                throw new BadRequestException("Finish date can't be before the start date");
+            }
 
-                card.setEstimation(estimation);
-                estimationRepository.save(estimation);
-                log.info("Successfully saved estimation: " + estimation);
-            } else throw new BadRequestException("The start date must not be before the finish date");
-        } else throw new BadRequestException("This card already has an estimation");
-        return EstimationResponse.builder().
-                estimationId(estimation.getId()).
-                startDate(estimation.getStartDate().toString()).
-                duetDate(estimation.getFinishDate().toString()).
-                finishTime(estimation.getFinishTime().toString()).
-                reminderType(estimation.getReminderType()).
-                build();
+        } else {
+            throw new BadRequestException("This card already has an estimation");
+        }
+
+        return EstimationResponse.builder()
+                .estimationId(estimation.getId())
+                .startDate(estimation.getStartDate().toString())
+                .duetDate(estimation.getFinishDate().toString())
+                .finishTime(estimation.getFinishTime().toString())
+                .reminderType(estimation.getReminderType())
+                .build();
     }
 
     @Override
     public EstimationResponse updateEstimation(EstimationRequest request) {
+
         Estimation estimation = estimationRepository.findById(request.getCardId()).orElseThrow(() -> {
-            log.info("Card with id: " + request.getCardId() + "  not found");
-            return new NotFoundException("Card with id: " + request.getCardId() + " id not found");
-        });
+                    log.info("Card with id: " + request.getCardId() + "  not found");
+                    return new NotFoundException("Card with id: " + request.getCardId() + " id not found");
+                }
+        );
+
         if (request.getStartDate() != null || !request.getStartDate().toString().isEmpty()) {
             estimation.setStartDate(request.getStartDate());
         } else {
             estimation.setStartDate(estimation.getStartDate());
         }
+
         if (request.getDateOfFinish() != null || !request.getDateOfFinish().toString().isEmpty()) {
             estimation.setFinishDate(request.getDateOfFinish());
         } else {
             estimation.setFinishDate(estimation.getFinishDate());
         }
-        if (request.startTime() != null || !request.startTime().toString().isEmpty()) {
-            estimation.setFinishTime(request.finishTime());
+
+        if (request.getStartTime() != null || !request.getStartTime().toString().isEmpty()) {
+            estimation.setFinishTime(request.getFinishTime());
         } else {
             estimation.setFinishTime(estimation.getFinishTime());
         }
-        if (request.finishTime() != null || !request.finishTime().toString().isEmpty()) {
-            estimation.setFinishTime(request.finishTime());
+        if (request.getFinishTime() != null || !request.getFinishTime().toString().isEmpty()) {
+            estimation.setFinishTime(request.getFinishTime());
         } else {
             estimation.setFinishTime(estimation.getFinishTime());
         }
+
         if (request.getReminder().equals("NONE")) {
             estimation.setReminderType(ReminderType.NONE);
         }
+
         if (request.getReminder().equals("5")) {
             estimation.setReminderType(ReminderType.FIVE_MINUTE);
             if (estimation.getFinishTime() != null) {
                 estimation.setNotificationTime(estimation
                         .getFinishTime()
                         .minusMinutes(5)
-                        .with(ChronoField.MILLI_OF_SECOND, 0)
-                        .with(ChronoField.SECOND_OF_MINUTE, 0));
+                );
             } else throw new BadCredentialException("Notification finish time must be not null");
         }
+
         if (request.getReminder().equals("10")) {
             estimation.setReminderType(ReminderType.TEN_MINUTE);
             if (estimation.getFinishTime() != null) {
                 estimation.setNotificationTime(estimation
                         .getFinishTime()
                         .minusMinutes(10)
-                        .with(ChronoField.MILLI_OF_SECOND, 0)
-                        .with(ChronoField.SECOND_OF_MINUTE, 0)
                 );
             } else throw new BadCredentialException("Notification finish time must be not null");
         }
+
         if (request.getReminder().equals("15")) {
             estimation.setReminderType(ReminderType.FIFTEEN_MINUTE);
             if (estimation.getFinishTime() != null) {
                 estimation.setNotificationTime(estimation
                         .getFinishTime()
                         .minusMinutes(15)
-                        .with(ChronoField.MILLI_OF_SECOND, 0)
-                        .with(ChronoField.SECOND_OF_MINUTE, 0)
                 );
             } else throw new BadCredentialException("Notification finish time must be not null");
         }
+
         if (request.getReminder().equals("30")) {
             estimation.setReminderType(ReminderType.THIRD_MINUTE);
             if (estimation.getFinishTime() != null) {
                 estimation.setNotificationTime(estimation
                         .getFinishTime()
-                        .minusMinutes(5)
-                        .with(ChronoField.MILLI_OF_SECOND, 0)
-                        .with(ChronoField.SECOND_OF_MINUTE, 0)
+                        .minusMinutes(30)
                 );
             } else throw new BadCredentialException("Notification finish time must be not null");
         }
+
         estimationRepository.save(estimation);
         log.info("Successfully estimation updated!");
         return EstimationResponse.builder().
@@ -182,6 +220,5 @@ public class EstimationServiceImpl implements EstimationService {
                 finishTime(estimation.getFinishTime().toString()).
                 reminderType(estimation.getReminderType()).
                 build();
-
     }
 }

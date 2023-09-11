@@ -14,12 +14,10 @@ import peaksoft.house.tasktrackerb9.models.Notification;
 import peaksoft.house.tasktrackerb9.repositories.EstimationRepository;
 import peaksoft.house.tasktrackerb9.repositories.NotificationRepository;
 
-import java.time.*;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoField;
 import java.util.List;
-import java.util.Scanner;
 
 @Configuration
 @Slf4j
@@ -34,25 +32,18 @@ public class ReminderConfig {
     @Transactional
     @Scheduled(cron = "0 0/1 * * * *")
     public void reminder() {
-
-        log.warn("in reminder");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
         List<Estimation> estimations = estimationRepository.findAll();
+
         if (!estimations.isEmpty()) {
-            log.warn("in first if");
+
             for (Estimation estimation : estimations) {
-//                long minutesUntilNotification = Duration.between(ZonedDateTime.now(BISHKEK_ZONE), estimation.getNotificationTime()).toMinutes();
 
-                log.warn("in for");
-                ZonedDateTime now = ZonedDateTime.now(BISHKEK_ZONE)
-                        .with(ChronoField.MILLI_OF_SECOND, 0)
-                        .with(ChronoField.SECOND_OF_MINUTE, 0);
+                if (!estimation.getReminderType().equals(ReminderType.NONE)) {
 
-                if (estimation.getNotificationTime() != null) {
-                    log.warn("notification time not null");
-                    if (estimation.getNotificationTime().equals(now)) {
+                    if (estimation.getNotificationTime().format(formatter).equals(ZonedDateTime.now(BISHKEK_ZONE).format(formatter))) {
 
-                        log.warn("in second if, times is equals");
                         Notification notification = new Notification();
                         Card card = estimation.getCard();
                         notification.setCard(card);
@@ -61,7 +52,7 @@ public class ReminderConfig {
                         notification.setBoardId(card.getColumn().getBoard().getId());
                         notification.setColumnId(card.getColumn().getId());
                         notification.setEstimation(estimation);
-                        notification.setMembers(card.getMembers());
+                        notification.addMembers(card.getMembers());
                         notification.setCreatedDate(ZonedDateTime.now(BISHKEK_ZONE));
                         notification.setIsRead(false);
 
@@ -75,28 +66,10 @@ public class ReminderConfig {
                             notification.setText(estimation.getCard().getTitle() + ": timeout expires in 30 minutes!");
                         }
                         notificationRepository.save(notification);
-                        log.warn("after save notification");
+                        estimation.setNotification(notification);
                     }
                 }
             }
         }
     }
 }
-
-//    private void checkAndCreateNotification(Estimation estimation, String message) {
-//        Notification notification = new Notification();
-//        Card card = estimation.getCard();
-//        notification.setCard(card);
-//        notification.setType(NotificationType.REMINDER);
-//        notification.setFromUserId(card.getCreatorId());
-//        notification.setBoardId(card.getColumn().getBoard().getId());
-//        notification.setColumnId(card.getColumn().getId());
-//        notification.setEstimation(estimation);
-//        notification.setMembers(card.getMembers());
-//        notification.setCreatedDate(ZonedDateTime.now(BISHKEK_ZONE));
-//        notification.setIsRead(false);
-//        notification.setText(message);
-//        log.info(message);
-//        notificationRepository.save(notification);
-//    }
-//}
