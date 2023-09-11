@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.models;
 
-
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
@@ -45,5 +44,4 @@ public class Estimation {
 
     @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
     private Notification notification;
-
 }

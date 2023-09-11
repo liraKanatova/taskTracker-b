@@ -3,8 +3,7 @@ package peaksoft.house.tasktrackerb9.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +20,8 @@ import static jakarta.persistence.CascadeType.*;
 public class Card {
 
     @Id
-    @GeneratedValue(generator = "card_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "card_gen", sequenceName = "card_seq", allocationSize = 1,
-            initialValue = 19)
+    @GeneratedValue(generator = "card_gen",strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "card_gen",sequenceName = "card_seq",allocationSize = 1, initialValue = 19)
     private Long id;
 
     private String title;
@@ -32,7 +30,8 @@ public class Card {
 
     @jakarta.persistence.Column(name = "is_archive")
     private Boolean isArchive;
-    private ZonedDateTime createdDate;
+
+    private LocalDate createdDate;
 
     @ManyToMany(cascade = {DETACH, MERGE, REFRESH})
     private List<User> members;

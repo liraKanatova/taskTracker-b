@@ -11,4 +11,15 @@ public interface LabelRepository extends JpaRepository<Label,Long> {
 
     @Query("select new peaksoft.house.tasktrackerb9.dto.response.LabelResponse(l.id,l.labelName,l.color) from Label l")
     List<LabelResponse> getAllLabelResponse();
+
+    @Query("""
+           select new peaksoft.house.tasktrackerb9.dto.response.LabelResponse(
+           l.id,
+           l.labelName,
+           l.color)
+           from Label l
+           join l.cards c
+           where c.id = :cardId
+           """)
+    List<LabelResponse> findAllByCardId(Long cardId);
 }

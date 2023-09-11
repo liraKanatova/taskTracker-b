@@ -7,14 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.converter.CardConverter;
 import peaksoft.house.tasktrackerb9.dto.request.CardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.UpdateCardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
-import peaksoft.house.tasktrackerb9.enums.NotificationType;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -24,12 +22,13 @@ import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomCardJ
 import peaksoft.house.tasktrackerb9.services.CardService;
 
 import java.time.ZoneId;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Slf4j
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
@@ -214,7 +213,7 @@ public class CardServiceImpl implements CardService {
         card.setTitle(cardRequest.title());
         card.setDescription(cardRequest.description());
         card.setIsArchive(false);
-        card.setCreatedDate(ZonedDateTime.now());
+        card.setCreatedDate(LocalDate.now());
         card.setCreatorId(user.getId());
         user.setCards(List.of(card));
         card.setColumn(column);
@@ -233,7 +232,7 @@ public class CardServiceImpl implements CardService {
         });
         card.setTitle(updateCardRequest.title());
         card.setDescription(updateCardRequest.description());
-        card.setCreatedDate(ZonedDateTime.now());
+        card.setCreatedDate(LocalDate.now());
         cardRepository.save(card);
 
         log.info("Card with id: " + updateCardRequest.cardId() + " successfully updated!");
