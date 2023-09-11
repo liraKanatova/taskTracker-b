@@ -35,7 +35,7 @@ public class Estimation {
 
     private ZonedDateTime startTime;
 
-    private ZonedDateTime time;
+    private ZonedDateTime finishTime;
 
     private ZonedDateTime notificationTime;
 

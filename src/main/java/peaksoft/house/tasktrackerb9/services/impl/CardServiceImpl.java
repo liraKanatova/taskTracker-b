@@ -23,12 +23,13 @@ import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomCardJdbcTemplateService;
 import peaksoft.house.tasktrackerb9.services.CardService;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
-@Slf4j
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
@@ -160,15 +161,15 @@ public class CardServiceImpl implements CardService {
 
         Notification moveNotification = new Notification();
         moveNotification.setType(NotificationType.MOVE);
-        moveNotification.setText(String.format("Card with id %d has been moved to column with id %d", cardId, columnId));
-        moveNotification.setCreatedDate(ZonedDateTime.now());
+        moveNotification.setText("Card with id " + cardId + " has been moved to column " + targetColumn.getTitle());
+        moveNotification.setCreatedDate(ZonedDateTime.now(ZoneId.of("Asia/Bishkek")));
         moveNotification.setIsRead(false);
         moveNotification.setColumnId(targetColumn.getId());
         moveNotification.setBoardId(targetColumn.getBoard().getId());
         moveNotification.setFromUserId(user.getId());
         moveNotification.setCard(movedCard);
 
-        movedCard.getNotifications().add(moveNotification);
+        movedCard.addNotification(moveNotification);
         for (User member : movedCard.getMembers()) {
             member.getNotifications().add(moveNotification);
         }
