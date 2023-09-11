@@ -168,51 +168,52 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 .workSpaceResponse(workSpaceResponses)
                 .build();
     }
-    //worksoace board, column , member
+
     @Override
     public GlobalSearchResponse search(String search) {
-
-        String sql = """
-      
-                          SELECT u.id, email, first_name, image, last_name FROM users u
+        String sql = """      
+                SELECT u.id, email, first_name, image, last_name FROM users u
                 WHERE u.first_name ilike (concat('%',?,'%'))
-                   OR u.last_name ilike (concat('%',?,'%'))
-                            """;
+                OR u.last_name ilike (concat('%',?,'%'))
+                """;
+
         List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rusNum) -> new UserResponse(rs.getLong("id")
                 , rs.getString("first_name")
                 , rs.getString("last_name")
                 , rs.getString("email")
-                , rs.getString("image")),search,search);
-        String sql2 = """
-             
+                , rs.getString("image")), search, search);
+
+        String sql2 = """     
                 SELECT b.id,  back_ground, title FROM boards b
-             WHERE b.title ILIKE (CONCAT('%',?,'%'))  
+                WHERE b.title ILIKE (CONCAT('%',?,'%'))
                 """;
+
         List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, ((rs, rowNum) -> new BoardResponse(rs.getLong("id")
                 , rs.getString("title")
                 , rs.getString("back_ground"))), search);
 
-        String sql3 = """
-             
+        String sql3 = """                            
                 SELECT c.is_archive, id, title FROM columns c
-             WHERE c.title ILIKE (concat('%',?,'%'))
-                                """;
-        List<ColumnResponse> columnResponses = jdbcTemplate.query(sql3, ((rs, rowNum) -> new ColumnResponse(rs.getLong("id")
-                , rs.getString("title"),rs.getBoolean("is_archive"))), search);
-
-        String sql4= """
-              
-                SELECT  w.admin_id, concat(u.first_name, ' ', u.last_name) as fullNaem, u.image,w.id, name FROM work_spaces w
-                               Join user_work_space_roles uwsr on w.id = uwsr.work_space_id join users u on u.id = uwsr.member_id
-              WHERE w.name ILIKE (concat('%',?,'%'))
+                WHERE c.title ILIKE (concat('%',?,'%'))
                 """;
-List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql4, ((rs, rowNum) -> WorkSpaceResponse.builder()
-        .workSpaceId(rs.getLong("id"))
-        .adminFullName(rs.getString("fullNaem"))
-        .adminImage(rs.getString("image"))
-        .adminId(rs.getLong("admin_id"))
-        .workSpaceName(rs.getString("name"))
-        .build()),search);
+
+        List<ColumnResponse> columnResponses = jdbcTemplate.query(sql3, ((rs, rowNum) -> new ColumnResponse(rs.getLong("id")
+                , rs.getString("title"), rs.getBoolean("is_archive"))), search);
+
+        String sql4 = """
+                SELECT  w.admin_id, concat(u.first_name, ' ', u.last_name) as fullNaem, u.image,w.id, name FROM work_spaces w
+                Join user_work_space_roles uwsr on w.id = uwsr.work_space_id join users u on u.id = uwsr.member_id
+                WHERE w.name ILIKE (concat('%',?,'%'))
+                """;
+
+        List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql4, ((rs, rowNum) -> WorkSpaceResponse.builder()
+                .workSpaceId(rs.getLong("id"))
+                .adminFullName(rs.getString("fullNaem"))
+                .adminImage(rs.getString("image"))
+                .adminId(rs.getLong("admin_id"))
+                .workSpaceName(rs.getString("name"))
+                .build()), search);
+
         return GlobalSearchResponse.builder()
                 .userResponses(userResponses)
                 .boardResponses(boardResponses)
