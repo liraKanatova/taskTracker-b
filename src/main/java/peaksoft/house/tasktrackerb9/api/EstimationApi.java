@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.EstimationRequest;
+import peaksoft.house.tasktrackerb9.dto.request.UpdateEstimationRequest;
 import peaksoft.house.tasktrackerb9.dto.response.EstimationResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
 @RestController
@@ -23,9 +25,9 @@ public class EstimationApi {
         return service.createdEstimation(estimationRequest);
     }
 
-    @PutMapping
+    @PutMapping("/{estimationId}")
     @Operation(summary = "Update estimation",description = "Update estimation is the card id")
-    public EstimationResponse updatedEstimation(@RequestBody EstimationRequest estimationRequest){
-        return service.updateEstimation(estimationRequest);
+    public SimpleResponse updatedEstimation(@PathVariable Long estimationId, @RequestBody UpdateEstimationRequest estimationRequest){
+        return service.updateEstimation(estimationId,estimationRequest);
     }
 }
