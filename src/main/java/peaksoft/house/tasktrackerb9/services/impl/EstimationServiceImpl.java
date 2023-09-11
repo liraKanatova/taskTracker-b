@@ -210,11 +210,11 @@ public class EstimationServiceImpl implements EstimationService {
                 );
             } else throw new BadCredentialException("Notification finish time must be not null");
         }
+
         estimationRepository.save(estimation);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message("Successfully estimation updated!")
                 .build();
-
     }
 }
