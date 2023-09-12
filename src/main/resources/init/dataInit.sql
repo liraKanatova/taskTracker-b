@@ -17,7 +17,7 @@ values (1,'Abdumalik','Turatbek uulu','asanbekovmalik2@gmail.com', '$2a$12$6RFdM
 
 
 insert into work_spaces(id,name,admin_id,created_date)
-values (1,'Taigan','2023-09-07T23:00:00'),
+values (1,'Taigan',1, '2023-09-07T23:00:00'),
        (2,'LMS',2,'2023-09-07T12:00:00'),
        (3,'Gadgetarium',3,'2023-09-09T00:00:00'),
        (4,'AirBnb',4,'2023-09-10T00:00:00'),
@@ -180,7 +180,7 @@ insert into comments(id,comment,created_date,card_id,member_id)
          (4,'Harosh','2023-09-07T12:00:00',4,4),
          (5,'Good job','2023-09-07T12:00:00',5,5);
 
-insert into estimations(id,reminder_type,start_date,due_date,start_time,time,notification_time,card_id)
+insert into estimations(id,reminder_type,start_date,due_date,start_time,finish_time,notification_time,card_id)
 values (1,'NONE','2023-07-10T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00',1),
        (2,'FIVE_MINUTE','2023-07-09T10:30:00+03:00','2023-07-10T10:30:00+03:00','2023-07-10T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00',2),
        (3,'TEN_MINUTE','2023-07-08T10:30:00+03:00','2023-07-09T10:30:00+03:00','2023-07-09T10:30:00+03:00','2023-07-11T10:30:00+03:00','2023-07-11T10:30:00+03:00',3),

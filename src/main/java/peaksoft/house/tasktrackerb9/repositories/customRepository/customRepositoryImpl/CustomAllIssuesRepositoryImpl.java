@@ -33,7 +33,7 @@ public class CustomAllIssuesRepositoryImpl implements CustomAllIssuesRepository 
                                         col.title,
                                         (
                                             select COUNT(*)
-                                            from checkLists chk
+                                            from check_lists chk
                                             where chk.card_id = cr.id
                                         ),
                                         cr.description
