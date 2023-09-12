@@ -14,4 +14,5 @@ public class UserAllIssuesResponse {
     private Long userId;
     private String fullName;
     private String image;
+    private String email;
 }

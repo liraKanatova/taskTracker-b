@@ -29,7 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             select new peaksoft.house.tasktrackerb9.dto.response.UserAllIssuesResponse(
             u.id,
             concat(u.firstName, ' ', u.lastName),
-            u.image)
+            u.image,
+            u.email)
             from User u
             join u.cards c
             where c.id = :cardId
