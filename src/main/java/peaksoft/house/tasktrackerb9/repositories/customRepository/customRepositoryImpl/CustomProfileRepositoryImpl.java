@@ -145,8 +145,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 WHERE u2.id = u.id) AS countWorkSpaces
                        FROM users AS u
                        WHERE u.id = ?;
-                        
-                                         """;
+ """;
         ProfileResponse profileResponse = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new ProfileResponse(rs.getLong("userId")
                 , rs.getString("firstName")
                 , rs.getString("lastName")
@@ -183,22 +182,14 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 , rs.getString("email")
                 , rs.getString("image")), search, search);
 
-        String sql2 = """     
-                SELECT b.id,  back_ground, title FROM boards b
-                WHERE b.title ILIKE (CONCAT('%',?,'%'))
-                """;
+        String sql2 = """   
+           SELECT b.work_space_id,b.id,  back_ground, title FROM boards b
+           WHERE b.title ILIKE (CONCAT('%',?,'%'))
+           """;
 
         List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, ((rs, rowNum) -> new BoardResponse(rs.getLong("id")
                 , rs.getString("title")
                 , rs.getString("back_ground"))), search);
-
-        String sql3 = """                            
-                SELECT c.is_archive, id, title FROM columns c
-                WHERE c.title ILIKE (CONCAT('%',?,'%'))
-                """;
-
-        List<ColumnResponse> columnResponses = jdbcTemplate.query(sql3, ((rs, rowNum) -> new ColumnResponse(rs.getLong("id")
-                , rs.getString("title"), rs.getBoolean("is_archive"))), search);
 
         String sql4 = """
                 SELECT  w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullNaem, u.image,w.id, name FROM work_spaces w
@@ -218,7 +209,6 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
         return GlobalSearchResponse.builder()
                 .userResponses(userResponses)
                 .boardResponses(boardResponses)
-                .columnResponses(columnResponses)
                 .workSpaceResponses(workSpaceResponses)
                 .build();
     }
