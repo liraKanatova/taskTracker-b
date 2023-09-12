@@ -110,6 +110,8 @@ public class EstimationServiceImpl implements EstimationService {
                         } else {
                             throw new BadCredentialException("Notification finish time must not be null");
                         }
+                    } else {
+                        estimation.setReminderType(ReminderType.NONE);
                     }
 
                     estimation.setCard(card);
@@ -209,6 +211,10 @@ public class EstimationServiceImpl implements EstimationService {
                         .minusMinutes(30)
                 );
             } else throw new BadCredentialException("Notification finish time must be not null");
+        }
+
+        if (!request.getReminder().equals("5") || !request.getReminder().equals("10") || !request.getReminder().equals("15") || !request.getReminder().equals("30") || !request.getReminder().equals("NONE")) {
+            estimation.setReminderType(ReminderType.NONE);
         }
 
         estimationRepository.save(estimation);
