@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FilterBoardResponse {
 
-    Long boardId;
-    List<CardResponse> cardResponses;
+    private Long boardId;
+    private List<CardResponse> cardResponses;
 
 }

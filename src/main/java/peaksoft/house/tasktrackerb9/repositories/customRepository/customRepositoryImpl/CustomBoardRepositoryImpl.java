@@ -250,7 +250,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                        CONCAT(u.first_name, ' ', u.last_name) AS fullName,
                        u.image AS image,
                        CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine
-
                 FROM comments AS co
                 JOIN cards c ON c.id = co.card_id
                 JOIN users u ON co.member_id = u.id
