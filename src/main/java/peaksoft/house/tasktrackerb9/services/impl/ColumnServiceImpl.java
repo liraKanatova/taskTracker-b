@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
+import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
@@ -74,7 +75,7 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public ColumnResponse update(Long columnId,ColumnRequest columnRequest) {
+    public ColumnResponse update(Long columnId, ColumnRequest columnRequest) {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
@@ -84,17 +85,18 @@ public class ColumnServiceImpl implements ColumnService {
             column.setTitle(columnRequest.title());
             columnsRepository.save(column);
             log.info("Column successfully update");
-        }else {
+        } else {
             throw new BadCredentialException("You are not member");
         }
-          return new ColumnResponse(column.getId(),column.getTitle(),column.getIsArchive());
+        return new ColumnResponse(column.getId(), column.getTitle(), column.getIsArchive());
     }
+
     @Override
     public SimpleResponse removeColumn(Long columnId) {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column with id: "+columnId+" not found");
+            return new NotFoundException("Column with id: " + columnId + " not found");
         });
         if (user.getRole().equals(Role.ADMIN)) {
             columnsRepository.delete(column);
@@ -129,7 +131,7 @@ public class ColumnServiceImpl implements ColumnService {
         UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
         if (userWorkSpaceRole == null) {
             log.error("You are not a member of this workspace!");
-            throw new BadCredentialException("You are not a member of this workspace!"+workSpace.getName()+"/"+user.getFirstName());
+            throw new BadCredentialException("You are not a member of this workspace!" + workSpace.getName() + "/" + user.getFirstName());
         }
 
         if (workSpace.getMembers().contains(userWorkSpaceRole.getMember()) || userWorkSpaceRole.getMember().equals(workspaceAdmin)) {
@@ -151,5 +153,23 @@ public class ColumnServiceImpl implements ColumnService {
             log.error("You can't archive this card!");
             throw new BadCredentialException("You can't archive this card!");
         }
+    }
+
+    @Override
+    public List<CardResponse> getAllCardsByColumnId(Long columnId) {
+        User admin = jwtService.getAuthentication();
+        Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
+            log.error("Column not found!");
+            return new NotFoundException("Column with id: " + columnId + " not found");
+        });
+        WorkSpace workSpace = column.getBoard().getWorkSpace();
+        if (!workSpace.getAdminId().equals(admin.getId())) {
+            log.error("User with id : {} is not an admin of this workSpace", admin.getId());
+            throw new BadCredentialException("You are not a admin of this workSpace");
+        }
+        List<Card> cardsInColumn = new ArrayList<>(column.getCards());
+        return cardsInColumn.stream()
+                .map(card -> new CardResponse(card.getId(), card.getTitle()))
+                .toList();
     }
 }

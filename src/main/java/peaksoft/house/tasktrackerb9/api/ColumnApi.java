@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
+import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.impl.ColumnServiceImpl;
@@ -51,5 +52,11 @@ public class ColumnApi {
     @PutMapping("/archive/{columnId}")
     public SimpleResponse archiveCard(@PathVariable Long columnId) {
         return columnService.sendToArchive(columnId);
+    }
+
+    @GetMapping("/cards/{columnId}")
+    @Operation(summary = "Cards",description = "Get all cards with column id")
+    public List<CardResponse> getAllCardsByColumnId(@PathVariable Long columnId){
+        return columnService.getAllCardsByColumnId(columnId);
     }
 }
