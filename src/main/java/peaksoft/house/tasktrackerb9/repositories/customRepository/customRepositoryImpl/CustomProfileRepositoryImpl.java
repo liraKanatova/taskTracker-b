@@ -189,7 +189,8 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
         List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, ((rs, rowNum) -> new BoardResponse(rs.getLong("id")
                 , rs.getString("title")
-                , rs.getString("back_ground"))), search);
+                , rs.getString("back_ground"),
+                rs.getLong("work_space_id"))), search);
 
         String sql4 = """
                 SELECT  w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullNaem, u.image,w.id, name FROM work_spaces w
