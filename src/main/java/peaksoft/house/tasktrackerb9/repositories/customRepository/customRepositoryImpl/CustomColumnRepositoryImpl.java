@@ -22,7 +22,7 @@ public class CustomColumnRepositoryImpl implements CustomColumnRepository {
     @Override
     public List<ColumnResponse> getAllColumns(Long boardId) {
         String sql = """
-                select c.id,c.title,c.is_archive  from boards b
+                select c.id,c.title,c.is_archive from boards b
                 join columns c on b.id = c.board_id
                 where b.id=? and c.is_archive=false order by c.id asc """;
         List<ColumnResponse> columnResponses = jdbcTemplate.query(sql, ((rs, rowNum) ->
