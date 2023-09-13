@@ -1,7 +1,6 @@
 package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.request.ColumnRequest;
-import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 
@@ -18,7 +17,4 @@ public interface ColumnService {
     SimpleResponse removeColumn(Long columnId);
 
     SimpleResponse sendToArchive(Long columnId);
-
-   List<CardResponse> getAllCardsByColumnId(Long columnId);
-
 }
