@@ -1,7 +1,7 @@
 package peaksoft.house.tasktrackerb9.models;
 
-import jakarta.persistence.*;
 import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class Label {
 
     @Id
     @GeneratedValue(generator = "label_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "label_gen", sequenceName = "label_seq", allocationSize = 1,initialValue = 6)
+    @SequenceGenerator(name = "label_gen", sequenceName = "label_seq", allocationSize = 1, initialValue = 6)
     private Long id;
 
     @Column(name = "label_name")

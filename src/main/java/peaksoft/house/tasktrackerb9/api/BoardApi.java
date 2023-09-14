@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
+import peaksoft.house.tasktrackerb9.dto.response.GetAllArchiveResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.BoardService;
 
@@ -52,5 +53,11 @@ public class BoardApi {
     @Operation(summary = "Delete board", description = "Delete board with id")
     public SimpleResponse deleteBoard(@PathVariable Long boardId) {
         return boardService.deleteBoard(boardId);
+    }
+
+    @GetMapping("/get-all-archive/{boardId}")
+    @Operation(summary = "Get all archives", description = "Get all archived cards and columns by board id")
+    public GetAllArchiveResponse getAllArchives(@PathVariable Long boardId){
+        return boardService.getAllArchivedCardsAndColumns(boardId);
     }
 }

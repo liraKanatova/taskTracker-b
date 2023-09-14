@@ -12,7 +12,7 @@ public interface ColumnService {
 
     List<ColumnResponse>getAllColumns(Long boardId);
 
-    ColumnResponse update(Long columnId, ColumnRequest columnRequest);
+    ColumnResponse update(Long columnId,ColumnRequest columnRequest);
 
     SimpleResponse removeColumn(Long columnId);
 

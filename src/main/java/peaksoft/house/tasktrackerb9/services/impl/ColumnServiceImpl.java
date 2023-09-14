@@ -14,7 +14,7 @@ import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
 import peaksoft.house.tasktrackerb9.repositories.*;
-import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.jdbcTemplateImpl.ColumnsJdbcTemplateServiceImpl;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl.CustomColumnRepositoryImpl;
 import peaksoft.house.tasktrackerb9.services.ColumnService;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class ColumnServiceImpl implements ColumnService {
 
     private final BoardRepository boardRepository;
 
-    private final ColumnsJdbcTemplateServiceImpl columns;
+    private final CustomColumnRepositoryImpl columns;
 
     private final JwtService jwtService;
 
@@ -39,6 +39,8 @@ public class ColumnServiceImpl implements ColumnService {
     private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
 
     private final CardRepository cardRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public SimpleResponse createColumn(ColumnRequest columnRequest) {
@@ -72,22 +74,21 @@ public class ColumnServiceImpl implements ColumnService {
     }
 
     @Override
-    public ColumnResponse update(Long columnId, ColumnRequest columnRequest) {
+    public ColumnResponse update(Long columnId,ColumnRequest columnRequest) {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column with id: "+columnId+" not found");
+            return new NotFoundException("Column with id: " + columnId + " not found");
         });
         if (user.getRole().equals(Role.ADMIN)) {
             column.setTitle(columnRequest.title());
             columnsRepository.save(column);
-             log.info("Column successfully updated");
-        } else {
+            log.info("Column successfully update");
+        }else {
             throw new BadCredentialException("You are not member");
         }
-        return new ColumnResponse(column.getId(), column.getTitle(),column.getIsArchive());
+          return new ColumnResponse(column.getId(),column.getTitle(),column.getIsArchive());
     }
-
     @Override
     public SimpleResponse removeColumn(Long columnId) {
         User user = jwtService.getAuthentication();
@@ -109,15 +110,21 @@ public class ColumnServiceImpl implements ColumnService {
     public SimpleResponse sendToArchive(Long columnId) {
 
         User user = jwtService.getAuthentication();
+
+
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column with id: " + columnId + " not found!");
             return new NotFoundException("Column with id: " + columnId + " not found!");
         });
 
-        WorkSpace workSpace= workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
+        WorkSpace workSpace = workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
             log.error("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
             return new NotFoundException("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
         });
+
+        User workspaceAdmin = userRepository.findById(workSpace.getAdminId()).orElseThrow(
+                () -> new NotFoundException("Workspace admin with id: " + workSpace.getAdminId() + " not found!")
+        );
 
         UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
         if (userWorkSpaceRole == null) {
@@ -125,7 +132,7 @@ public class ColumnServiceImpl implements ColumnService {
             throw new BadCredentialException("You are not a member of this workspace!"+workSpace.getName()+"/"+user.getFirstName());
         }
 
-        if (workSpace.getMembers().contains(userWorkSpaceRole.getMember())) {
+        if (workSpace.getMembers().contains(userWorkSpaceRole.getMember()) || userWorkSpaceRole.getMember().equals(workspaceAdmin)) {
             column.setIsArchive(!column.getIsArchive());
             columnsRepository.save(column);
 

@@ -1,8 +1,11 @@
 package peaksoft.house.tasktrackerb9.models;
+
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
+
 import java.time.ZonedDateTime;
+
 import static jakarta.persistence.CascadeType.*;
 
 @Entity
@@ -16,8 +19,7 @@ public class Attachment {
 
     @Id
     @GeneratedValue(generator = "attachment_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "attachment_gen", sequenceName = "attachment_seq", allocationSize = 1,
-    initialValue = 6)
+    @SequenceGenerator(name = "attachment_gen", sequenceName = "attachment_seq", allocationSize = 1, initialValue = 6)
     private Long id;
 
     @Column(name = "document_link")
@@ -26,7 +28,7 @@ public class Attachment {
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
 
-    @ManyToOne(cascade = {DETACH,MERGE,REFRESH})
+    @ManyToOne(cascade = {DETACH, MERGE, REFRESH})
     private Card card;
 
 }

@@ -17,9 +17,19 @@ public class BoardResponse {
 
     private boolean isFavorite;
 
-    public BoardResponse(Long boardId, String title, String backGround) {
+    private Long work_space_id;
+
+    public BoardResponse(Long boardId, String title, String backGround, boolean isFavorite) {
         this.boardId = boardId;
         this.title = title;
         this.backGround = backGround;
+        this.isFavorite = isFavorite;
+    }
+
+    public BoardResponse(Long boardId, String title, String backGround, Long work_space_id) {
+        this.boardId = boardId;
+        this.title = title;
+        this.backGround = backGround;
+        this.work_space_id = work_space_id;
     }
 }

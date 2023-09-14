@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.converter.CardConverter;
 import peaksoft.house.tasktrackerb9.dto.request.CardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.UpdateCardRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
+import peaksoft.house.tasktrackerb9.enums.NotificationType;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
@@ -21,6 +23,8 @@ import peaksoft.house.tasktrackerb9.repositories.*;
 import peaksoft.house.tasktrackerb9.repositories.jdbcTemplateService.CustomCardJdbcTemplateService;
 import peaksoft.house.tasktrackerb9.services.CardService;
 
+import java.time.ZoneId;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -37,6 +41,7 @@ public class CardServiceImpl implements CardService {
     private final WorkSpaceRepository workSpaceRepository;
     private final CardConverter cardConverter;
     private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
+    private final JwtService jwtService;
 
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -59,7 +64,7 @@ public class CardServiceImpl implements CardService {
             return new NotFoundException("Column with id: " + card.getColumn().getId() + " not found!");
         });
 
-        WorkSpace workSpace= workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
+        WorkSpace workSpace = workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
             log.error("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
             return new NotFoundException("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
         });
@@ -108,7 +113,7 @@ public class CardServiceImpl implements CardService {
         }
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("All cards from this column with id: " + columnId +" are removed!")
+                .message("All cards from this column with id: " + columnId + " are removed!")
                 .build();
     }
 
@@ -137,7 +142,43 @@ public class CardServiceImpl implements CardService {
         }
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("All cards from this column with id: " + columnId +" are archived!")
+                .message("All cards from this column with id: " + columnId + " are archived!")
+                .build();
+    }
+
+    @Override
+    public SimpleResponse moveCard(Long cardId, Long columnId) {
+
+        User user = jwtService.getAuthentication();
+        Card movedCard = cardRepository.findById(cardId).orElseThrow(() -> {
+            log.error("Card with id: " + cardId + " not found!");
+            return new NotFoundException("Card with id: " + cardId + " not found!");
+        });
+
+        Column targetColumn = columnRepository.findById(columnId).orElseThrow(() -> {
+            log.error("Column with id: " + columnId + " not found!");
+            return new NotFoundException("Column with id: " + columnId + " not found!");
+        });
+
+        Notification moveNotification = new Notification();
+        moveNotification.setType(NotificationType.MOVE);
+        moveNotification.setText("Card with id " + cardId + " has been moved to column " + targetColumn.getTitle());
+        moveNotification.setCreatedDate(ZonedDateTime.now(ZoneId.of("Asia/Bishkek")));
+        moveNotification.setIsRead(false);
+        moveNotification.setColumnId(targetColumn.getId());
+        moveNotification.setBoardId(targetColumn.getBoard().getId());
+        moveNotification.setFromUserId(user.getId());
+        moveNotification.setCard(movedCard);
+
+        movedCard.addNotification(moveNotification);
+        for (User member : movedCard.getMembers()) {
+            member.getNotifications().add(moveNotification);
+        }
+        cardRepository.save(movedCard);
+        columnRepository.save(targetColumn);
+        return SimpleResponse.builder()
+                .status(HttpStatus.OK)
+                .message("Card with id: " + cardId + " has been moved to column with id: " + columnId)
                 .build();
     }
 
@@ -174,7 +215,7 @@ public class CardServiceImpl implements CardService {
         card.setTitle(cardRequest.title());
         card.setDescription(cardRequest.description());
         card.setIsArchive(false);
-        card.setCreatedDate(ZonedDateTime.now());
+        card.setCreatedDate(LocalDate.now());
         card.setCreatorId(user.getId());
         user.setCards(List.of(card));
         card.setColumn(column);
@@ -193,7 +234,7 @@ public class CardServiceImpl implements CardService {
         });
         card.setTitle(updateCardRequest.title());
         card.setDescription(updateCardRequest.description());
-        card.setCreatedDate(ZonedDateTime.now());
+        card.setCreatedDate(LocalDate.now());
         cardRepository.save(card);
 
         log.info("Card with id: " + updateCardRequest.cardId() + " successfully updated!");
@@ -226,5 +267,4 @@ public class CardServiceImpl implements CardService {
                 .message("Card with id: " + id + " successfully deleted!")
                 .build();
     }
-
 }

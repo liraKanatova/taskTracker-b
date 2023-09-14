@@ -18,17 +18,16 @@ public class CheckList {
 
     @Id
     @GeneratedValue(generator = "checkList_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "checkList_gen", sequenceName = "checkList_seq", allocationSize = 1,
-    initialValue = 6)
+    @SequenceGenerator(name = "checkList_gen", sequenceName = "checkList_seq", allocationSize = 1, initialValue = 6)
     private Long id;
 
     private String title;
 
     private int percent;
 
-    @OneToMany(cascade = {MERGE,REFRESH,DETACH,REMOVE},mappedBy = "checkList",orphanRemoval = true)
-    private List<Item>items;
+    @OneToMany(cascade = {MERGE, REFRESH, DETACH, REMOVE}, mappedBy = "checkList", orphanRemoval = true)
+    private List<Item> items;
 
-    @ManyToOne(cascade = {MERGE,REFRESH,DETACH})
+    @ManyToOne(cascade = {MERGE, REFRESH, DETACH})
     private Card card;
 }

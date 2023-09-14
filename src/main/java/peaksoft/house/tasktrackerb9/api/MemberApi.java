@@ -8,7 +8,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
 import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
-import peaksoft.house.tasktrackerb9.dto.response.AllMemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.MemberService;
@@ -32,9 +31,9 @@ public class MemberApi {
     }
 
     @GetMapping("/{cardId}")
-    @Operation(summary = "All members", description = "Get all members by board and work_space")
-    public AllMemberResponse getAll(@PathVariable Long cardId) {
-        return memberService.getAll(cardId);
+    @Operation(summary = "All members", description = "Get members by card id")
+    public List<MemberResponse> getAllMembers(@PathVariable Long cardId) {
+        return memberService.getAllMembersByCardId(cardId);
     }
 
     @Operation(summary = "Invite new member to board", description = "Invite new member to board")
@@ -59,5 +58,11 @@ public class MemberApi {
     @PostMapping("/{memberId}/{cardId}")
     public SimpleResponse assignToCard(@PathVariable Long memberId, @PathVariable Long cardId) {
         return memberService.assignMemberToCard(memberId, cardId);
+    }
+
+    @Operation(summary = "Remove member", description = "Remove members by id from board ")
+    @DeleteMapping("/{memberId}/{boardId}")
+    public SimpleResponse removeMemberFromBoard(@PathVariable Long memberId, @PathVariable Long boardId) {
+        return memberService.removeMemberFromBoard(memberId, boardId);
     }
 }

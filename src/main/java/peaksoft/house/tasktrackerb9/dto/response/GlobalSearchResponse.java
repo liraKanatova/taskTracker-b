@@ -15,8 +15,6 @@ public class GlobalSearchResponse {
 
     List<BoardResponse>boardResponses;
 
-    List<ColumnResponse>columnResponses;
-
-    List<CardResponse>cardResponses;
+    List<WorkSpaceResponse> workSpaceResponses;
 
 }

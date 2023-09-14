@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.models;
 
-
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.*;
@@ -31,9 +30,13 @@ public class Estimation {
     private ZonedDateTime startDate;
 
     @Column(name = "due_date")
-    private ZonedDateTime duetDate;
+    private ZonedDateTime finishDate;
 
-    private ZonedDateTime time;
+    private ZonedDateTime startTime;
+
+    private ZonedDateTime finishTime;
+
+    private ZonedDateTime notificationTime;
 
     @OneToOne(cascade = {DETACH,MERGE,REFRESH})
     private Card card;
@@ -41,5 +44,4 @@ public class Estimation {
 
     @OneToOne(cascade = {DETACH,MERGE,REFRESH,REMOVE})
     private Notification notification;
-
 }
