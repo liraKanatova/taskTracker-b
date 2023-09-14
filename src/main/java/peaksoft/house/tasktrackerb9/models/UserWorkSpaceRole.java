@@ -17,7 +17,7 @@ public class UserWorkSpaceRole {
 
     @Id
     @GeneratedValue(generator = "userWorkSpaceRole_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "userWorkSpaceRole_gen", sequenceName = "userWorkSpaceRole_seq", allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "userWorkSpaceRole_gen", sequenceName = "userWorkSpaceRole_seq", allocationSize = 1, initialValue = 12)
     private Long id;
 
     @Enumerated(EnumType.STRING)
