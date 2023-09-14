@@ -17,7 +17,6 @@ import java.util.List;
 public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
     @Override
     public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
         if (workSpaceId == null) {
@@ -29,31 +28,35 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
 
         if (role == Role.ALL) {
             sql = """
-        SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
-        FROM user_work_space_roles uwsr
-        JOIN work_spaces ws ON ws.id = uwsr.work_space_id
-        JOIN users u ON uwsr.member_id = u.id
-        WHERE ws.id = ? AND (uwsr.role = ? OR uwsr.role = ?);
-        """;
+    SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
+    FROM user_work_space_roles uwsr
+    JOIN work_spaces ws ON ws.id = uwsr.work_space_id
+    JOIN users u ON uwsr.member_id = u.id
+    WHERE ws.id = ? AND (uwsr.role = ? OR uwsr.role = ?);
+    """;
             params = new Object[]{workSpaceId, Role.ADMIN.toString(), Role.MEMBER.toString()};
         } else {
             sql = """
-        SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
-        FROM user_work_space_roles uwsr
-        JOIN work_spaces ws ON ws.id = uwsr.work_space_id
-        JOIN users u ON uwsr.member_id = u.id
-        WHERE ws.id = ? AND uwsr.role = ?;
-        """;
+    SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS fullname, u.email, uwsr.role
+    FROM user_work_space_roles uwsr
+    JOIN work_spaces ws ON ws.id = uwsr.work_space_id
+    JOIN users u ON uwsr.member_id = u.id
+    WHERE ws.id = ? AND uwsr.role = ?;
+    """;
             params = new Object[]{workSpaceId, role.toString()};
         }
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-                        new ParticipantsResponse(
-                                rs.getLong("id"),
-                                rs.getString("fullname"),
-                                rs.getString("email"),
-                                Role.valueOf(rs.getString("role"))
-                        ),
-                params
-        );
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            boolean isAdmin = rs.getString("role").equals(Role.ADMIN.toString()); // Check if role is ADMIN
+            return new ParticipantsResponse(
+                    rs.getLong("id"),
+                    rs.getString("fullname"),
+                    rs.getString("email"),
+                    Role.valueOf(rs.getString("role")),
+                    isAdmin // Set to true for ADMIN, false for MEMBER
+            );
+        }, params);
     }
+
+
 }
