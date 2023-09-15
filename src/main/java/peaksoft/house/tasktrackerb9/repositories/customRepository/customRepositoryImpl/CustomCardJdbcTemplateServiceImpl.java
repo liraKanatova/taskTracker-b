@@ -233,12 +233,14 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     }
 
     private List<CommentResponse> getCommentsResponsesByCardId(Long cardId) {
+        User user = getAuthentication();
         String sql = """
                 SELECT co.id AS commentId,
                        co.comment AS comment,
                        co.created_date AS created_date,                       
                        u.id AS user_id,
                        CONCAT(u.first_name, ' ', u.last_name) AS fullName,
+                       CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine,
                        u.image AS image
                 FROM comments AS co
                 JOIN cards c ON c.id = co.card_id
@@ -260,9 +262,10 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 commentResponse.setCreatorId(rs.getLong("user_id"));
                 commentResponse.setCreatorName(rs.getString("fullName"));
                 commentResponse.setCreatorAvatar(rs.getString("image"));
+                commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             }
             return commentResponse;
-        }, cardId);
+        }, user.getId(),cardId);
     }
 
     @Override
