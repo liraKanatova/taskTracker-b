@@ -4,12 +4,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
+import peaksoft.house.tasktrackerb9.dto.response.ParticipantsGetAllResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomParticipantsRepository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,7 +17,7 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
+    public ParticipantsGetAllResponse getParticipantsByRole(Long workSpaceId, Role role) {
         if (workSpaceId == null) {
             throw new NotFoundException("WorkSpace ID cannot be null");
         }
@@ -47,13 +45,12 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
         }
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            boolean isAdmin = rs.getString("role").equals(Role.ADMIN.toString());
-            return new ParticipantsResponse(
+            return ParticipantsGetAllResponse(
                     rs.getLong("id"),
                     rs.getString("fullname"),
                     rs.getString("email"),
-                    Role.valueOf(rs.getString("role")),
-                    isAdmin
+                    Role.valueOf(rs.getString("role"))
+
             );
         }, params);
     }
