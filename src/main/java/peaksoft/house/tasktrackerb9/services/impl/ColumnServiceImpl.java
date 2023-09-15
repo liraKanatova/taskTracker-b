@@ -70,7 +70,11 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public List<ColumnResponse> getAllColumns(Long boardId) {
-        return columns.getAllColumns(boardId);
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> {
+            log.error("Board with id: " + boardId + " not found");
+            return new NotFoundException("Board with id: " + boardId + " not found");
+        });
+        return columns.getAllColumns(board.getId());
     }
 
     @Override
