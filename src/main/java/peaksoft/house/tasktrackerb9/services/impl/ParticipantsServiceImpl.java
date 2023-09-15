@@ -60,8 +60,8 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         if (user1 == null) {
             throw new NotFoundException("User with email " + request.email() + " not found");
         }
-        if (!user1.getRole().equals(Role.MEMBER)) {
-            throw new BadCredentialException("You are not a member");
+        if (user.getRole().equals(Role.MEMBER)) {
+            throw new BadCredentialException("You are not invited members");
         }
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
