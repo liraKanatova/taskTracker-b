@@ -1,6 +1,5 @@
 package peaksoft.house.tasktrackerb9.repositories.customRepository.customRepositoryImpl;
 
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.dto.response.ColumnResponse;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomColumnRepository;
 
-import java.util.List;
+import java.util.*;
 
 @Repository
 @Transactional
@@ -18,19 +17,24 @@ import java.util.List;
 public class CustomColumnRepositoryImpl implements CustomColumnRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CustomCardJdbcTemplateServiceImpl service;
 
     @Override
     public List<ColumnResponse> getAllColumns(Long boardId) {
         String sql = """
-                select c.id,c.title,c.is_archive from boards b
-                join columns c on b.id = c.board_id
-                where b.id=? and c.is_archive=false order by c.id asc """;
-        List<ColumnResponse> columnResponses = jdbcTemplate.query(sql, ((rs, rowNum) ->
-                        new ColumnResponse(
-                                rs.getLong("id"),
-                                rs.getString("title"),
-                                rs.getBoolean("is_archive")))
-                , boardId);
-        return columnResponses.stream().map(x -> new ColumnResponse(x.getColumnId(), x.getTitle(), x.getIsArchive())).toList();
+                SELECT c.id, c.title, c.is_archive, c.board_id AS boardId
+                FROM columns c
+                LEFT JOIN cards card ON c.id = card.column_id
+                WHERE c.board_id = ?
+                group by c.id, c.title, c.is_archive, c.board_id
+                ORDER BY c.id
+                """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Long columnId = rs.getLong("id");
+            String title = rs.getString("title");
+            Boolean isArchive = rs.getBoolean("is_archive");
+            Long fetchedBoardId = rs.getLong("boardId");
+            return new ColumnResponse(columnId, title, isArchive, fetchedBoardId, service.getAllCardsByColumnId(rs.getLong("id")));
+        }, boardId);
     }
 }
