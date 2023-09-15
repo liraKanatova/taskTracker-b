@@ -71,6 +71,7 @@ public class BoardServiceImpl implements BoardService {
                     .title(board.getTitle())
                     .backGround(board.getBackGround())
                     .isFavorite(false)
+                    .work_space_id(workSpace.getId())
                     .build();
 
         }
