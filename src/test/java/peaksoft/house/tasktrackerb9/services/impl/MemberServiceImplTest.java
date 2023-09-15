@@ -51,6 +51,8 @@ class MemberServiceImplTest {
     private JavaMailSender javaMailSender;
     @Mock
     private UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
+    @Mock
+    private NotificationRepository notificationRepository;
 
     @BeforeEach
     void setUp() {
@@ -62,7 +64,8 @@ class MemberServiceImplTest {
                 workSpaceRepository,
                 cardRepository,
                 customMemberRepository,
-                javaMailSender
+                javaMailSender,
+                notificationRepository
         );
     }
 
@@ -123,10 +126,19 @@ class MemberServiceImplTest {
         List<User> members = new ArrayList<>();
         members.add(member);
         member.setCards(cards);
+        member.setNotifications(new ArrayList<>());
+
+        Column column = new Column();
+        column.setId(1L);
+        Board board = new Board();
+        board.setId(1L);
+        column.setBoard(board);
 
         Card card = new Card();
         card.setId(cardId);
         card.setMembers(members);
+        card.setColumn(column);
+        card.setNotifications(new ArrayList<>());
 
         WorkSpace workSpace = new WorkSpace();
         workSpace.setAdminId(admin.getId());
