@@ -10,7 +10,7 @@ public interface ColumnService {
 
     SimpleResponse createColumn(ColumnRequest columnRequest);
 
-    List<ColumnResponse>getAllColumns(Long boardId);
+    List<ColumnResponse> getAllColumns(Long boardId);
 
     ColumnResponse update(Long columnId,ColumnRequest columnRequest);
 

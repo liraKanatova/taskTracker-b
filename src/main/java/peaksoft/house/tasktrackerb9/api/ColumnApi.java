@@ -30,7 +30,7 @@ public class ColumnApi {
     }
 
     @GetMapping("/{boardId}")
-    @Operation(summary = "Get all columns", description = "Get all columns,cards and board id with board id")
+    @Operation(summary = "Get all columns", description = "Get all columns with board id")
     public List<ColumnResponse> getAll(@PathVariable Long boardId) {
         return columnService.getAllColumns(boardId);
     }
