@@ -179,12 +179,12 @@ values (1, 'title', 'Чарльз Бэббидж считается пионер
        (17, 'title', 'К 1830 году Бэббидж придумал план, как разработать машину, которая могла использовать перфокарты для выполнения арифметических операций.', false, '2023-09-24', 7, 2),
        (18, 'word', 'Предполагалось, что машина должна хранить числа в блоках памяти и содержать форму последовательного управления. Это означает, что операции', false, '2023-09-29', 5, 5);
 
-insert into notifications(id, text, image, type, is_read, created_date, card_id)
-values (1, 'batyraak bol', 'img', 'MOVE', false, '2023-09-11T00:00:00', 2),
-       (2, 'vnimanie', 'img', 'MOVE', false, '2023-09-11T00:00:00', 1),
-       (3, 'vas dobavili', 'img', 'ASSIGN', false, '2023-09-11T00:00:00', 3),
-       (4, 'pravilno', 'img', 'REMINDER', false, '2023-09-11T00:00:00', 4),
-       (5, 'normalno', 'img', 'REMINDER', false, '2023-09-11T00:00:00', 5);
+insert into notifications(id, text, image, type, is_read, created_date, card_id,board_id,column_id,from_user_id)
+values (1, 'batyraak bol', 'img', 'MOVE', false, '2023-09-11T00:00:00', 2,2,2,2),
+       (2, 'vnimanie', 'img', 'MOVE', false, '2023-09-11T00:00:00', 1,1,1,1),
+       (3, 'vas dobavili', 'img', 'ASSIGN', false, '2023-09-11T00:00:00', 3,3,3,3),
+       (4, 'pravilno', 'img', 'REMINDER', false, '2023-09-11T00:00:00', 4,4,4,4),
+       (5, 'normalno', 'img', 'REMINDER', false, '2023-09-11T00:00:00', 5,5,5,5);
 
 insert into labels(id, color, label_name)
 values (1, 'Green', 'Done'),
