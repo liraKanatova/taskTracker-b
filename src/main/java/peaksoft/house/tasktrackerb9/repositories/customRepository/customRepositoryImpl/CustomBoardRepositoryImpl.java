@@ -23,7 +23,6 @@ import java.util.List;
 public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 
     private final JwtService jwtService;
-
     private final JdbcTemplate jdbcTemplate;
 
     @Override

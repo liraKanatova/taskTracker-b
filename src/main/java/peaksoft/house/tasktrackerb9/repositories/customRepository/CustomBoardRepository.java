@@ -8,7 +8,6 @@ import java.util.List;
 public interface CustomBoardRepository {
 
     List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId);
-
     GetAllArchiveResponse getAllArchivedCardsAndColumns(Long boardId);
 
 }

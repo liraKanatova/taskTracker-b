@@ -11,7 +11,6 @@ import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ChangeRoleRequest;
 import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
-import peaksoft.house.tasktrackerb9.dto.response.NotificationResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.NotificationType;
 import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
@@ -145,59 +144,47 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse assignMemberToCard(Long memberId, Long cardId) {
-
         User user = jwtService.getAuthentication();
         log.info("Assigning member with id: {} to card with id: {}", memberId, cardId);
-
         Long adminId = cardRepository.getUserIdByCardId(cardId).orElseThrow(() -> {
                     log.error("This card with id: " + cardId + " is not present in your workspace!");
                     return new BadCredentialException("This card with id: " + cardId + " is not present in your workspace!");
                 }
         );
-
         if (!user.getId().equals(adminId)) {
             log.error("You do not have permission to assign members to this card!");
             throw new BadCredentialException("You do not have permission to assign members to this card!");
         }
-
         WorkSpace workSpace = cardRepository.getWorkSpaceByCardId(cardId).orElseThrow(() -> {
                     log.error("This card with id: %s not in this workSpace ".formatted(cardId));
                     return new NotFoundException("This card with id: %s not in this workSpace ".formatted(cardId));
                 }
         );
-
         List<Long> userIds = userRepository.getAllUsersByWorkSpaseId(workSpace.getId());
         boolean isFalse = false;
-
         for (Long l : userIds) {
             isFalse = !memberId.equals(l);
         }
-
         if (isFalse) {
             log.error("User with  id: %s is not on your workSpace".formatted(memberId));
             throw new NotFoundException("User with  id: %s is not on your workSpace".formatted(memberId));
         }
-
         List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
         boolean isTrue = getUserIdsByCardId.stream().anyMatch(id -> id.equals(memberId));
-
         if (isTrue) {
             throw new AlreadyExistException("User with id: %d exists".formatted(memberId));
         }
-
         User newMember = userRepository.findById(memberId).orElseThrow(
                 () -> {
                     log.error("User with id: %s not found".formatted(memberId));
                     return new NotFoundException("User with id: %s not found".formatted(memberId));
                 }
         );
-
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
                     log.error("Card with id: %s not found".formatted(cardId));
                     return new NotFoundException("Card with id: %s not found".formatted(cardId));
                 }
         );
-
         Notification assignNotification = new Notification();
         assignNotification.setCard(card);
         assignNotification.setType(NotificationType.ASSIGN);
@@ -212,10 +199,8 @@ public class MemberServiceImpl implements MemberService {
         for (User member : card.getMembers()) {
             member.getNotifications().add(assignNotification);
         }
-
         notificationRepository.save(assignNotification);
         userRepository.saveAll(card.getMembers());
-
         card.getMembers().add(newMember);
         newMember.getCards().add(card);
         userRepository.save(newMember);
