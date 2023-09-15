@@ -79,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setSubject("Invite new member to board!");
             helper.setTo(request.getEmail());
-            helper.setText("Board id: " + request.getBoardId() + " role : " + request.getRole() + " link : " + request.getLink());
+            helper.setText("BoardId: "+board.getId()+ "WorkSpaceId: "+workSpace.getId()+" Link : " + request.getLink());
             javaMailSender.send(mimeMessage);
             User user = userRepository.findUserByEmail(request.getEmail())
                     .orElseThrow(() -> new NotFoundException("User with email: " + request.getEmail() + " not found"));

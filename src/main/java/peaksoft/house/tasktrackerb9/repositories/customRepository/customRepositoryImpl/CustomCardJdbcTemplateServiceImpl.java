@@ -297,7 +297,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 long days = duration.toDays();
                 cardResponse.setDuration(days + " days");
             } else {
-                cardResponse.setDuration("No time set for this card");
+                cardResponse.setDuration("");
             }
 
             int numberUsers = rs.getInt("numberUsers");
