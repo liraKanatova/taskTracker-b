@@ -10,6 +10,5 @@ public interface CustomNotificationRepository {
 
     NotificationResponse getNotificationById(Long notificationId);
 
-    List<NotificationResponse> markAsRead();
 
 }
