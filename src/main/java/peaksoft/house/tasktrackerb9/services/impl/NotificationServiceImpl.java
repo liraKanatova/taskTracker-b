@@ -55,14 +55,4 @@ public class NotificationServiceImpl implements NotificationService {
                 .build();
     }
 
-    @Override
-    public SimpleResponse markAsReadById(Long notificationId) {
-        User user = jwtService.getAuthentication();
-        Notification notification = notificationRepository.findByIdAndMembersId(notificationId, user.getId()).orElseThrow(() -> new NotFoundException(""));
-        notification.setIsRead(true);
-        notificationRepository.save(notification);
-        return SimpleResponse.builder()
-                .status(HttpStatus.OK)
-                .message("Mark as read successfully 👍").build();
-    }
 }

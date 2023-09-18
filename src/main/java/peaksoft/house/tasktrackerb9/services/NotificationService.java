@@ -13,6 +13,5 @@ public interface NotificationService {
 
     SimpleResponse markAsRead();
 
-    SimpleResponse markAsReadById(Long notificationId);
 
 }

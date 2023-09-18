@@ -39,9 +39,4 @@ public class NotificationApi {
         return notificationService.markAsRead();
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Mark notifications as read", description = "Marks user by id notifications as read.")
-    public SimpleResponse markAsReadById(@PathVariable Long id) {
-        return notificationService.markAsReadById(id);
-    }
 }
