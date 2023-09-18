@@ -273,6 +273,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
         String query = """
                 SELECT c.id AS cardId,
                        c.title AS title,
+                       c.description AS description,
                        e.start_date AS startDate,
                        e.due_date AS dueDate,
                        (SELECT COUNT(*) FROM cards_members AS cu WHERE cu.cards_id = c.id) AS numberUsers,
@@ -289,6 +290,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             CardResponse cardResponse = new CardResponse();
             cardResponse.setCardId(rs.getLong("cardId"));
             cardResponse.setTitle(rs.getString("title"));
+            cardResponse.setDescription(rs.getString("description"));
 
             ZoneId zoneId = ZoneId.systemDefault();
 
@@ -317,6 +319,9 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
             List<CommentResponse> commentResponses = getCommentResponsesForCard(rs.getLong("cardId"));
             cardResponse.setCommentResponses(commentResponses);
+
+            List<CheckListResponse> checkListResponses = getCheckListResponsesByCardId(rs.getLong("cardId"));
+            cardResponse.setCheckListResponses(checkListResponses);
 
             return cardResponse;
         });

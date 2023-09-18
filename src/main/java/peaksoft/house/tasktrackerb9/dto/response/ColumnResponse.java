@@ -32,5 +32,6 @@ public class ColumnResponse {
         this.isArchive = isArchive;
         this.boardId = boardId;
         this.cardResponses = cardResponses;
+
     }
 }
