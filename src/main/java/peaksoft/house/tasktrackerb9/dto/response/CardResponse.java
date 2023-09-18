@@ -21,11 +21,6 @@ public class CardResponse {
     private List<CommentResponse> commentResponses;
     private List<CheckListResponse> checkListResponses;
 
-    public CardResponse(Long cardId, String title) {
-        this.cardId = cardId;
-        this.title = title;
-    }
-
     public CardResponse(Long cardId, String title, String duration, String description, int numberOfUsers, int numberOfItems, int numberOfCompletedItems, List<LabelResponse> labelResponses, List<CommentResponse> commentResponses,List<CheckListResponse>checkListResponses ) {
         this.cardId = cardId;
         this.title = title;
@@ -39,14 +34,4 @@ public class CardResponse {
         this.checkListResponses = checkListResponses;
     }
 
-    public CardResponse(Long cardId, String title, String duration, int numberOfUsers, int numberOfItems, int numberOfCompletedItems, List<LabelResponse> labelResponses, List<CommentResponse> commentResponses) {
-        this.cardId = cardId;
-        this.title = title;
-        this.duration = duration;
-        this.numberOfUsers = numberOfUsers;
-        this.numberOfItems = numberOfItems;
-        this.numberOfCompletedItems = numberOfCompletedItems;
-        this.labelResponses = labelResponses;
-        this.commentResponses = commentResponses;
-    }
 }
