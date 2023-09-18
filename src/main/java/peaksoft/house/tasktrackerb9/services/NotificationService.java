@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.services;
 
 import peaksoft.house.tasktrackerb9.dto.response.NotificationResponse;
+import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ public interface NotificationService {
 
     NotificationResponse getNotificationById(Long notificationId);
 
-    List<NotificationResponse> markAsRead();
+    SimpleResponse markAsRead();
+
+    SimpleResponse markAsReadById(Long notificationId);
 
 }

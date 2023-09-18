@@ -120,10 +120,4 @@ public class CustomNotificationRepositoryImpl implements CustomNotificationRepos
             return notificationResponses.get(0);
     }
 
-    @Override
-    public List<NotificationResponse> markAsRead() {
-        User user = jwtService.getAuthentication();
-        jdbcTemplate.update("update notifications n set is_read = true where n.from_user_id = ?",user.getId());
-        return getAllNotifications();
-    }
 }
