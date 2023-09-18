@@ -17,4 +17,10 @@ public class CheckListResponse {
     private String counter;
     private List<ItemResponse> itemResponseList;
 
+    public CheckListResponse(Long checkListId, String title, int percent, String counter) {
+        this.checkListId = checkListId;
+        this.title = title;
+        this.percent = percent;
+        this.counter = counter;
+    }
 }
