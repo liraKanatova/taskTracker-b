@@ -131,21 +131,21 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 rs.getString("name")
         ), user.getId());
         String sql = """
-                       SELECT\s
-                           u.id AS userId,
-                           u.first_name AS firstName,
-                           u.last_name AS lastName,
-                           u.email AS email,
-                           u.image AS avatar,
-                           (SELECT COUNT(*)\s
-                            FROM users AS u2
+                                      SELECT\s
+                                          u.id AS userId,
+                                          u.first_name AS firstName,
+                                          u.last_name AS lastName,
+                                          u.email AS email,
+                                          u.image AS avatar,
+                                          (SELECT COUNT(*)\s
+                                           FROM users AS u2
 
-                            JOIN users_work_spaces uws ON u2.id = uws.members_id
-                            JOIN work_spaces ws ON ws.id = uws.work_spaces_id
-                WHERE u2.id = u.id) AS countWorkSpaces
-                       FROM users AS u
-                       WHERE u.id = ?;
- """;
+                                           JOIN users_work_spaces uws ON u2.id = uws.members_id
+                                           JOIN work_spaces ws ON ws.id = uws.work_spaces_id
+                               WHERE u2.id = u.id) AS countWorkSpaces
+                                      FROM users AS u
+                                      WHERE u.id = ?;
+                """;
         ProfileResponse profileResponse = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new ProfileResponse(rs.getLong("userId")
                 , rs.getString("firstName")
                 , rs.getString("lastName")
@@ -170,42 +170,57 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     @Override
     public GlobalSearchResponse search(String search) {
+        Long authenticatedUserId = jwtService.getAuthentication().getId();
         String sql = """      
                 SELECT u.id, email, first_name, image, last_name FROM users u
                 WHERE u.first_name ILIKE (CONCAT('%',?,'%'))
                 OR u.last_name ILIKE (CONCAT('%',?,'%'))
+                 AND EXISTS (
+                SELECT 1
+                FROM user_work_space_roles uwsr
+                JOIN work_spaces w ON uwsr.work_space_id = w.id
+                WHERE uwsr.member_id = ? AND w.admin_id = u.id
+                        )
                 """;
-
         List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rusNum) -> new UserResponse(rs.getLong("id")
                 , rs.getString("first_name")
                 , rs.getString("last_name")
                 , rs.getString("email")
-                , rs.getString("image")), search, search);
+                , rs.getString("image")), search, search, authenticatedUserId);
 
         String sql2 = """   
-           SELECT b.work_space_id,b.id,  back_ground, title FROM boards b
-           WHERE b.title ILIKE (CONCAT('%',?,'%'))
-           """;
-
+                SELECT b.work_space_id,b.id,  back_ground, title FROM boards b
+                WHERE b.title ILIKE (CONCAT('%',?,'%'))
+                AND EXISTS (
+                SELECT 1
+                FROM users u
+                JOIN work_spaces w ON u.id = w.admin_id
+                WHERE u.id = ? AND w.id = b.work_space_id
+                       )
+                """;
         List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, ((rs, rowNum) -> new BoardResponse(rs.getLong("id")
                 , rs.getString("title")
                 , rs.getString("back_ground"),
-                rs.getLong("work_space_id"))), search);
+                rs.getLong("work_space_id"))), search, authenticatedUserId);
 
         String sql4 = """
                 SELECT  w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullNaem, u.image,w.id, name FROM work_spaces w
                 JOIN user_work_space_roles uwsr ON w.id = uwsr.work_space_id
                 JOIN users u ON u.id = uwsr.member_id
                 WHERE w.name ILIKE (CONCAT('%',?,'%'))
+                AND EXISTS (
+                SELECT 1
+                FROM users u
+                WHERE u.id = ? AND w.admin_id = u.id
+                       )
                 """;
-
         List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql4, ((rs, rowNum) -> WorkSpaceResponse.builder()
                 .workSpaceId(rs.getLong("id"))
-                .adminFullName(rs.getString("fullNaem"))
+                .adminFullName(rs.getString("fullName"))
                 .adminImage(rs.getString("image"))
                 .adminId(rs.getLong("admin_id"))
                 .workSpaceName(rs.getString("name"))
-                .build()), search);
+                .build()), search, authenticatedUserId);
 
         return GlobalSearchResponse.builder()
                 .userResponses(userResponses)
@@ -214,5 +229,3 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 .build();
     }
 }
-
-
