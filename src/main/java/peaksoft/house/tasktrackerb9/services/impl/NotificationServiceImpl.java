@@ -34,12 +34,23 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationResponse getNotificationById(Long notificationId) {
-        notificationRepository.findById(notificationId).orElseThrow(() -> {
-            log.error("Notification with id: " + notificationId + " not found!");
-            return new NotFoundException("Notification with id: " + notificationId + " not found!");
-        });
+        User user = jwtService.getAuthentication();
+
+        Notification notification = notificationRepository.getNotificationByIdUser(notificationId, user.getId())
+                .orElseThrow(() -> new NotFoundException("Notification with id: " + notificationId + " not found!"));
+
+        boolean isRead = notification.getIsRead();
+
+        if (!isRead) {
+            notification.setIsRead(true);
+            notificationRepository.save(notification);
+            log.info("Mark as read successfully👍");
+        }
+
         return customNotificationRepository.getNotificationById(notificationId);
     }
+
+
 
     @Override
     public SimpleResponse markAsRead() {
@@ -51,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message(" Mark as read successfully 👍")
+                .message("Mark as read successfully👍")
                 .build();
     }
 
