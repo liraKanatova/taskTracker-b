@@ -195,7 +195,6 @@ public class MemberServiceImpl implements MemberService {
         assignNotification.setColumnId(card.getColumn().getId());
         assignNotification.setBoardId(card.getColumn().getBoard().getId());
         card.getNotifications().add(assignNotification);
-
         for (User member : card.getMembers()) {
             member.getNotifications().add(assignNotification);
         }

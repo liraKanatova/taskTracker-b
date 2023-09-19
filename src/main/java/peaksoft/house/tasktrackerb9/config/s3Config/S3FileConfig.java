@@ -26,6 +26,5 @@ public class S3FileConfig {
                 .region(region)
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .build();
-
     }
 }

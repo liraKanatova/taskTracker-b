@@ -30,11 +30,8 @@ import java.util.List;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-
     private final CustomBoardRepositoryImpl customBoardRepository;
-
     private final WorkSpaceRepository workspaceRepository;
-
     private final JwtService jwtService;
 
     @Override
@@ -76,7 +73,6 @@ public class BoardServiceImpl implements BoardService {
 
         }
 
-
     @Override
     public SimpleResponse updateBoard(BoardUpdateRequest boardUpdateRequest) {
 
@@ -107,11 +103,9 @@ public class BoardServiceImpl implements BoardService {
         }
     }
 
-
     @Override
     public SimpleResponse deleteBoard(Long boardId) {
         User user = jwtService.getAuthentication();
-
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.error("Board with id: " + boardId + " not found");
@@ -124,7 +118,6 @@ public class BoardServiceImpl implements BoardService {
             if (workSpace != null) {
                 workSpace.getBoards().remove(board);
             }
-
             boardRepository.delete(board);
             return SimpleResponse.builder()
                     .status(HttpStatus.OK)
@@ -132,7 +125,6 @@ public class BoardServiceImpl implements BoardService {
                     .build();
         }
     }
-
 
     @Override
     public BoardResponse getBoardById(Long boardId) {
@@ -157,7 +149,6 @@ public class BoardServiceImpl implements BoardService {
                     .backGround(board.getBackGround())
                     .isFavorite(isFavorite)
                     .build();
-
     }
 
     @Override

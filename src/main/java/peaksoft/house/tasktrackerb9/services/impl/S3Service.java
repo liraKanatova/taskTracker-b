@@ -64,6 +64,4 @@ public class S3Service {
         ListObjectsV2Response listObjectsV2Result = s3Client.listObjectsV2(listObjectsRequest);
         return listObjectsV2Result.contents().stream().map(S3Object::key).collect(Collectors.toList());
     }
-
 }
-
