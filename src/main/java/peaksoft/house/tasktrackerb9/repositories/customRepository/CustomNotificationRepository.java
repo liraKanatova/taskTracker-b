@@ -1,6 +1,7 @@
 package peaksoft.house.tasktrackerb9.repositories.customRepository;
 
 import peaksoft.house.tasktrackerb9.dto.response.NotificationResponse;
+import peaksoft.house.tasktrackerb9.models.User;
 
 import java.util.List;
 
