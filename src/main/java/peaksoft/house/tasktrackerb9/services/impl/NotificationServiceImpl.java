@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.response.NotificationResponse;
@@ -26,6 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final CustomNotificationRepository customNotificationRepository;
     private final JwtService jwtService;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<NotificationResponse> getAllNotifications() {
@@ -36,9 +38,15 @@ public class NotificationServiceImpl implements NotificationService {
     public NotificationResponse getNotificationById(Long notificationId) {
         User user = jwtService.getAuthentication();
 
-        Notification notification = notificationRepository.getNotificationByIdUser(notificationId, user.getId())
-                .orElseThrow(() -> new NotFoundException("Notification with id: " + notificationId + " not found!"));
+        Long l = jdbcTemplate.queryForObject("""
+                        SELECT n.id FROM notifications n
+                        JOIN notifications_members nm ON n.id = nm.notifications_id
+                        WHERE n.id = ? AND nm.members_id = ?
+                        """, Long.class
+                , notificationId
+                , user.getId());
 
+        Notification notification = notificationRepository.findById(l).orElseThrow(()->new NotFoundException("Notification with id: " +notificationId + "is not found"));
         boolean isRead = notification.getIsRead();
 
         if (!isRead) {

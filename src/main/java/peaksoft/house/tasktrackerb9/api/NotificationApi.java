@@ -27,7 +27,7 @@ public class NotificationApi {
         return notificationService.getAllNotifications();
     }
 
-    @PutMapping("/{notificationId}")
+    @GetMapping("/{notificationId}")
     @Operation(summary = "Get by id", description = "Get notification by notification id")
     public NotificationResponse getById(@PathVariable Long notificationId) {
         return notificationService.getNotificationById(notificationId);

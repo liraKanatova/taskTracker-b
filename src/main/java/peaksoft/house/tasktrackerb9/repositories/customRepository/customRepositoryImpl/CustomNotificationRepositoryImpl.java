@@ -101,7 +101,7 @@ public class CustomNotificationRepositoryImpl implements CustomNotificationRepos
             List<NotificationResponse> notificationResponses = jdbcTemplate.query(
                     sql,
                     new Object[]{notificationId},
-                    (rs, rowNum) -> {
+                    (rs, rowNum) ->  {
                         NotificationResponse response = new NotificationResponse();
                         response.setNotificationId(rs.getLong("notificationId"));
                         response.setText(rs.getString("text"));
