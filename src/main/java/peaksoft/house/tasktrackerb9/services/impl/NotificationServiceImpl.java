@@ -16,6 +16,7 @@ import peaksoft.house.tasktrackerb9.repositories.NotificationRepository;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomNotificationRepository;
 import peaksoft.house.tasktrackerb9.services.NotificationService;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -46,7 +47,7 @@ public class NotificationServiceImpl implements NotificationService {
                 , notificationId
                 , user.getId());
 
-        Notification notification = notificationRepository.findById(l).orElseThrow(()->new NotFoundException("Notification with id: " +notificationId + "is not found"));
+        Notification notification = notificationRepository.findById(l).orElseThrow(() -> new NotFoundException("Notification with id: " + notificationId + "is not found"));
         boolean isRead = notification.getIsRead();
 
         if (!isRead) {
@@ -57,7 +58,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         return customNotificationRepository.getNotificationById(notificationId);
     }
-
 
 
     @Override
