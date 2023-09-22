@@ -60,11 +60,11 @@ public class LabelServiceImpl implements LabelService {
             return new NotFoundException(String.format("Label with id : %s doesn't exist!", labelId));
         });
 
-        List<String> allowedColors = Arrays.asList("Green", "Blue", "Red", "Yellow");
-
-        if (!allowedColors.contains(label.getColor())) {
-            throw new BadCredentialException(String.format("Label color '%s' is not allowed.", label.getColor()));
-        }
+//        List<String> allowedColors = Arrays.asList("Green", "Blue", "Red", "Yellow");
+//
+//        if (!allowedColors.contains(label.getColor())) {
+//            throw new BadCredentialException(String.format("Label color '%s' is not allowed.", label.getColor()));
+//        }
 
         for (Label l : card.getLabels()) {
             if (l.getLabelName().equalsIgnoreCase(label.getLabelName()) && l.getColor().equalsIgnoreCase(label.getColor())) {
