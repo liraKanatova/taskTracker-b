@@ -2,22 +2,20 @@ package peaksoft.house.tasktrackerb9.dto.response;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import peaksoft.house.tasktrackerb9.enums.ReminderType;
 
 @Getter
 @Setter
 @NoArgsConstructor
-
+@AllArgsConstructor
 public class EstimationResponse {
 
     private Long estimationId;
     @Enumerated(EnumType.STRING)
     private ReminderType reminderType;
     private String startDate;
+    private String startTime;
     private String duetDate;
     private String finishTime;
 

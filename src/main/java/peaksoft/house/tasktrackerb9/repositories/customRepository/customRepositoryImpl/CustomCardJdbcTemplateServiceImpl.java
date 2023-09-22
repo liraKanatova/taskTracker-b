@@ -84,6 +84,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
         String sql = """
                     SELECT e.id AS estimationId,
                            e.start_date AS startDate,
+                           e.start_time as startTime,
                            e.due_date AS dueDate,
                            e.finish_time AS time,
                            e.reminder_type AS reminderType
@@ -104,6 +105,13 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 ZonedDateTime startDateZoned = startDateTimestamp.toInstant().atZone(zoneId);
                 String formattedStartDate = startDateZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
                 estimationResponse.setStartDate(formattedStartDate);
+            }
+            Timestamp startTimeTimestamp = rs.getTimestamp("startTime");
+            if (!rs.wasNull()) {
+                ZoneId zoneId = ZoneId.systemDefault();
+                ZonedDateTime startTimeZoned = startTimeTimestamp.toInstant().atZone(zoneId);
+                String formattedStartTime = startTimeZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
+                estimationResponse.setStartTime(formattedStartTime);
             }
 
             Timestamp dueDateTimestamp = rs.getTimestamp("dueDate");
