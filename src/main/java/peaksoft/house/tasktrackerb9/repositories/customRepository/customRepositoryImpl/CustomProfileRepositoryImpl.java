@@ -170,44 +170,65 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     @Override
     public GlobalSearchResponse search(String search) {
-        String sql = """      
-                SELECT u.id, email, first_name, image, last_name FROM users u
-                WHERE u.first_name ILIKE (CONCAT('%',?,'%'))
-                OR u.last_name ILIKE (CONCAT('%',?,'%'))
-                """;
-        List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rusNum) -> new UserResponse(rs.getLong("id")
-                , rs.getString("first_name")
-                , rs.getString("last_name")
-                , rs.getString("email")
-                , rs.getString("image")), search, search);
+        User user = jwtService.getAuthentication();
 
-        String sql2 = """   
-           SELECT b.work_space_id,b.id,  back_ground, title FROM boards b
-           WHERE b.title ILIKE (CONCAT('%',?,'%'))
-           """;
-        List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, ((rs, rowNum) -> new BoardResponse(rs.getLong("id")
-                , rs.getString("title")
-                , rs.getString("back_ground"),
-                rs.getLong("work_space_id"))), search);
+        if (user != null && user.getId() != null) {
+            String sql = """
+            SELECT u.id, email, first_name, image, last_name FROM users u
+            INNER JOIN users_work_spaces uws ON u.id = uws.members_id
+            WHERE (u.first_name ILIKE (CONCAT('%',?,'%'))
+                  OR u.last_name ILIKE (CONCAT('%',?,'%')))
+              AND uws.work_spaces_id IN (
+                SELECT w.id FROM work_spaces w WHERE w.admin_id = ?
+            )
+            GROUP BY u.id, email, first_name, image, last_name
+            """;
+            List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rowNum) -> new UserResponse(rs.getLong("id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("email"),
+                    rs.getString("image")), search, search, user.getId());
 
-        String sql4 = """
-                SELECT  w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullNaem, u.image,w.id, name FROM work_spaces w
-                JOIN user_work_space_roles uwsr ON w.id = uwsr.work_space_id
-                JOIN users u ON u.id = uwsr.member_id
-                WHERE w.name ILIKE (CONCAT('%',?,'%'))
-                """;
-        List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql4, ((rs, rowNum) -> WorkSpaceResponse.builder()
-                .workSpaceId(rs.getLong("id"))
-                .adminFullName(rs.getString("fullNaem"))
-                .adminImage(rs.getString("image"))
-                .adminId(rs.getLong("admin_id"))
-                .workSpaceName(rs.getString("name"))
-                .build()), search);
+            String sql2 = """   
+                    SELECT b.work_space_id, b.id, back_ground, title FROM boards b
+                    WHERE (b.title ILIKE (CONCAT('%',?,'%')))
+                    AND b.work_space_id IN (
+                    SELECT w.id FROM work_spaces w WHERE w.admin_id = ?)
+                    GROUP BY b.work_space_id, b.id, back_ground, title
+                      """;
+            List<BoardResponse> boardResponses = jdbcTemplate.query(sql2, (rs, rowNum) -> new BoardResponse(rs.getLong("id"),
+                    rs.getString("title"),
+                    rs.getString("back_ground"),
+                    rs.getLong("work_space_id")), search, user.getId());
 
-        return GlobalSearchResponse.builder()
-                .userResponses(userResponses)
-                .boardResponses(boardResponses)
-                .workSpaceResponses(workSpaceResponses)
-                .build();
+            String sql4 = """
+                   SELECT w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullName, u.image, w.id, name,
+                   CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
+                   FROM work_spaces w
+                            JOIN users_work_spaces uws ON w.id = uws.work_spaces_id
+                            JOIN users u ON u.id = uws.members_id
+                            join favorites f on w.id = f.work_space_id
+                   WHERE (w.name ILIKE (CONCAT('%', ?, '%')))
+                   AND w.admin_id = ?
+                   GROUP by u.image, CONCAT(u.first_name, ' ', u.last_name), w.admin_id, w.id, name,
+                   CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END
+                     """;
+            List<WorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(sql4, (rs, rowNum) -> WorkSpaceResponse.builder()
+                    .workSpaceId(rs.getLong("id"))
+                    .adminFullName(rs.getString("fullName"))
+                    .adminImage(rs.getString("image"))
+                    .adminId(rs.getLong("admin_id"))
+                    .workSpaceName(rs.getString("name"))
+                    .isFavorite(rs.getBoolean("isFavorite"))
+                    .build(), search, user.getId());
+
+            return GlobalSearchResponse.builder()
+                    .userResponses(userResponses)
+                    .boardResponses(boardResponses)
+                    .workSpaceResponses(workSpaceResponses)
+                    .build();
+        } else {
+            return GlobalSearchResponse.builder().build();
+        }
     }
 }
