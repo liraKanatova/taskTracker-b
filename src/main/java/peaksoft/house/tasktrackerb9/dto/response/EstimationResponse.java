@@ -9,6 +9,7 @@ import peaksoft.house.tasktrackerb9.enums.ReminderType;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EstimationResponse {
 
     private Long estimationId;
@@ -19,7 +20,6 @@ public class EstimationResponse {
     private String duetDate;
     private String finishTime;
 
-    @Builder
     public EstimationResponse(Long estimationId, ReminderType reminderType, String startDate, String duetDate, String finishTime) {
         this.estimationId = estimationId;
         this.reminderType = reminderType;
