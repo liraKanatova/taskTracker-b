@@ -168,6 +168,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 .build();
     }
 
+    @Override
     public GlobalSearchResponse search(String search) {
         User user = jwtService.getAuthentication();
 
