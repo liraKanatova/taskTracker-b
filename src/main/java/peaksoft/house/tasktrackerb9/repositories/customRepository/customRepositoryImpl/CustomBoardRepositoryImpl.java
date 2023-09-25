@@ -117,7 +117,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                 ((rs, rowNum) -> new ColumnResponse(rs.getLong("id"),
                         rs.getString("title"),
                         rs.getBoolean("is_archive"))), boardId);
-
         if (!cardResponses.isEmpty()) {
             getAllArchiveResponse.setCardResponses(cardResponses);
         } else {
@@ -148,7 +147,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                          LEFT JOIN columns AS col on col.id = c.column_id
                          LEFT JOIN boards b on b.id = col.board_id
                          WHERE col.board_id = :boardId and c.is_archive = false""";
-
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("boardId", boardId);
 
@@ -214,7 +212,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         FilterBoardResponse filterBoardResponse = new FilterBoardResponse();
         filterBoardResponse.setBoardId(boardId);
         filterBoardResponse.setCardResponses(cardResponses);
-
         return filterBoardResponse;
     }
 
@@ -232,7 +229,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
             labelResponse.setLabelId(rs.getLong("labelId"));
             labelResponse.setDescription(rs.getString("name"));
             labelResponse.setColor(rs.getString("color"));
-
             return labelResponse;
         }, cardId);
     }

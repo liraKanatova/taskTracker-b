@@ -18,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/api/file")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class S3Api {
+
     private final S3Service s3Service;
 
     @Operation(summary = "This is upload file ")

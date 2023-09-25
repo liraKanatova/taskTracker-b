@@ -46,7 +46,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardResponse saveBoard(BoardRequest boardRequest) {
-
         User user = jwtService.getAuthentication();
         WorkSpace workSpace = workspaceRepository.findById(boardRequest.workSpaceId())
                 .orElseThrow(() -> {
@@ -75,7 +74,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public SimpleResponse updateBoard(BoardUpdateRequest boardUpdateRequest) {
-
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardUpdateRequest.boardI())
                 .orElseThrow(() -> {

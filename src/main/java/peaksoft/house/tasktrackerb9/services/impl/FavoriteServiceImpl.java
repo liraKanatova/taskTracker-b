@@ -33,6 +33,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public BoardResponse saveBoardFavorite(Long boardId) {
+
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
@@ -89,7 +90,6 @@ public class FavoriteServiceImpl implements FavoriteService {
                 }
             }
         }
-
         if (isFavorite) {
             favorites.remove(existingWorkSpaceFavorite);
             favoriteRepository.deleteById(existingWorkSpaceFavorite.getId());

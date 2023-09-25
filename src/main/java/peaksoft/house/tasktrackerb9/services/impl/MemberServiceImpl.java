@@ -44,6 +44,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
+
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> {
                     log.error("WorkSpace with id: " + workSpaceId + " not found");
@@ -54,6 +55,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberResponse> getAllMembersByCardId(Long cardId) {
+
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
             log.error("Card with id: " + cardId + " not found");
             throw new NotFoundException("Card with id: " + cardId + " not found");
@@ -99,6 +101,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse changeMemberRole(ChangeRoleRequest request) {
+
         User admin = jwtService.getAuthentication();
         log.info("Changing member role in board with id: {}", request.boardId());
         Board board = boardRepository.findById(request.boardId())
@@ -144,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse assignMemberToCard(Long memberId, Long cardId) {
+
         User user = jwtService.getAuthentication();
         log.info("Assigning member with id: {} to card with id: {}", memberId, cardId);
         Long adminId = cardRepository.getUserIdByCardId(cardId).orElseThrow(() -> {
@@ -213,6 +217,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse removeMemberFromBoard(Long memberId, Long boardId) {
+
         User admin = jwtService.getAuthentication();
         log.info("Removing member with id: {} from board with id: {}", memberId, boardId);
         Board board = boardRepository.findById(boardId)

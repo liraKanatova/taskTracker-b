@@ -10,7 +10,6 @@ public interface CustomBoardRepository {
 
     List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId);
     GetAllArchiveResponse getAllArchivedCardsAndColumns(Long boardId);
-
     FilterBoardResponse filterByConditions(Long boardId, boolean noDates, boolean overdue, boolean dueNextDay, boolean dueNextWeek, boolean dueNextMonth, List<Long>labelIds);
 
 }
