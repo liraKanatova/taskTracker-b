@@ -146,6 +146,10 @@ public class CardServiceImpl implements CardService {
             return new NotFoundException("Column with id: " + columnId + " not found!");
         });
 
+        movedCard.getColumn().getCards().remove(movedCard);
+        movedCard.setColumn(targetColumn);
+        targetColumn.getCards().add(movedCard);
+
         Notification moveNotification = new Notification();
         moveNotification.setType(NotificationType.MOVE);
         moveNotification.setText("Card with id " + cardId + " has been moved to column " + targetColumn.getTitle());
