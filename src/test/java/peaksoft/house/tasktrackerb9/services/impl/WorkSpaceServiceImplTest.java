@@ -88,6 +88,8 @@ class WorkSpaceServiceImplTest {
     void saveWorkSpace() throws MessagingException {
         User mockUser = new User();
         mockUser.setId(1L);
+        mockUser.setWorkSpaces(new ArrayList<>());
+
         when(jwtService.getAuthentication()).thenReturn(mockUser);
 
         MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
