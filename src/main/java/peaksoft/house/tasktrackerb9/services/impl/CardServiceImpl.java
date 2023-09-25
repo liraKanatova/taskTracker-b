@@ -26,6 +26,7 @@ import peaksoft.house.tasktrackerb9.services.CardService;
 import java.time.ZoneId;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -92,30 +93,15 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public SimpleResponse deleteAllCardsInColumn(Long columnId) {
-
-        User user = getAuthentication();
-        Column column = columnRepository.findById(columnId).orElseThrow(() -> {
-            log.error("Column with id: " + columnId + " not found!");
-            return new NotFoundException("Column with id: " + columnId + " not found!");
-        });
-
-        UserWorkSpaceRole userRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), column.getBoard().getWorkSpace().getId());
-        if (userRole == null || !userRole.getRole().equals(Role.ADMIN)) {
-            log.error("You don't have permission to delete cards in this column");
-            throw new BadCredentialException("You don't have permission to delete cards in this column");
-        }
-
-        if (!column.getCards().isEmpty()) {
-            cardRepository.deleteAll(column.getCards());
-        } else {
-            log.error("No cards have this colum!");
-            throw new NotFoundException("No cards have this colum!");
-        }
+        List<Card> cards = cardRepository.getCardsByColumnId(columnId);
+        cardRepository.deleteAll(cards);
         return SimpleResponse.builder()
+                .message("successfully removed inside the columa")
                 .status(HttpStatus.OK)
-                .message("All cards from this column with id: " + columnId + " are removed!")
                 .build();
+
     }
+
 
     @Override
     public SimpleResponse archiveAllCardsInColumn(Long columnId) {
