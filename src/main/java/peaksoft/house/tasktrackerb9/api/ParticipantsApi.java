@@ -8,12 +8,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
-import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
+import peaksoft.house.tasktrackerb9.dto.response.ParticipantsGetAllResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.services.ParticipantsService;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class ParticipantsApi {
 
     @Operation(summary = "Get all participants",description = "You can get all participants with workSpace id and sort by their roles")
     @GetMapping("/{wokSpaceId}")
-    public List<ParticipantsResponse> getAllParticipants(@PathVariable Long wokSpaceId, @RequestParam Role role) {
+    public ParticipantsGetAllResponse getAllParticipants(@PathVariable Long wokSpaceId, @RequestParam Role role) {
         return participantsService.getParticipantsByRole(wokSpaceId, role);
     }
 

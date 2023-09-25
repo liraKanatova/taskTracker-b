@@ -13,5 +13,5 @@ public class ParticipantsGetAllResponse {
 
     List<ParticipantsResponse> participantsResponseList;
 
-    Boolean isAdmin;
+    Boolean isMy;
 }

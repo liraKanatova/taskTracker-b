@@ -20,11 +20,14 @@ public class ParticipantsResponse {
 
     private Role role;
 
+    private Boolean isAdmin;
 
-    public ParticipantsResponse(Long userId, String fullName, String email, Role role) {
+
+    public ParticipantsResponse(Long userId, String fullName, String email, Role role,Boolean isAdmin) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.role = role;
+        this.isAdmin=isAdmin;
     }
 }

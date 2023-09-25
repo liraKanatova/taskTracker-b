@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
+import peaksoft.house.tasktrackerb9.dto.response.ParticipantsGetAllResponse;
 import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
@@ -144,7 +145,7 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     }
 
     @Override
-    public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
+    public ParticipantsGetAllResponse getParticipantsByRole(Long workSpaceId, Role role) {
         return customParticipantsRepository.getParticipantsByRole(workSpaceId,role);
     }
 }
