@@ -46,39 +46,36 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     public List<WorkSpaceResponse> getAllWorkSpaces() {
         return workSpaceJdbcTemplateService.getAllWorkSpaces();
     }
-
     @Override
     public WorkSpaceFavoriteResponse saveWorkSpace(WorkSpaceRequest request) throws MessagingException {
         User user = jwtService.getAuthentication();
         WorkSpace workspace = new WorkSpace(request.getName(), user.getId());
         UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole(Role.ADMIN, user, workspace);
-        user.setRoles(List.of(userWorkSpace));
-        user.setWorkSpaces(List.of(workspace));
-        workspace.setCreatedDate(ZonedDateTime.now());
         workspace.setMembers(List.of(user));
+        workspace.setCreatedDate(ZonedDateTime.now());
         workSpaceRepository.save(workspace);
+        List<WorkSpace> existingWorkSpaces = user.getWorkSpaces();
+        existingWorkSpaces.add(workspace);
+        user.setWorkSpaces(existingWorkSpaces);
         List<String> invitationEmails = request.getEmails();
+
         if (!invitationEmails.isEmpty() && !invitationEmails.get(0).isBlank()) {
             for (String email : invitationEmails) {
                 if (!userRepository.existsByEmail(email)) {
                     MimeMessage mimeMessage = javaMailSender.createMimeMessage();
                     MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-                    helper.setSubject(" Welcome to my workspace");
+                    helper.setSubject("Welcome to my workspace");
                     helper.setFrom("tasktrackerjava9@gmail.com");
                     helper.setTo(email);
                     helper.setText("/workspaceId/" + workspace.getId() + " Click link to register :" + request.getLink());
                     javaMailSender.send(mimeMessage);
-                    log.info(String.format("WorkSpace with name %s successfully saved!", workspace.getName()));
-                    log.info("Workspace is saved!");
-                    return WorkSpaceFavoriteResponse.builder()
-                            .workSpaceId(workspace.getId())
-                            .name(workspace.getName())
-                            .isFavorite(false)
-                            .build();
                 }
             }
         }
+
+        log.info(String.format("WorkSpace with name %s successfully saved!", workspace.getName()));
         log.info("Workspace is saved!");
+
         return WorkSpaceFavoriteResponse.builder()
                 .workSpaceId(workspace.getId())
                 .name(workspace.getName())
