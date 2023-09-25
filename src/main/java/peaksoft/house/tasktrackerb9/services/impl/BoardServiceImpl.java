@@ -9,6 +9,7 @@ import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
+import peaksoft.house.tasktrackerb9.dto.response.FilterBoardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.GetAllArchiveResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
@@ -70,6 +71,7 @@ public class BoardServiceImpl implements BoardService {
                     .title(board.getTitle())
                     .backGround(board.getBackGround())
                     .isFavorite(false)
+                    .work_space_id(workSpace.getId())
                     .build();
 
         }
@@ -161,5 +163,14 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public GetAllArchiveResponse getAllArchivedCardsAndColumns(Long boardId) {
         return customBoardRepository.getAllArchivedCardsAndColumns(boardId);
+    }
+
+    @Override
+    public FilterBoardResponse filterByConditions(Long boardId, boolean noDates, boolean overdue, boolean dueNextDay, boolean dueNextWeek, boolean dueNextMonth, List<Long> labelIds) {
+        boardRepository.findById(boardId).orElseThrow(() -> {
+                    log.error("Board with id: " + boardId + " not found");
+            return new NotFoundException("Board with id: " + boardId + " not found");
+                });
+        return customBoardRepository.filterByConditions(boardId, noDates, overdue, dueNextDay, dueNextWeek, dueNextMonth, labelIds);
     }
 }

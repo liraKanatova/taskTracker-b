@@ -17,22 +17,20 @@ import java.util.List;
 public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
 
     private final JdbcTemplate jdbcTemplate;
-
     private final JwtService jwtService;
 
     @Override
     public FavoriteResponse getAll() {
-
         User user = jwtService.getAuthentication();
         String sql = """
                 SELECT u.id AS user_id,
                        b.id AS board_id,
                        b.title,
                        b.back_ground
-                FROM users u
-                         JOIN favorites f ON u.id = f.member_id
-                         JOIN boards b ON f.board_id = b.id
-                WHERE u.id = ?
+                       FROM users u
+                       JOIN favorites f ON u.id = f.member_id
+                       JOIN boards b ON f.board_id = b.id
+                       WHERE u.id = ?
                 """;
         List<FavoriteBoardResponse> boardResponses = jdbcTemplate.query(
                 sql,
@@ -48,10 +46,10 @@ public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
                 SELECT u.id AS user_id,
                        ws.id AS work_space_id,
                        ws.name
-                FROM users u
-                         JOIN favorites f ON u.id = f.member_id
-                         JOIN work_spaces ws on f.work_space_id = ws.id
-                WHERE u.id = ?
+                       FROM users u
+                       JOIN favorites f ON u.id = f.member_id
+                       JOIN work_spaces ws on f.work_space_id = ws.id
+                       WHERE u.id = ?
                      """;
         List<FavoriteWorkSpaceResponse> workSpaceResponses = jdbcTemplate.query(
                 sql1,
@@ -68,5 +66,4 @@ public class CustomFavoriteRepositoryImpl implements CustomFavoriteRepository {
                 .boardResponses(boardResponses)
                 .build();
     }
-
 }

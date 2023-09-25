@@ -84,6 +84,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
         String sql = """
                     SELECT e.id AS estimationId,
                            e.start_date AS startDate,
+                           e.start_time as startTime,
                            e.due_date AS dueDate,
                            e.finish_time AS time,
                            e.reminder_type AS reminderType
@@ -104,6 +105,13 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 ZonedDateTime startDateZoned = startDateTimestamp.toInstant().atZone(zoneId);
                 String formattedStartDate = startDateZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
                 estimationResponse.setStartDate(formattedStartDate);
+            }
+            Timestamp startTimeTimestamp = rs.getTimestamp("startTime");
+            if (!rs.wasNull()) {
+                ZoneId zoneId = ZoneId.systemDefault();
+                ZonedDateTime startTimeZoned = startTimeTimestamp.toInstant().atZone(zoneId);
+                String formattedStartTime = startTimeZoned.format(DateTimeFormatter.ofPattern("d MMM yyyy 'at' h:mm a"));
+                estimationResponse.setStartTime(formattedStartTime);
             }
 
             Timestamp dueDateTimestamp = rs.getTimestamp("dueDate");
@@ -233,12 +241,14 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     }
 
     private List<CommentResponse> getCommentsResponsesByCardId(Long cardId) {
+        User user = getAuthentication();
         String sql = """
                 SELECT co.id AS commentId,
                        co.comment AS comment,
                        co.created_date AS created_date,                       
                        u.id AS user_id,
                        CONCAT(u.first_name, ' ', u.last_name) AS fullName,
+                       CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine,
                        u.image AS image
                 FROM comments AS co
                 JOIN cards c ON c.id = co.card_id
@@ -260,9 +270,10 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 commentResponse.setCreatorId(rs.getLong("user_id"));
                 commentResponse.setCreatorName(rs.getString("fullName"));
                 commentResponse.setCreatorAvatar(rs.getString("image"));
+                commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             }
             return commentResponse;
-        }, cardId);
+        }, user.getId(),cardId);
     }
 
     @Override
@@ -270,6 +281,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
         String query = """
                 SELECT c.id AS cardId,
                        c.title AS title,
+                       c.description AS description,
                        e.start_date AS startDate,
                        e.due_date AS dueDate,
                        (SELECT COUNT(*) FROM cards_members AS cu WHERE cu.cards_id = c.id) AS numberUsers,
@@ -286,6 +298,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
             CardResponse cardResponse = new CardResponse();
             cardResponse.setCardId(rs.getLong("cardId"));
             cardResponse.setTitle(rs.getString("title"));
+            cardResponse.setDescription(rs.getString("description"));
 
             ZoneId zoneId = ZoneId.systemDefault();
 
@@ -297,7 +310,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                 long days = duration.toDays();
                 cardResponse.setDuration(days + " days");
             } else {
-                cardResponse.setDuration("No time set for this card");
+                cardResponse.setDuration("");
             }
 
             int numberUsers = rs.getInt("numberUsers");
@@ -314,6 +327,9 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
             List<CommentResponse> commentResponses = getCommentResponsesForCard(rs.getLong("cardId"));
             cardResponse.setCommentResponses(commentResponses);
+
+            List<CheckListResponse> checkListResponses = getCheckListResponsesByCardId(rs.getLong("cardId"));
+            cardResponse.setCheckListResponses(checkListResponses);
 
             return cardResponse;
         });
@@ -344,12 +360,14 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
     }
 
     private List<CommentResponse> getCommentResponsesForCard(Long cardId) {
+        User user = getAuthentication();
         String query = """
                 SELECT co.id AS commentId,
                        co.comment AS comment,
                        co.created_date AS createdDate,
                        u.id AS userId,
                        CONCAT(u.first_name, ' ', u.last_name) AS fullName,
+                       CASE WHEN u.id = ? THEN TRUE ELSE FALSE END AS isMine,
                        u.image AS image
                 FROM comments AS co
                 JOIN cards c ON c.id = co.card_id
@@ -371,10 +389,11 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
                         commentResponse.setCreatorId(rs.getLong("userId"));
                         commentResponse.setCreatorName(rs.getString("fullName"));
                         commentResponse.setCreatorAvatar(rs.getString("image"));
+                        commentResponse.setIsMyComment(rs.getBoolean("isMine"));
                     }
 
                     return commentResponse;
                 }
-                , cardId);
+                , user.getId(),cardId);
     }
 }
