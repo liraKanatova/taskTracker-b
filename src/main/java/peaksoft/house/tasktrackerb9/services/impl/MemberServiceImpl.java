@@ -85,12 +85,12 @@ public class MemberServiceImpl implements MemberService {
             User user = userRepository.findUserByEmail(request.getEmail())
                     .orElseThrow(() -> new NotFoundException("User with email: " + request.getEmail() + " not found"));
             UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole();
-            userWorkSpace.setMember(user);
             userWorkSpace.setRole(request.getRole());
             board.setWorkSpace(workSpace);
+            board.getMembers().add(user);
             userWorkSpace.setWorkSpace(board.getWorkSpace());
             userWorkSpaceRoleRepository.save(userWorkSpace);
-            board.getMembers().add(user);
+
         } else throw new NotFoundException(String.format("User with email: %s is not found", request.getEmail()));
         log.info("Invitation sent to member with email: {} for board with id: {}", request.getEmail(), request.getBoardId());
         return SimpleResponse.builder()

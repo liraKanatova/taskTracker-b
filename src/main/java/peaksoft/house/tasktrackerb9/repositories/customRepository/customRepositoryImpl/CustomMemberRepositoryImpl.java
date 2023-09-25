@@ -82,8 +82,8 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 LEFT JOIN users u ON u.id = uwsr.member_id
                 LEFT JOIN boards_members bm ON u.id = bm.members_id
                 WHERE bm.boards_id = ?
-                GROUP BY u.id,
-                    u.first_name, u.last_name, u.email, u.image, u.role, uwsr.role;
+             GROUP BY u.id,
+                 u.first_name, u.last_name, u.email, u.image, u.role, uwsr.role;
                   """;
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                         new MemberResponse(
