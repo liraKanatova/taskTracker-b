@@ -70,11 +70,15 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public List<ColumnResponse> getAllColumns(Long boardId) {
-        return columns.getAllColumns(boardId);
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> {
+            log.error("Board with id: " + boardId + " not found");
+            return new NotFoundException("Board with id: " + boardId + " not found");
+        });
+        return columns.getAllColumns(board.getId());
     }
 
     @Override
-    public ColumnResponse update(Long columnId,ColumnRequest columnRequest) {
+    public ColumnResponse update(Long columnId, ColumnRequest columnRequest) {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
@@ -84,17 +88,18 @@ public class ColumnServiceImpl implements ColumnService {
             column.setTitle(columnRequest.title());
             columnsRepository.save(column);
             log.info("Column successfully update");
-        }else {
+        } else {
             throw new BadCredentialException("You are not member");
         }
-          return new ColumnResponse(column.getId(),column.getTitle(),column.getIsArchive());
+        return new ColumnResponse(column.getId(), column.getTitle(), column.getIsArchive());
     }
+
     @Override
     public SimpleResponse removeColumn(Long columnId) {
         User user = jwtService.getAuthentication();
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column not found!");
-            return new NotFoundException("Column with id: "+columnId+" not found");
+            return new NotFoundException("Column with id: " + columnId + " not found");
         });
         if (user.getRole().equals(Role.ADMIN)) {
             columnsRepository.delete(column);
@@ -129,7 +134,7 @@ public class ColumnServiceImpl implements ColumnService {
         UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
         if (userWorkSpaceRole == null) {
             log.error("You are not a member of this workspace!");
-            throw new BadCredentialException("You are not a member of this workspace!"+workSpace.getName()+"/"+user.getFirstName());
+            throw new BadCredentialException("You are not a member of this workspace!" + workSpace.getName() + "/" + user.getFirstName());
         }
 
         if (workSpace.getMembers().contains(userWorkSpaceRole.getMember()) || userWorkSpaceRole.getMember().equals(workspaceAdmin)) {

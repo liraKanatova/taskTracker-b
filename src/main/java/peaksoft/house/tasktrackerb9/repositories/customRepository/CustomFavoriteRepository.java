@@ -5,6 +5,4 @@ import peaksoft.house.tasktrackerb9.dto.response.FavoriteResponse;
 public interface CustomFavoriteRepository {
 
     FavoriteResponse getAll();
-
-
 }

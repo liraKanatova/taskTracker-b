@@ -18,4 +18,6 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     @Query("SELECT u.id FROM User u JOIN u.cards c WHERE c.id = ?1")
     List<Long> getMembersByCardId(Long cardId);
+
+    List<Card> getCardsByColumnId(Long columnId);
 }

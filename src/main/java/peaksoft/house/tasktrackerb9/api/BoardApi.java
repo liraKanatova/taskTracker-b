@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.house.tasktrackerb9.dto.request.BoardRequest;
 import peaksoft.house.tasktrackerb9.dto.request.BoardUpdateRequest;
 import peaksoft.house.tasktrackerb9.dto.response.BoardResponse;
+import peaksoft.house.tasktrackerb9.dto.response.FilterBoardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.GetAllArchiveResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.BoardService;
@@ -59,5 +60,17 @@ public class BoardApi {
     @Operation(summary = "Get all archives", description = "Get all archived cards and columns by board id")
     public GetAllArchiveResponse getAllArchives(@PathVariable Long boardId){
         return boardService.getAllArchivedCardsAndColumns(boardId);
+    }
+
+    @GetMapping("/{boardId}/filter")
+    public FilterBoardResponse filterByConditions(
+            @PathVariable Long boardId,
+            @RequestParam(required = false) boolean noDates,
+            @RequestParam(required = false) boolean overdue,
+            @RequestParam(required = false) boolean dueNextDay,
+            @RequestParam(required = false) boolean dueNextWeek,
+            @RequestParam(required = false) boolean dueNextMonth,
+            @RequestParam(required = false) List<Long> labelIds) {
+        return boardService.filterByConditions(boardId, noDates, overdue, dueNextDay, dueNextWeek, dueNextMonth, labelIds);
     }
 }

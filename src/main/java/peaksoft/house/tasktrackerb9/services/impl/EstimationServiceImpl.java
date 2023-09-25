@@ -51,7 +51,7 @@ public class EstimationServiceImpl implements EstimationService {
                     }
                 }
 
-                if (!request.getFinishTime().toLocalTime().isBefore(request.getStartTime().toLocalTime())) {
+                if (!request.getStartTime().toLocalTime().isBefore(request.getFinishTime().toLocalTime())) {
                     estimation.setStartDate(request.getStartDate());
                     estimation.setFinishDate(request.getDateOfFinish());
                     estimation.setStartTime(request.getStartTime());
@@ -134,6 +134,7 @@ public class EstimationServiceImpl implements EstimationService {
         return EstimationResponse.builder()
                 .estimationId(estimation.getId())
                 .startDate(estimation.getStartDate().toString())
+                .startTime(estimation.getStartTime().toString())
                 .duetDate(estimation.getFinishDate().toString())
                 .finishTime(estimation.getFinishTime().toString())
                 .reminderType(estimation.getReminderType())
