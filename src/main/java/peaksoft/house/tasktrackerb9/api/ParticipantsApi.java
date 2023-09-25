@@ -45,6 +45,6 @@ public class ParticipantsApi {
     @Operation(summary = "Remove participants", description = "Remove participants to workSpace id")
     @DeleteMapping("/{workSpaceId}/{userId}")
     public SimpleResponse removeParticipants(@PathVariable Long workSpaceId, @PathVariable Long userId) {
-        return participantsService.removeToWorkSpaces(workSpaceId, userId);
+        return participantsService.participantsRemoveToWorkSpaces(workSpaceId, userId);
     }
 }

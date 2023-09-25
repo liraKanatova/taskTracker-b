@@ -14,7 +14,7 @@ public interface ParticipantsService {
 
     SimpleResponse inviteToWorkSpaces(ParticipantsRequest request) throws MessagingException;
 
-    SimpleResponse removeToWorkSpaces(Long workSpaceId,Long userId);
+    SimpleResponse participantsRemoveToWorkSpaces(Long workSpaceId,Long userId);
 
     SimpleResponse changeUpdateRole(ParticipantsChangeRequest request);
 
