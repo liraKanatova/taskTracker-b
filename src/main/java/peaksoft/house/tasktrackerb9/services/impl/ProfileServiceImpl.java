@@ -24,8 +24,6 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final CustomProfileRepositoryImpl queryJdbc;
 
-    private final UserRepository userRepository;
-
     private final JwtService jwtService;
 
     @Override
@@ -37,7 +35,6 @@ public class ProfileServiceImpl implements ProfileService {
     public UserResponse updateImageUserId(String image) {
         User user = jwtService.getAuthentication();
         user.setImage(image);
-//        userRepository.save(user);
         log.info("Updated image user");
         return UserResponse.builder()
                 .userId(user.getId())
