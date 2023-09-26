@@ -125,7 +125,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
                          JOIN users AS u ON u.id = c.member_id
                     """;
         return jdbcTemplate.query
-                (sqlQuery, new Object[]{user.getId()}, new CommentResponseRowMap());
+                (sqlQuery, new Object[]{user. getId()}, new CommentResponseRowMap());
     }
 
     private class CommentResponseRowMap implements RowMapper<CommentResponse> {

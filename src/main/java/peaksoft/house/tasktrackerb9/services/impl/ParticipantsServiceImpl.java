@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsChangeRequest;
 import peaksoft.house.tasktrackerb9.dto.request.ParticipantsRequest;
-import peaksoft.house.tasktrackerb9.dto.response.ParticipantsResponse;
+import peaksoft.house.tasktrackerb9.dto.response.ParticipantsGetAllResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
@@ -48,14 +48,15 @@ public class ParticipantsServiceImpl implements ParticipantsService {
 
     @Override
     public SimpleResponse inviteToWorkSpaces(ParticipantsRequest request) throws MessagingException {
-        User user = jwtService.getAuthentication();
+        User authentication = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(request.workSpacesId()).orElseThrow(() ->
                 new NotFoundException("Workspace with id " + request.workSpacesId() + " not found"));
-        if (!user.getWorkSpaces().contains(workSpace)) {
-            throw new NotFoundException("You are not associated with this workspace");
+
+        if (!authentication.getWorkSpaces().contains(workSpace) || !authentication.getRole().equals(Role.ADMIN)) {
+            throw new BadCredentialException("You are not authorized to invite members to this workspace");
         }
-        User user1 = userRepository.findUserByEmailParticipants(request.email());
-        if (user1 == null) {
+        User user = userRepository.findUserByEmailParticipants(request.email());
+        if (user == null) {
             throw new NotFoundException("User with email " + request.email() + " not found");
         }
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -65,11 +66,13 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         String invitationText = request.link() + "/" + request.role() + "/workspaceId/" + request.workSpacesId();
         helper.setText(invitationText);
         javaMailSender.send(mimeMessage);
+
         UserWorkSpaceRole userWorkSpaceRole = new UserWorkSpaceRole();
-        userWorkSpaceRole.setMember(user1);
+        userWorkSpaceRole.setMember(user);
         userWorkSpaceRole.setRole(request.role());
         userWorkSpaceRole.setWorkSpace(workSpace);
         userWorkSpaceRoleRepository.save(userWorkSpaceRole);
+
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message("Successfully invited")
@@ -77,7 +80,7 @@ public class ParticipantsServiceImpl implements ParticipantsService {
     }
 
     @Override
-    public SimpleResponse removeToWorkSpaces(Long workSpaceId,Long userId) {
+    public SimpleResponse participantsRemoveToWorkSpaces(Long workSpaceId,Long userId) {
         User authentication = jwtService.getAuthentication();
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> new NotFoundException("Workspace with id " + workSpaceId + " not found"));
@@ -91,11 +94,13 @@ public class ParticipantsServiceImpl implements ParticipantsService {
             if (workSpaceRole.getWorkSpace().equals(workSpace) && workSpaceRole.getMember().equals(user)) {
                 userWorkSpaceRoleRepository.deleteById(workSpaceRole.getId());
                 log.info("Successfully deleted");
-            }else throw new BadCredentialException("Not found id");
+            } else {
+                throw new BadCredentialException("Not found id");
+            }
         }
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("Successfully deleted" )
+                .message("Successfully deleted")
                 .build();
     }
 
@@ -121,12 +126,12 @@ public class ParticipantsServiceImpl implements ParticipantsService {
         }
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message("Successfully role  updated")
+                .message("Successfully role updated")
                 .build();
     }
 
     @Override
-    public List<ParticipantsResponse> getParticipantsByRole(Long workSpaceId, Role role) {
+    public ParticipantsGetAllResponse getParticipantsByRole(Long workSpaceId, Role role) {
         return customParticipantsRepository.getParticipantsByRole(workSpaceId,role);
     }
 }
