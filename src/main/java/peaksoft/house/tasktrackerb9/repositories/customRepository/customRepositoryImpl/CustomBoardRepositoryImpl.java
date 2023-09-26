@@ -30,7 +30,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
-
         User user = jwtService.getAuthentication();
         String sql = "" +
                 " SELECT b.id, b.title, b.back_ground, " +
@@ -39,7 +38,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                 " JOIN work_spaces ws ON b.work_space_id = ws.id " +
                 " LEFT JOIN favorites f ON b.id = f.board_id AND f.member_id = ? " +
                 " WHERE ws.id = ?";
-
         return jdbcTemplate.query(sql,
                 (rs, rowNum) -> new BoardResponse(
                         rs.getLong("id"),
@@ -110,24 +108,23 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         });
 
         String sql = """
-            SELECT c.id, c.title, c.is_archive FROM boards b
-            JOIN columns c ON b.id = c.board_id
-            WHERE b.id = ? AND c.is_archive = true
-            group by c.id, c.title, c.is_archive
-            """;
+                SELECT c.id, c.title, c.is_archive FROM boards b
+                JOIN columns c ON b.id = c.board_id
+                WHERE b.id = ? AND c.is_archive = true
+                group by c.id, c.title, c.is_archive
+                """;
         List<ColumnResponse> columnResponses = jdbcTemplate.query(sql,
                 ((rs, rowNum) -> new ColumnResponse(rs.getLong("id"),
-                rs.getString("title"),
-                rs.getBoolean("is_archive"))), boardId);
-
-        if (!cardResponses.isEmpty()){
+                        rs.getString("title"),
+                        rs.getBoolean("is_archive"))), boardId);
+        if (!cardResponses.isEmpty()) {
             getAllArchiveResponse.setCardResponses(cardResponses);
-        }else {
+        } else {
             getAllArchiveResponse.setCardResponses(new ArrayList<>());
         }
-        if(!columnResponses.isEmpty()){
+        if (!columnResponses.isEmpty()) {
             getAllArchiveResponse.setColumnResponses(columnResponses);
-        }else {
+        } else {
             getAllArchiveResponse.setColumnResponses(new ArrayList<>());
         }
         return getAllArchiveResponse;
@@ -150,7 +147,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                          LEFT JOIN columns AS col on col.id = c.column_id
                          LEFT JOIN boards b on b.id = col.board_id
                          WHERE col.board_id = :boardId and c.is_archive = false""";
-
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("boardId", boardId);
 
@@ -216,25 +212,23 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         FilterBoardResponse filterBoardResponse = new FilterBoardResponse();
         filterBoardResponse.setBoardId(boardId);
         filterBoardResponse.setCardResponses(cardResponses);
-
         return filterBoardResponse;
     }
 
     private List<LabelResponse> getLabelResponsesForCard(Long cardId) {
         String sql = """
-                 SELECT l.id AS labelId,
-                        l.label_name AS name,
-                        l.color AS color 
-                 FROM labels AS l
-                 JOIN labels_cards lc ON l.id = lc.labels_id
-                 WHERE lc.cards_id = ?
-                 """;
+                SELECT l.id AS labelId,
+                       l.label_name AS name,
+                       l.color AS color
+                FROM labels AS l
+                JOIN labels_cards lc ON l.id = lc.labels_id
+                WHERE lc.cards_id = ?
+                """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             LabelResponse labelResponse = new LabelResponse();
             labelResponse.setLabelId(rs.getLong("labelId"));
             labelResponse.setDescription(rs.getString("name"));
             labelResponse.setColor(rs.getString("color"));
-
             return labelResponse;
         }, cardId);
     }
@@ -272,6 +266,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                 commentResponse.setIsMyComment(rs.getBoolean("isMine"));
             }
             return commentResponse;
-        },user.getId(), cardId);
+        }, user.getId(), cardId);
     }
 }

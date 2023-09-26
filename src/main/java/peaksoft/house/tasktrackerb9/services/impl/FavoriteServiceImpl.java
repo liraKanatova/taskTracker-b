@@ -26,24 +26,20 @@ import java.util.List;
 public class FavoriteServiceImpl implements FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-
     private final CustomFavoriteRepositoryImpl customFavoriteRepo;
-
     private final WorkSpaceRepository workSpaceRepository;
-
     private final BoardRepository boardRepository;
-
     private final JwtService jwtService;
 
     @Override
     public BoardResponse saveBoardFavorite(Long boardId) {
+
         User user = jwtService.getAuthentication();
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.error("Board with id: " + boardId + " not found");
                     return new NotFoundException("Board with id: " + boardId + " not found");
                 });
-
         List<Favorite> favorites = user.getFavorites();
         if (favorites != null) {
             for (Favorite favorite : favorites) {
@@ -82,11 +78,9 @@ public class FavoriteServiceImpl implements FavoriteService {
                     log.error("WorkSpace with id: " + workSpaceId + " not found");
                     return new NotFoundException("WorkSpace with id: " + workSpaceId + " not found");
                 });
-
         List<Favorite> favorites = user.getFavorites();
         boolean isFavorite = false;
         Favorite existingWorkSpaceFavorite = null;
-
         if (favorites != null) {
             for (Favorite favorite : favorites) {
                 if (favorite.getWorkSpace() != null && favorite.getWorkSpace().equals(workSpace)) {
@@ -96,7 +90,6 @@ public class FavoriteServiceImpl implements FavoriteService {
                 }
             }
         }
-
         if (isFavorite) {
             favorites.remove(existingWorkSpaceFavorite);
             favoriteRepository.deleteById(existingWorkSpaceFavorite.getId());

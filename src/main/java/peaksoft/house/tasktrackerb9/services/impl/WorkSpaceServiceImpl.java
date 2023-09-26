@@ -38,9 +38,7 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
     private final JavaMailSender javaMailSender;
     private final CustomWorkSpaceRepository workSpaceJdbcTemplateService;
     private final CardRepository cardRepository;
-    private final LabelRepository labelRepository;
     private final NotificationRepository notificationRepository;
-
 
     @Override
     public List<WorkSpaceResponse> getAllWorkSpaces() {
@@ -111,48 +109,42 @@ public class WorkSpaceServiceImpl implements WorkSpaceService {
 
     @Override
     public SimpleResponse deleteWorkSpaceById(Long id) {
-        User user = jwtService.getAuthentication();
-
-        WorkSpace workSpace = workSpaceRepository.getWorkSpaceByAdminIdAndId(user.getId(), id).orElseThrow(() -> {
-            log.error("You can't delete this workSpace with id: " + id + " !");
-            return new NotFoundException("You can't delete this workSpace with id: " + id + " !");
-        });
-
-        List<User> usersToRemoveWorkspace = new ArrayList<>();
-
-        for (User user1 : workSpace.getMembers()) {
-            user1.getWorkSpaces().remove(workSpace);
-            usersToRemoveWorkspace.add(user1);
-        }
-
-        for (Board board : workSpace.getBoards()) {
-            for (Column c : board.getColumns()) {
-                List<Card> cardsToDelete = new ArrayList<>(c.getCards());
-
-                for (Card card : cardsToDelete) {
-                    removeNotificationsForCard(card);
-                    c.getCards().remove(card);
-                    cardRepository.delete(card);
+        try {
+            User user = jwtService.getAuthentication();
+            WorkSpace workSpace = workSpaceRepository.getWorkSpaceByAdminIdAndId(user.getId(), id)
+                    .orElseThrow(() -> {
+                        log.error("You can't delete this workSpace with id: " + id + " !");
+                        return new NotFoundException("You can't delete this workSpace with id: " + id + " !");
+                    });
+            List<User> usersToRemoveWorkspace = new ArrayList<>(workSpace.getMembers());
+            for (User user1 : workSpace.getMembers()) {
+                if (user1.getWorkSpaces() != null) {
+                    user1.getWorkSpaces().remove(workSpace);
                 }
             }
+            for (Board board : workSpace.getBoards()) {
+                for (Column c : board.getColumns()) {
+                    List<Card> cardsToDelete = new ArrayList<>(c.getCards());
+                    removeNotificationsForCards(cardsToDelete);
+                    c.getCards().removeAll(cardsToDelete);
+                    cardRepository.deleteAll(cardsToDelete);
+                }
+            }
+            userRepository.saveAll(usersToRemoveWorkspace);
+            workSpaceRepository.delete(workSpace);
+            log.info(String.format("WorkSpace with id %s successfully deleted!", id));
+        } catch (NullPointerException e) {
+            e.getMessage();
         }
-
-        userRepository.saveAll(usersToRemoveWorkspace);
-        workSpaceRepository.delete(workSpace);
-        log.info(String.format("WorkSpace with id %s successfully deleted!", id));
-
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
                 .message(String.format("WorkSpace with id %s successfully deleted!", id))
                 .build();
     }
 
-    private void removeNotificationsForCard(Card card) {
-        List<Notification> notifications = notificationRepository.findByCard(card);
-        for (Notification notification : notifications) {
-            notification.setCard(null);
-        }
+    private void removeNotificationsForCards(List<Card> cards) {
+        List<Notification> notifications = notificationRepository.findByCardIn(cards);
+        notifications.forEach(notification -> notification.setCard(null));
         notificationRepository.deleteAll(notifications);
     }
-
 }

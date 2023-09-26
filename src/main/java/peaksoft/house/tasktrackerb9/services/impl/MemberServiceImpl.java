@@ -44,6 +44,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberResponse> searchByEmail(Long workSpaceId, String email) {
+
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId)
                 .orElseThrow(() -> {
                     log.error("WorkSpace with id: " + workSpaceId + " not found");
@@ -54,6 +55,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberResponse> getAllMembersByCardId(Long cardId) {
+
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
             log.error("Card with id: " + cardId + " not found");
             throw new NotFoundException("Card with id: " + cardId + " not found");
@@ -83,12 +85,12 @@ public class MemberServiceImpl implements MemberService {
             User user = userRepository.findUserByEmail(request.getEmail())
                     .orElseThrow(() -> new NotFoundException("User with email: " + request.getEmail() + " not found"));
             UserWorkSpaceRole userWorkSpace = new UserWorkSpaceRole();
-            userWorkSpace.setMember(user);
             userWorkSpace.setRole(request.getRole());
             board.setWorkSpace(workSpace);
+            board.getMembers().add(user);
             userWorkSpace.setWorkSpace(board.getWorkSpace());
             userWorkSpaceRoleRepository.save(userWorkSpace);
-            board.getMembers().add(user);
+
         } else throw new NotFoundException(String.format("User with email: %s is not found", request.getEmail()));
         log.info("Invitation sent to member with email: {} for board with id: {}", request.getEmail(), request.getBoardId());
         return SimpleResponse.builder()
@@ -99,6 +101,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse changeMemberRole(ChangeRoleRequest request) {
+
         User admin = jwtService.getAuthentication();
         log.info("Changing member role in board with id: {}", request.boardId());
         Board board = boardRepository.findById(request.boardId())
@@ -144,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse assignMemberToCard(Long memberId, Long cardId) {
+
         User user = jwtService.getAuthentication();
         log.info("Assigning member with id: {} to card with id: {}", memberId, cardId);
         Long adminId = cardRepository.getUserIdByCardId(cardId).orElseThrow(() -> {
@@ -195,7 +199,6 @@ public class MemberServiceImpl implements MemberService {
         assignNotification.setColumnId(card.getColumn().getId());
         assignNotification.setBoardId(card.getColumn().getBoard().getId());
         card.getNotifications().add(assignNotification);
-
         for (User member : card.getMembers()) {
             member.getNotifications().add(assignNotification);
         }
@@ -214,6 +217,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public SimpleResponse removeMemberFromBoard(Long memberId, Long boardId) {
+
         User admin = jwtService.getAuthentication();
         log.info("Removing member with id: {} from board with id: {}", memberId, boardId);
         Board board = boardRepository.findById(boardId)
