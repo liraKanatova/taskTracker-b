@@ -28,9 +28,6 @@ public class Label {
     private String color;
 
     @ManyToMany(cascade = {DETACH, MERGE, REFRESH})
-    @JoinTable(name = "labels_cards",
-            joinColumns = @JoinColumn(name = "labels_id"),
-            inverseJoinColumns = @JoinColumn(name = "cards_id"))
     private List<Card> cards;
 
     public Label(String labelName, String color) {
