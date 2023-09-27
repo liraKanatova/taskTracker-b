@@ -33,7 +33,8 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
         String sql;
         Object[] params;
 
-        sql = """
+        if (role==Role.ALL) {
+            sql = """
         SELECT u.id AS id, 
         CONCAT(u.first_name, ' ', u.last_name) AS fullname,
         u.email AS email,
@@ -45,7 +46,21 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
         WHERE ws.id = ? AND (uwsr.role = ? OR uwsr.role = ?) AND u.id != ws.admin_id; 
         """;
         params = new Object[]{user.getId().equals(getWorkspaceCreatorId(workSpaceId)), workSpaceId, Role.ADMIN.toString(), Role.MEMBER.toString()};
+}else {
+            sql = """
+                    SELECT u.id AS id,
+                    CONCAT(u.first_name, ' ', u.last_name) AS fullname,
+                    u.email AS email,
+                    uwsr.role AS role,
+                    ? AS isAdmin
+                    FROM user_work_space_roles uwsr
+                    JOIN work_spaces ws ON ws.id = uwsr.work_space_id
+                    JOIN users u ON uwsr.member_id = u.id
+                    WHERE ws.id = ? AND uwsr.role = ? AND u.id != ws.admin_id;  
+                    """;
+            params = new Object[]{user.getId().equals(getWorkspaceCreatorId(workSpaceId)), workSpaceId,role.toString()};
 
+        }
         List<ParticipantsResponse> participantsResponses = jdbcTemplate.query(sql, params, (rs, rowNum) ->
                 new ParticipantsResponse(
                         rs.getLong("id"),
