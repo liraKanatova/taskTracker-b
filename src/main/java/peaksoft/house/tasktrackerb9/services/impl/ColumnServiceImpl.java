@@ -113,32 +113,12 @@ public class ColumnServiceImpl implements ColumnService {
 
     @Override
     public SimpleResponse sendToArchive(Long columnId) {
-
-        User user = jwtService.getAuthentication();
-
-
         Column column = columnsRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column with id: " + columnId + " not found!");
             return new NotFoundException("Column with id: " + columnId + " not found!");
         });
 
-        WorkSpace workSpace = workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
-            log.error("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
-            return new NotFoundException("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
-        });
-
-        User workspaceAdmin = userRepository.findById(workSpace.getAdminId()).orElseThrow(
-                () -> new NotFoundException("Workspace admin with id: " + workSpace.getAdminId() + " not found!")
-        );
-
-        UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
-        if (userWorkSpaceRole == null) {
-            log.error("You are not a member of this workspace!");
-            throw new BadCredentialException("You are not a member of this workspace!" + workSpace.getName() + "/" + user.getFirstName());
-        }
-
-        if (workSpace.getMembers().contains(userWorkSpaceRole.getMember()) || userWorkSpaceRole.getMember().equals(workspaceAdmin)) {
-            column.setIsArchive(!column.getIsArchive());
+         column.setIsArchive(!column.getIsArchive());
             columnsRepository.save(column);
 
             List<Card> cardsInColumn = new ArrayList<>(column.getCards());
@@ -152,9 +132,5 @@ public class ColumnServiceImpl implements ColumnService {
                     .status(HttpStatus.OK)
                     .message(message)
                     .build();
-        } else {
-            log.error("You can't archive this card!");
-            throw new BadCredentialException("You can't archive this card!");
-        }
     }
 }

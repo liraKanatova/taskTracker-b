@@ -15,7 +15,6 @@ import peaksoft.house.tasktrackerb9.dto.response.CardInnerPageResponse;
 import peaksoft.house.tasktrackerb9.dto.response.CardResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.NotificationType;
-import peaksoft.house.tasktrackerb9.enums.Role;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
@@ -26,7 +25,6 @@ import peaksoft.house.tasktrackerb9.services.CardService;
 import java.time.ZoneId;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,9 +37,7 @@ public class CardServiceImpl implements CardService {
     private final ColumnRepository columnRepository;
     private final CustomCardJdbcTemplateService jdbcTemplateService;
     private final UserRepository userRepository;
-    private final WorkSpaceRepository workSpaceRepository;
     private final CardConverter cardConverter;
-    private final UserWorkSpaceRoleRepository userWorkSpaceRoleRepository;
     private final JwtService jwtService;
 
     public User getAuthentication() {
@@ -53,30 +49,10 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public SimpleResponse archiveCard(Long cardId) {
-
-        User user = getAuthentication();
         Card card = cardRepository.findById(cardId).orElseThrow(() -> {
             log.error("Card with id: " + cardId + " not found!");
             return new NotFoundException("Card with id: " + cardId + " not found!");
         });
-
-        Column column = columnRepository.findById(card.getColumn().getId()).orElseThrow(() -> {
-            log.error("Column with id: " + card.getColumn().getId() + " not found!");
-            return new NotFoundException("Column with id: " + card.getColumn().getId() + " not found!");
-        });
-
-        WorkSpace workSpace = workSpaceRepository.findById(column.getBoard().getWorkSpace().getId()).orElseThrow(() -> {
-            log.error("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
-            return new NotFoundException("WorkSpace with id: " + column.getBoard().getWorkSpace().getId() + " not found!");
-        });
-
-        UserWorkSpaceRole userWorkSpaceRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), workSpace.getId());
-        if (userWorkSpaceRole == null) {
-            log.error("You are not a member of this workspace!");
-            throw new BadCredentialException("You are not a member of this workspace!");
-        }
-
-        if (workSpace.getMembers().contains(userWorkSpaceRole.getMember())) {
             card.setIsArchive(!card.getIsArchive());
             cardRepository.save(card);
 
@@ -85,10 +61,7 @@ public class CardServiceImpl implements CardService {
                     .status(HttpStatus.OK)
                     .message(message)
                     .build();
-        } else {
-            log.error("You can't archive this card!");
-            throw new BadCredentialException("You can't archive this card!");
-        }
+
     }
 
     @Override
@@ -102,21 +75,12 @@ public class CardServiceImpl implements CardService {
 
     }
 
-
     @Override
     public SimpleResponse archiveAllCardsInColumn(Long columnId) {
-
-        User user = getAuthentication();
         Column column = columnRepository.findById(columnId).orElseThrow(() -> {
             log.error("Column with id: " + columnId + " not found!");
             return new NotFoundException("Column with id: " + columnId + " not found!");
         });
-
-        UserWorkSpaceRole userRole = userWorkSpaceRoleRepository.findByUserIdAndWorkSpacesId(user.getId(), column.getBoard().getWorkSpace().getId());
-        if (userRole == null || !userRole.getRole().equals(Role.ADMIN)) {
-            log.error("You don't have permission to archive cards in this column");
-            throw new BadCredentialException("You don't have permission to archive cards in this column");
-        }
 
         if (!column.getCards().isEmpty()) {
             for (Card c : column.getCards()) {
