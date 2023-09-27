@@ -24,6 +24,7 @@ public class AllIssuesResponse {
     private List<LabelResponse> labelResponses;
     private String checkListResponse;
     private String description;
+    private Boolean isChecked;
 //    private int countOfCards;
 
     public AllIssuesResponse(Long cardId, LocalDate created, String durationDay, Long creatorId, String creatorFullName, String column, String checkListResponse, String description) {
