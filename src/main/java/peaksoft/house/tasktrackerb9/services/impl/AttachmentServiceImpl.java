@@ -48,7 +48,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         return AttachmentResponse.builder()
                 .attachmentId(attachment.getId())
                 .documentLink(attachment.getDocumentLink())
-                .createdAt(attachment.getCreatedAt())
+                .createdAt(attachment.getCreatedAt().toString())
                 .build();
     }
 
