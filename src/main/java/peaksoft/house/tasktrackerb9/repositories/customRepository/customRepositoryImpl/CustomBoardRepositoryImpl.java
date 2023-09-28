@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 import peaksoft.house.tasktrackerb9.config.security.JwtService;
 import peaksoft.house.tasktrackerb9.dto.response.*;
 import peaksoft.house.tasktrackerb9.models.User;
+import peaksoft.house.tasktrackerb9.repositories.CheckListRepository;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomBoardRepository;
+import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomCheckListRepository;
 
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -27,6 +29,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
     private final JwtService jwtService;
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final CustomCheckListRepository checkListRepository;
 
     @Override
     public List<BoardResponse> getAllBoardsByWorkspaceId(Long workSpaceId) {
@@ -53,6 +56,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         String query = """
                 SELECT c.id AS cardId,
                        c.title AS title,
+                       c.description as description,
                        e.start_date AS startDate,
                        e.due_date AS dueDate,
                        (SELECT COUNT(*) FROM cards_members AS cu WHERE cu.cards_id = c.id) AS numberUsers,
@@ -64,13 +68,14 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                          LEFT JOIN estimations AS e ON c.id = e.card_id
                           LEFT JOIN columns c2 ON c.column_id = c2.id
                          LEFT JOIN boards b ON b.id = c2.board_id
-                WHERE b.id = ? AND c.is_archive = true GROUP BY c.id, c.title, e.start_date, e.due_date
+                WHERE b.id = ? AND c.is_archive = true GROUP BY c.id, c.title,c.description, e.start_date, e.due_date
                 """;
 
         List<CardResponse> cardResponses = jdbcTemplate.query(query, new Object[]{boardId}, (rs, rowNum) -> {
             CardResponse cardResponse = new CardResponse();
             cardResponse.setCardId(rs.getLong("cardId"));
             cardResponse.setTitle(rs.getString("title"));
+            cardResponse.setDescription(rs.getString("description"));
 
             ZoneId zoneId = ZoneId.systemDefault();
             ZonedDateTime startDate = rs.getTimestamp("startDate") != null ? rs.getTimestamp("startDate").toLocalDateTime().atZone(zoneId) : null;
@@ -103,6 +108,12 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                 cardResponse.setCommentResponses(commentResponses);
             } else {
                 cardResponse.setCommentResponses(new ArrayList<>());
+            }
+            List<CheckListResponse> checkListResponses = checkListRepository.getAllCheckListByCardId(rs.getLong("cardId"));
+            if(!checkListResponses.isEmpty()){
+                cardResponse.setCheckListResponses(checkListResponses);
+            }else {
+                cardResponse.setCheckListResponses(new ArrayList<>());
             }
             return cardResponse;
         });

@@ -1,13 +1,11 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserAllIssuesResponse {
 
@@ -15,4 +13,11 @@ public class UserAllIssuesResponse {
     private String fullName;
     private String image;
     private String email;
+
+    public UserAllIssuesResponse(Long userId, String fullName, String image, String email) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.image = image;
+        this.email = email;
+    }
 }

@@ -10,6 +10,7 @@ import peaksoft.house.tasktrackerb9.dto.request.CommentRequest;
 import peaksoft.house.tasktrackerb9.dto.response.CommentResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.Role;
+import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.exceptions.UnauthorizedAccessException;
 import peaksoft.house.tasktrackerb9.models.Card;
@@ -96,6 +97,14 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Comment with id: %s  doesn't exist", commentId));
             return new NotFoundException(String.format("Comment with id: %s doesn't exist", commentId));
         });
+
+        Card card = cardRepository.findById(commentRequest.cardId()).orElseThrow(() -> {
+            log.error(String.format("Card with id: %s  doesn't exist", commentRequest.cardId()));
+            return new NotFoundException(String.format("Card with id: %s doesn't exist", commentRequest.cardId()));
+        });
+        if(!card.getComments().contains(comment)){
+            throw  new BadCredentialException("This comment is not on this card");
+        }
         if (user.getId().equals(comment.getMember().getId())) {
             comment.setComment(commentRequest.comment());
             comment.setCreatedDate(ZonedDateTime.now());
