@@ -25,29 +25,46 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
     public List<WorkSpaceResponse> getAllWorkSpaces() {
         User user = jwtService.getAuthentication();
         String sql = """
-                SELECT w.id                                                AS id,
-                       w.name                                              AS workSpaceName,
-                       u.id                                                AS userId,
-                       concat(u.first_name, '  ', u.last_name)             AS fullName,
-                       u.image                                             AS image,
-                       CASE WHEN f.member_id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
-                FROM work_spaces AS w
-                JOIN users AS u ON w.admin_id = u.id
-                LEFT JOIN favorites f ON w.id = f.work_space_id AND u.id = f.member_id
-                WHERE u.id = ?;        
-                     """;
-        return jdbcTemplate.query(sql,
-                new Object[]{user.getId()}, (rs, rowNum) -> {
-                    WorkSpaceResponse workSpaceResponse = new WorkSpaceResponse();
-                    workSpaceResponse.setWorkSpaceId(rs.getLong("id"));
-                    workSpaceResponse.setWorkSpaceName(rs.getString("workSpaceName"));
-                    workSpaceResponse.setAdminId(rs.getLong("userId"));
-                    workSpaceResponse.setAdminFullName(rs.getString("fullName"));
-                    workSpaceResponse.setAdminImage(rs.getString("image"));
-                    workSpaceResponse.setIsFavorite(rs.getBoolean("isFavorite"));
-                    return workSpaceResponse;
-                }
-        );
+                     SELECT admin.id AS user_id,
+                            combined_result.id AS id,
+                            work_space_name,
+                            is_favorite,
+                            CONCAT(admin.first_name, '  ', admin.last_name) AS full_name,
+                            admin.image AS image
+                     FROM (
+                              SELECT ws.id AS id,
+                              ws.name AS work_space_name,
+                              CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorite,
+                              ws.admin_id AS admin_id
+                              FROM work_spaces ws
+                              JOIN users_work_spaces uws ON ws.id = uws.work_spaces_id
+                              JOIN users u ON uws.members_id = u.id
+                              LEFT JOIN favorites f ON ws.id = f.work_space_id AND u.id = f.member_id
+                              WHERE u.id = ?
+                              UNION
+                              SELECT ws.id AS id,
+                              ws.name AS work_space_name,
+                              CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorite,
+                              ws.admin_id AS admin_id
+                              FROM work_spaces ws
+                              JOIN user_work_space_roles uwsr ON ws.id = uwsr.work_space_id
+                              JOIN users u ON uwsr.member_id=u.id
+                              LEFT JOIN favorites f ON ws.id = f.work_space_id AND u.id = f.member_id
+                              WHERE u.id = ?
+                          ) AS combined_result
+                              LEFT JOIN users admin ON combined_result.admin_id = admin.id;
+                     
+                       """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> WorkSpaceResponse
+                        .builder()
+                        .workSpaceId(rs.getLong("id"))
+                        .workSpaceName(rs.getString("work_space_name"))
+                        .adminId(rs.getLong("user_id"))
+                        .adminFullName(rs.getString("full_name"))
+                        .adminImage(rs.getString("image"))
+                        .isFavorite(rs.getBoolean("is_favorite"))
+                        .build(),
+                user.getId(), user.getId());
     }
 
     @Override
