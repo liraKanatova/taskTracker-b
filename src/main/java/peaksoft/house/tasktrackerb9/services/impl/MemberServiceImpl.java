@@ -170,8 +170,10 @@ public class MemberServiceImpl implements MemberService {
             isFalse = !memberId.equals(l);
         }
         if (isFalse) {
-            log.error("User with  id: %s is not on your workSpace".formatted(memberId));
-            throw new NotFoundException("User with  id: %s is not on your workSpace".formatted(memberId));
+            log.error("User with id: " + memberId + " is not a member in this workspace with id: "+workSpace.getId()+
+                    " or this user is not invited to this workspace which has an associated card with id: "+cardId+" in this workspace");
+            throw new NotFoundException("User with id: " + memberId + " is not a member in this workspace with id: "+workSpace.getId()+
+                    " or this user is not invited to this workspace which has an associated card with id: "+cardId+" in this workspace");
         }
         List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
         boolean isTrue = getUserIdsByCardId.stream().anyMatch(id -> id.equals(memberId));
@@ -199,15 +201,14 @@ public class MemberServiceImpl implements MemberService {
         assignNotification.setColumnId(card.getColumn().getId());
         assignNotification.setBoardId(card.getColumn().getBoard().getId());
         card.getNotifications().add(assignNotification);
-        for (User member : card.getMembers()) {
-            member.getNotifications().add(assignNotification);
-        }
+        newMember.getNotifications().add(assignNotification);
         notificationRepository.save(assignNotification);
-        userRepository.saveAll(card.getMembers());
+
         card.getMembers().add(newMember);
         newMember.getCards().add(card);
         userRepository.save(newMember);
         cardRepository.save(card);
+
         log.info("Member with id: {} successfully assigned to card with id: {}", memberId, cardId);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)

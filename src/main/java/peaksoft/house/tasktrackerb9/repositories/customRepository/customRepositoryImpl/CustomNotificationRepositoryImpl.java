@@ -26,8 +26,7 @@ public class CustomNotificationRepositoryImpl implements CustomNotificationRepos
     public List<NotificationResponse> getAllNotifications() {
         User user = jwtService.getAuthentication();
         String sql = """           
-       
-                SELECT n.id                                   AS notification_id,
+       SELECT n.id                                   AS notification_id,
               n.text                                 AS text,
               n.created_date                         AS created_date,
               n.is_read                              AS is_read,
@@ -42,12 +41,14 @@ public class CustomNotificationRepositoryImpl implements CustomNotificationRepos
               c.title                                AS column_name,
               c2.id                                  AS card_id
        FROM notifications n
-                JOIN notifications_members nm ON n.id = nm.notifications_id
-                LEFT JOIN users u ON nm.members_id = u.id
-                LEFT JOIN boards b ON n.board_id = b.id
-                LEFT JOIN columns c ON b.id = c.board_id
-                LEFT JOIN cards c2 ON c.id = c2.column_id
-       WHERE u.id = ?;
+                left JOIN notifications_members nm ON n.id = nm.notifications_id
+                 JOIN users u ON nm.members_id = u.id or n.from_user_id = u.id
+                 JOIN boards b ON n.board_id = b.id
+                 JOIN columns c ON n.column_id = c.id
+                 JOIN cards c2 ON n.card_id = c2.id
+       WHERE u.id = ? group by n.id, n.text, n.created_date,
+       n.is_read, n.type, u.id, CONCAT(u.first_name, ' ', u.last_name),
+       u.image, b.id, b.title, b.back_ground, c.id, c.title, c2.id;
         """;
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> NotificationResponse.builder()
