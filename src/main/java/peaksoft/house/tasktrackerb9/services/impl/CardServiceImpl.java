@@ -39,6 +39,7 @@ public class CardServiceImpl implements CardService {
     private final UserRepository userRepository;
     private final CardConverter cardConverter;
     private final JwtService jwtService;
+    private final NotificationRepository notificationRepository;
 
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -128,6 +129,7 @@ public class CardServiceImpl implements CardService {
         for (User member : movedCard.getMembers()) {
             member.getNotifications().add(moveNotification);
         }
+        notificationRepository.save(moveNotification);
         cardRepository.save(movedCard);
         columnRepository.save(targetColumn);
         return SimpleResponse.builder()

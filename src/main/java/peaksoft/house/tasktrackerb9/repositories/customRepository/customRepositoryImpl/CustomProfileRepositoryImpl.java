@@ -169,20 +169,20 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
         if (user != null && user.getId() != null) {
             String sql = """
-            SELECT u.id, email, first_name, image, last_name FROM users u
-            INNER JOIN users_work_spaces uws ON u.id = uws.members_id
-            WHERE (u.first_name ILIKE (CONCAT('%',?,'%'))
-                  OR u.last_name ILIKE (CONCAT('%',?,'%')))
-              AND uws.work_spaces_id IN (
-                SELECT w.id FROM work_spaces w WHERE w.admin_id = ?
-            )
-            GROUP BY u.id, email, first_name, image, last_name
-            """;
+                    SELECT u.id, u.email, u.first_name, u.image, u.last_name
+                    FROM users u
+                    LEFT JOIN user_work_space_roles uwsr ON u.id = uwsr.member_id
+                    LEFT JOIN users_work_spaces uws ON u.id = uws.members_id
+                    WHERE (u.first_name ILIKE CONCAT('%',?, '%') OR u.last_name ILIKE CONCAT('%',?,'%'))
+                    AND (uwsr.work_space_id IN (SELECT w.id FROM work_spaces w WHERE w.admin_id = ?)
+                    OR uws.work_spaces_id IN (SELECT w.id FROM work_spaces w WHERE w.admin_id = ?))
+                    group by u.id, u.email, u.first_name, u.image, u.last_name;
+                    """;
             List<UserResponse> userResponses = jdbcTemplate.query(sql, (rs, rowNum) -> new UserResponse(rs.getLong("id"),
                     rs.getString("first_name"),
                     rs.getString("last_name"),
                     rs.getString("email"),
-                    rs.getString("image")), search, search, user.getId());
+                    rs.getString("image")), search, search, user.getId(),user.getId());
 
             String sql2 = """   
                     SELECT b.work_space_id, b.id, back_ground, title FROM boards b
@@ -200,9 +200,9 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                    SELECT w.admin_id, CONCAT(u.first_name, ' ', u.last_name) AS fullName, u.image, w.id, name,
                    CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END AS isFavorite
                    FROM work_spaces w
-                            JOIN users_work_spaces uws ON w.id = uws.work_spaces_id
-                            JOIN users u ON u.id = uws.members_id
-                            join favorites f on w.id = f.work_space_id
+                            left JOIN users_work_spaces uws ON w.id = uws.work_spaces_id
+                            left JOIN users u ON u.id = uws.members_id
+                            left join favorites f on w.id = f.work_space_id
                    WHERE (w.name ILIKE (CONCAT('%', ?, '%')))
                    AND w.admin_id = ?
                    GROUP by u.image, CONCAT(u.first_name, ' ', u.last_name), w.admin_id, w.id, name,
