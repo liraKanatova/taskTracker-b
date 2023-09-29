@@ -30,7 +30,7 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
                             work_space_name,
                             is_favorite,
                             CONCAT(admin.first_name, '  ', admin.last_name) AS full_name,
-                            admin.image AS admin_image
+                            admin.image AS image
                      FROM (
                               SELECT ws.id AS id,
                               ws.name AS work_space_name,
