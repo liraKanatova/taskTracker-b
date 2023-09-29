@@ -25,38 +25,36 @@ public class CustomWorkSpaceRepositoryImpl implements CustomWorkSpaceRepository 
     public List<WorkSpaceResponse> getAllWorkSpaces() {
         User user = jwtService.getAuthentication();
         String sql = """
-               SELECT id,
-                      work_space_name,
-                      user_id,
-                      full_name,
-                      image,
-                      is_favorite
-               FROM (SELECT DISTINCT ws.id                                                      AS id,
-                                     ws.name                                                    AS work_space_name,
-                                     u.id                                                       AS user_id,
-                                     concat(u.first_name, '  ', u.last_name)                    AS full_name,
-                                     (SELECT u2.image FROM users u2 WHERE u.id = u2.id LIMIT 1) AS image,
-                                     CASE WHEN f.member_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorite
-                     FROM work_spaces ws
+                     SELECT admin.id AS user_id,
+                            combined_result.id AS id,
+                            work_space_name,
+                            is_favorite,
+                            CONCAT(admin.first_name, '  ', admin.last_name) AS admin_full_name,
+                            admin.image AS admin_image
+                     FROM (
+                              SELECT ws.id AS id,
+                              ws.name AS work_space_name,
+                              CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorite,
+                              ws.admin_id AS admin_id
+                              FROM work_spaces ws
                               JOIN users_work_spaces uws ON ws.id = uws.work_spaces_id
                               JOIN users u ON uws.members_id = u.id
-                              JOIN favorites f ON u.id = f.member_id
-                     WHERE u.id = ?
-               
-                     UNION
-               
-                     SELECT DISTINCT ws.id                                                      AS id,
-                                     ws.name                                                    AS work_space_name,
-                                     u.id                                                       AS user_id,
-                                     concat(u.first_name, '  ', u.last_name)                    AS full_name,
-                                     (SELECT u2.image FROM users u2 WHERE u.id = u2.id LIMIT 1) AS image,
-                                     CASE WHEN f.member_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorite
-                     FROM work_spaces ws
+                              LEFT JOIN favorites f ON ws.id = f.work_space_id AND u.id = f.member_id
+                              WHERE u.id = ?
+                              UNION
+                              SELECT ws.id AS id,
+                              ws.name AS work_space_name,
+                              CASE WHEN f.work_space_id IS NOT NULL THEN TRUE ELSE FALSE END AS is_favorite,
+                              ws.admin_id AS admin_id
+                              FROM work_spaces ws
                               JOIN user_work_space_roles uwsr ON ws.id = uwsr.work_space_id
-                              JOIN users u ON uwsr.member_id = u.id
-                              JOIN favorites f ON u.id = f.member_id
-                     WHERE u.id = ?) AS combined_result;
-                            """;
+                              JOIN users u ON uwsr.member_id=u.id
+                              LEFT JOIN favorites f ON ws.id = f.work_space_id AND u.id = f.member_id
+                              WHERE u.id = ?
+                          ) AS combined_result
+                              LEFT JOIN users admin ON combined_result.admin_id = admin.id;
+                     
+                       """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> WorkSpaceResponse
                         .builder()
                         .workSpaceId(rs.getLong("id"))
