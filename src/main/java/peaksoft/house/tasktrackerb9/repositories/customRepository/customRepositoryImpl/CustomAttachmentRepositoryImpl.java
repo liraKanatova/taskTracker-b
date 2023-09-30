@@ -8,6 +8,8 @@ import peaksoft.house.tasktrackerb9.dto.response.AttachmentResponse;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.repositories.customRepository.CustomAttachmentRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -20,24 +22,26 @@ public class CustomAttachmentRepositoryImpl implements CustomAttachmentRepositor
     @Override
     public List<AttachmentResponse> getAttachmentsByCardId(Long cardId) {
         String sql = """
-                    SELECT
-                        a.id,
-                        a.document_link,
-                        a.created_at
-                    FROM attachments a
-                    WHERE a.card_id = ?;
-                """;
+            SELECT
+                a.id,
+                a.document_link,
+                a.created_at
+            FROM attachments a
+            WHERE a.card_id = ?;
+        """;
         List<AttachmentResponse> attachments = jdbcTemplate.query(
                 sql,
                 (rs, rowNum) -> new AttachmentResponse(
                         rs.getLong("id"),
                         rs.getString("document_link"),
-                        (rs.getString("created_at"))),
+                        rs.getString("created_at")),
                 cardId
         );
         if (attachments.isEmpty()) {
-            throw new NotFoundException("Attachments not found for card with id: " + cardId);
+            return new ArrayList<>();
         }
         return attachments;
     }
+
+
 }

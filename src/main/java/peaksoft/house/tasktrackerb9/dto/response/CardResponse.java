@@ -20,8 +20,9 @@ public class CardResponse {
     private List<LabelResponse> labelResponses;
     private List<CommentResponse> commentResponses;
     private List<CheckListResponse> checkListResponses;
+    private List<AttachmentResponse> attachmentResponses;
 
-    public CardResponse(Long cardId, String title, String duration, String description, int numberOfUsers, int numberOfItems, int numberOfCompletedItems, List<LabelResponse> labelResponses, List<CommentResponse> commentResponses,List<CheckListResponse>checkListResponses ) {
+    public CardResponse(Long cardId, String title, String duration, String description, int numberOfUsers, int numberOfItems, int numberOfCompletedItems, List<LabelResponse> labelResponses, List<CommentResponse> commentResponses, List<CheckListResponse> checkListResponses, List<AttachmentResponse> attachmentResponses) {
         this.cardId = cardId;
         this.title = title;
         this.duration = duration;
@@ -32,6 +33,6 @@ public class CardResponse {
         this.labelResponses = labelResponses;
         this.commentResponses = commentResponses;
         this.checkListResponses = checkListResponses;
+        this.attachmentResponses = attachmentResponses;
     }
-
 }
