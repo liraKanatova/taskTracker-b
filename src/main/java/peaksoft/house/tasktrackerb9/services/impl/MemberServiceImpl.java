@@ -203,7 +203,6 @@ public class MemberServiceImpl implements MemberService {
         card.getNotifications().add(assignNotification);
         newMember.getNotifications().add(assignNotification);
         notificationRepository.save(assignNotification);
-
         card.getMembers().add(newMember);
         newMember.getCards().add(card);
         userRepository.save(newMember);

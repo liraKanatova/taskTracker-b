@@ -33,6 +33,7 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
     private final JdbcTemplate jdbcTemplate;
     private final UserRepository userRepository;
+    private final CustomAttachmentRepositoryImpl attachmentRepository;
 
     public User getAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -330,6 +331,9 @@ public class CustomCardJdbcTemplateServiceImpl implements CustomCardJdbcTemplate
 
             List<CheckListResponse> checkListResponses = getCheckListResponsesByCardId(rs.getLong("cardId"));
             cardResponse.setCheckListResponses(checkListResponses);
+
+            List<AttachmentResponse> attachmentResponses = attachmentRepository.getAttachmentsByCardId(rs.getLong("cardId"));
+            cardResponse.setAttachmentResponses(attachmentResponses);
 
             return cardResponse;
         });
