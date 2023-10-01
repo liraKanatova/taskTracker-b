@@ -13,7 +13,6 @@ import peaksoft.house.tasktrackerb9.dto.request.InviteRequest;
 import peaksoft.house.tasktrackerb9.dto.response.MemberResponse;
 import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.enums.NotificationType;
-import peaksoft.house.tasktrackerb9.exceptions.AlreadyExistException;
 import peaksoft.house.tasktrackerb9.exceptions.BadCredentialException;
 import peaksoft.house.tasktrackerb9.exceptions.NotFoundException;
 import peaksoft.house.tasktrackerb9.models.*;
@@ -144,60 +143,34 @@ public class MemberServiceImpl implements MemberService {
                 });
         return customMemberRepository.getAllMembersFromBoard(board.getId());
     }
-
     @Override
     public SimpleResponse assignMemberToCard(Long memberId, Long cardId) {
 
         User user = jwtService.getAuthentication();
         log.info("Assigning member with id: {} to card with id: {}", memberId, cardId);
+        User newMember = userRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException("User with id: %s not found".formatted(memberId)));
         Long adminId = cardRepository.getUserIdByCardId(cardId).orElseThrow(() -> {
-                    log.error("This card with id: " + cardId + " is not present in your workspace!");
-                    return new BadCredentialException("This card with id: " + cardId + " is not present in your workspace!");
-                }
+                  log.error("This card with id: " + cardId + " is not present in your workspace!");
+                   return new BadCredentialException("This card with id: " + cardId + " is not present in your workspace!");
+              }
+      );
+      if (!user.getId().equals(adminId)) {
+          log.error("You do not have permission to assign members to this card!");
+          throw new BadCredentialException("You do not have permission to assign members to this card!");       }
+
+        Card card = cardRepository.findById(cardId).orElseThrow(
+                () -> new NotFoundException("Card with id: " + cardId + " not found!")
         );
-        if (!user.getId().equals(adminId)) {
-            log.error("You do not have permission to assign members to this card!");
-            throw new BadCredentialException("You do not have permission to assign members to this card!");
-        }
-        WorkSpace workSpace = cardRepository.getWorkSpaceByCardId(cardId).orElseThrow(() -> {
-                    log.error("This card with id: %s not in this workSpace ".formatted(cardId));
-                    return new NotFoundException("This card with id: %s not in this workSpace ".formatted(cardId));
-                }
-        );
-        List<Long> userIds = userRepository.getAllUsersByWorkSpaseId(workSpace.getId());
-        boolean isFalse = false;
-        for (Long l : userIds) {
-            isFalse = !memberId.equals(l);
-        }
-        if (isFalse) {
-            log.error("User with id: " + memberId + " is not a member in this workspace with id: "+workSpace.getId()+
-                    " or this user is not invited to this workspace which has an associated card with id: "+cardId+" in this workspace");
-            throw new NotFoundException("User with id: " + memberId + " is not a member in this workspace with id: "+workSpace.getId()+
-                    " or this user is not invited to this workspace which has an associated card with id: "+cardId+" in this workspace");
-        }
-        List<Long> getUserIdsByCardId = cardRepository.getMembersByCardId(cardId);
-        boolean isTrue = getUserIdsByCardId.stream().anyMatch(id -> id.equals(memberId));
-        if (isTrue) {
-            throw new AlreadyExistException("User with id: %d exists".formatted(memberId));
-        }
-        User newMember = userRepository.findById(memberId).orElseThrow(
-                () -> {
-                    log.error("User with id: %s not found".formatted(memberId));
-                    return new NotFoundException("User with id: %s not found".formatted(memberId));
-                }
-        );
-        Card card = cardRepository.findById(cardId).orElseThrow(() -> {
-                    log.error("Card with id: %s not found".formatted(cardId));
-                    return new NotFoundException("Card with id: %s not found".formatted(cardId));
-                }
-        );
+        WorkSpace workSpace = card.getColumn().getBoard().getWorkSpace();
+
         Notification assignNotification = new Notification();
-        assignNotification.setCard(card);
+       assignNotification.setCard(card);
         assignNotification.setType(NotificationType.ASSIGN);
         assignNotification.setText(String.format("User with id %d has been assigned to card with id %d", memberId, cardId));
         assignNotification.setCreatedDate(ZonedDateTime.now());
         assignNotification.setIsRead(false);
-        assignNotification.setFromUserId(workSpace.getAdminId());
+       assignNotification.setFromUserId(workSpace.getAdminId());
         assignNotification.setColumnId(card.getColumn().getId());
         assignNotification.setBoardId(card.getColumn().getBoard().getId());
         card.getNotifications().add(assignNotification);
@@ -211,9 +184,10 @@ public class MemberServiceImpl implements MemberService {
         log.info("Member with id: {} successfully assigned to card with id: {}", memberId, cardId);
         return SimpleResponse.builder()
                 .status(HttpStatus.OK)
-                .message(String.format("User with id : %d successfully assigned to card with id : %d", memberId, cardId))
-                .build();
-    }
+              .message(String.format("User with id : %d successfully assigned to card with id : %d", memberId, cardId))
+               .build();
+   }
+
 
     @Override
     public SimpleResponse removeMemberFromBoard(Long memberId, Long boardId) {
