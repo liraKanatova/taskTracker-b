@@ -1,20 +1,20 @@
 package peaksoft.house.tasktrackerb9.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import peaksoft.house.tasktrackerb9.enums.Role;
 
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ParticipantsResponse {
 
     private Long userId;
 
     private String fullName;
+
+    private String image;
 
     private String email;
 

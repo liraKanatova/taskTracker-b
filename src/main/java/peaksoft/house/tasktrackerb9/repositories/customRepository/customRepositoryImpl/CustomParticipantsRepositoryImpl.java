@@ -38,6 +38,7 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
         SELECT u.id AS id, 
         CONCAT(u.first_name, ' ', u.last_name) AS fullname,
         u.email AS email,
+        u.image as image,
         uwsr.role AS role,
         ? AS isAdmin
         FROM user_work_space_roles uwsr
@@ -51,6 +52,7 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
                     SELECT u.id AS id,
                     CONCAT(u.first_name, ' ', u.last_name) AS fullname,
                     u.email AS email,
+                    u.image as image,
                     uwsr.role AS role,
                     ? AS isAdmin
                     FROM user_work_space_roles uwsr
@@ -66,6 +68,7 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
                         rs.getLong("id"),
                         rs.getString("fullname"),
                         rs.getString("email"),
+                        rs.getString("image"),
                         Role.valueOf(rs.getString("role")),
                         rs.getBoolean("isAdmin")
                 ));
@@ -79,8 +82,5 @@ public class CustomParticipantsRepositoryImpl implements CustomParticipantsRepos
         String sql = "SELECT admin_id FROM work_spaces WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, Long.class, workSpaceId);
     }
-
-
-
 
 }
