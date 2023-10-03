@@ -14,9 +14,9 @@ public class ParticipantsResponse {
 
     private String fullName;
 
-    private String image;
-
     private String email;
+
+    private String image;
 
     private Role role;
 
