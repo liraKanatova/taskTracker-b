@@ -102,9 +102,7 @@ public class CommentServiceImpl implements CommentService {
             log.error(String.format("Card with id: %s  doesn't exist", commentRequest.cardId()));
             return new NotFoundException(String.format("Card with id: %s doesn't exist", commentRequest.cardId()));
         });
-        if(!card.getComments().contains(comment)){
-            throw  new BadCredentialException("This comment is not on this card");
-        }
+
         if (user.getId().equals(comment.getMember().getId())) {
             comment.setComment(commentRequest.comment());
             comment.setCreatedDate(ZonedDateTime.now());
