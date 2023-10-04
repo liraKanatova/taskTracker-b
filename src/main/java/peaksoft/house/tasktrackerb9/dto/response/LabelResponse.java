@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class LabelResponse {
+
     private Long labelId;
     private String description;
     private String color;

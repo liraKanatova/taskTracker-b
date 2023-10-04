@@ -12,6 +12,5 @@ import java.util.List;
 public class ParticipantsGetAllResponse {
 
     List<ParticipantsResponse> participantsResponseList;
-
     Boolean isMy;
 }

@@ -13,5 +13,4 @@ public class FilterBoardResponse {
 
     private Long boardId;
     private List<CardResponse> cardResponses;
-
 }

@@ -24,5 +24,4 @@ public class NotificationResponse {
     private String createdDate;
     private Boolean isRead;
     private NotificationType notificationType;
-
 }

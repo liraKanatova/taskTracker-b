@@ -12,5 +12,4 @@ public class ItemResponse {
     private Long itemId;
     private String title;
     private Boolean isDone;
-
 }

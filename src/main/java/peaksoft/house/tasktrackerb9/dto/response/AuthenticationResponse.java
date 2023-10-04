@@ -8,6 +8,5 @@ public record AuthenticationResponse(
         String token,
         String email,
         Role role
-
 ) {
 }

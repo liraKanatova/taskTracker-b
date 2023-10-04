@@ -15,5 +15,4 @@ public class CommentUserResponse {
     private String firstName;
     private String lastName;
     private String image;
-
 }

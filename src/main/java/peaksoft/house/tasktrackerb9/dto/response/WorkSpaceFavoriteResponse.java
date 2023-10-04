@@ -9,9 +9,6 @@ import lombok.*;
 public class WorkSpaceFavoriteResponse {
 
     private Long workSpaceId;
-
     private String name;
-
     private boolean isFavorite;
-
 }

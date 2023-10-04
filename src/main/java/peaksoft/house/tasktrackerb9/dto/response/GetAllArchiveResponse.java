@@ -13,5 +13,4 @@ public class GetAllArchiveResponse {
 
     private List<CardResponse> cardResponses;
     private List<ColumnResponse> columnResponses;
-
 }

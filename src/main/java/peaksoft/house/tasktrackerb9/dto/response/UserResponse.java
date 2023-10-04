@@ -6,7 +6,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @Builder
-
 public class UserResponse {
 
     private Long userId;
@@ -22,5 +21,4 @@ public class UserResponse {
         this.email = email;
         this.avatar = avatar;
     }
-
 }

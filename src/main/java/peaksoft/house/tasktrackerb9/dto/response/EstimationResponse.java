@@ -13,6 +13,7 @@ import peaksoft.house.tasktrackerb9.enums.ReminderType;
 public class EstimationResponse {
 
     private Long estimationId;
+
     @Enumerated(EnumType.STRING)
     private ReminderType reminderType;
     private String startDate;

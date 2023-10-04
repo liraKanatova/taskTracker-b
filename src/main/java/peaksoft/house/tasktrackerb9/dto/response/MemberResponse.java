@@ -16,6 +16,4 @@ public class MemberResponse {
     private String email;
     private String image;
     private Role role;
-
-
 }

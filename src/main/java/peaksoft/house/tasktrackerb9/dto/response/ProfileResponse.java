@@ -27,4 +27,3 @@ public class ProfileResponse {
         this.countWorkSpaces = countWorkSpaces;
     }
 }
-

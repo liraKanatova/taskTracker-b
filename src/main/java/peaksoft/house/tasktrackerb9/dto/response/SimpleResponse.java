@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-
 @Builder
 @Getter
 @Setter
@@ -14,6 +13,5 @@ import org.springframework.http.HttpStatus;
 public class SimpleResponse {
 
     private String message;
-
     private HttpStatus status;
 }

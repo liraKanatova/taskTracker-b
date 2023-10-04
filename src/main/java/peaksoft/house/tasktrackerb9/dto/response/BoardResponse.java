@@ -10,13 +10,9 @@ import lombok.*;
 public class BoardResponse {
 
     private Long boardId;
-
     private String title;
-
     private String backGround;
-
     private boolean isFavorite;
-
     private Long work_space_id;
 
     public BoardResponse(Long boardId, String title, String backGround, boolean isFavorite) {

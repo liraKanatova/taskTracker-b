@@ -12,9 +12,7 @@ import java.util.List;
 public class GlobalSearchResponse {
 
     List<UserResponse> userResponses;
-
     List<BoardResponse>boardResponses;
-
     List<WorkSpaceResponse> workSpaceResponses;
 
 }
