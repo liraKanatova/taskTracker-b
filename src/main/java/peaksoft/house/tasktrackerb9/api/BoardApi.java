@@ -58,7 +58,7 @@ public class BoardApi {
 
     @GetMapping("/get-all-archive/{boardId}")
     @Operation(summary = "Get all archives", description = "Get all archived cards and columns by board id")
-    public GetAllArchiveResponse getAllArchives(@PathVariable Long boardId){
+    public GetAllArchiveResponse getAllArchives(@PathVariable Long boardId) {
         return boardService.getAllArchivedCardsAndColumns(boardId);
     }
 

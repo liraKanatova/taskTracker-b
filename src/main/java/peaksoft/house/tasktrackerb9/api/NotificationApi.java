@@ -38,5 +38,4 @@ public class NotificationApi {
     public SimpleResponse markAsRead() {
         return notificationService.markAsRead();
     }
-
 }

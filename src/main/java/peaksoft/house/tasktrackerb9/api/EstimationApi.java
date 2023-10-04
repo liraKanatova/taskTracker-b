@@ -13,21 +13,21 @@ import peaksoft.house.tasktrackerb9.services.EstimationService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/estimations")
-@CrossOrigin(origins = "*",maxAge = 3600)
-@Tag(name = "Estimation",description = "Api Estimation to management")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Estimation", description = "Api Estimation to management")
 public class EstimationApi {
 
     private final EstimationService service;
 
     @PostMapping
-    @Operation(summary = "Create estimation",description = "Create estimation is the card id")
-    public EstimationResponse createdEstimation(@RequestBody EstimationRequest estimationRequest){
+    @Operation(summary = "Create estimation", description = "Create estimation is the card id")
+    public EstimationResponse createdEstimation(@RequestBody EstimationRequest estimationRequest) {
         return service.createdEstimation(estimationRequest);
     }
 
     @PutMapping("/{estimationId}")
-    @Operation(summary = "Update estimation",description = "Update estimation is the card id")
-    public SimpleResponse updatedEstimation(@PathVariable Long estimationId, @RequestBody UpdateEstimationRequest estimationRequest){
-        return service.updateEstimation(estimationId,estimationRequest);
+    @Operation(summary = "Update estimation", description = "Update estimation is the card id")
+    public SimpleResponse updatedEstimation(@PathVariable Long estimationId, @RequestBody UpdateEstimationRequest estimationRequest) {
+        return service.updateEstimation(estimationId, estimationRequest);
     }
 }

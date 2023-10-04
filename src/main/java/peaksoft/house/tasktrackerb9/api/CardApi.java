@@ -74,7 +74,7 @@ public class CardApi {
 
     @PutMapping("/move-card/{cardId}/{columnId}")
     @Operation(summary = "Move card", description = "Move card to column by card id and column id")
-    public SimpleResponse moveCard(@PathVariable Long cardId,@PathVariable Long columnId) {
+    public SimpleResponse moveCard(@PathVariable Long cardId, @PathVariable Long columnId) {
         return cardService.moveCard(cardId, columnId);
     }
 }

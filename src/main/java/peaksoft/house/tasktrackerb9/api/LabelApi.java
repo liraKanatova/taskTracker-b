@@ -54,7 +54,7 @@ public class LabelApi {
 
     @Operation(summary = "Delete label by id", description = "Delete label by id!    ")
     @DeleteMapping("/{labelId}/{cardId}")
-    public SimpleResponse deleteLabelById(@PathVariable Long cardId,@PathVariable Long labelId) {
+    public SimpleResponse deleteLabelById(@PathVariable Long cardId, @PathVariable Long labelId) {
         return labelService.deleteFromCardByIdLables(cardId, labelId);
     }
 

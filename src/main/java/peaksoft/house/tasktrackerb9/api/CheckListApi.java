@@ -43,5 +43,4 @@ public class CheckListApi {
     public SimpleResponse deleteCheckList(@PathVariable Long checkListId) {
         return checkListService.deleteCheckList(checkListId);
     }
-
 }

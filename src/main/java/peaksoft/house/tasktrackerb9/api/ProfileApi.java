@@ -51,5 +51,4 @@ public class ProfileApi {
     public GlobalSearchResponse search(@RequestParam String search) {
         return userService.search(search);
     }
-
 }

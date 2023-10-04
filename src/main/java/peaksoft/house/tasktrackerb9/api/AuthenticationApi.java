@@ -53,5 +53,4 @@ public class AuthenticationApi {
     public AuthenticationResponse authWithGoogleAccount(@RequestParam String tokenId) throws FirebaseAuthException {
         return authenticationService.authWithGoogle(tokenId);
     }
-
 }
