@@ -14,8 +14,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/notifications")
-@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
 @Tag(name = "Notification API", description = "API for managing notifications")
 public class NotificationApi {
 

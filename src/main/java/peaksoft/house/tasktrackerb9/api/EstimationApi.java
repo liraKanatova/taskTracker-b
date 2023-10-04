@@ -11,10 +11,10 @@ import peaksoft.house.tasktrackerb9.dto.response.SimpleResponse;
 import peaksoft.house.tasktrackerb9.services.EstimationService;
 
 @RestController
-@RequestMapping("/api/estimations")
 @RequiredArgsConstructor
-@Tag(name = "Estimation",description = "Api Estimation to management")
+@RequestMapping("/api/estimations")
 @CrossOrigin(origins = "*",maxAge = 3600)
+@Tag(name = "Estimation",description = "Api Estimation to management")
 public class EstimationApi {
 
     private final EstimationService service;

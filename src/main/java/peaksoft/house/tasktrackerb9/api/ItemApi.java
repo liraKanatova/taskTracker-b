@@ -13,8 +13,8 @@ import peaksoft.house.tasktrackerb9.services.ItemService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/items")
-@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@PreAuthorize("hasAnyAuthority('ADMIN','MEMBER')")
 @Tag(name = "Item API", description = "API for managing items")
 public class ItemApi {
 

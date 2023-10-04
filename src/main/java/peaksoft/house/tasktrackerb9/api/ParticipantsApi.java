@@ -16,8 +16,8 @@ import peaksoft.house.tasktrackerb9.services.ParticipantsService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/participants")
 @PreAuthorize("hasAuthority('ADMIN')")
+@RequestMapping("/api/participants")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @Tag(name = "Participants api", description = "Api participants to management")
 public class ParticipantsApi {
