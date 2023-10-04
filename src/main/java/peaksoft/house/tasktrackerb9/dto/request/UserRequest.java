@@ -8,9 +8,10 @@ import peaksoft.house.tasktrackerb9.validation.EmailValid;
 public record UserRequest(
         String firstName,
         String lastName,
+
         @Column(unique = true)
         @EmailValid
         String email,
-        String password) {
-
+        String password
+) {
 }

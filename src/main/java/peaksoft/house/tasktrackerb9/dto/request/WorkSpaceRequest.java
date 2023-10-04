@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkSpaceRequest {
-
     String name;
     List<String> emails;
     String link;

@@ -4,11 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record BoardUpdateRequest(
-
         Long boardI,
-
         String title,
-
         String backGround
 ) {
 }

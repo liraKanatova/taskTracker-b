@@ -4,7 +4,6 @@ public record CommentRequest(
         Long cardId,
         String comment
 ){
-
 }
 
 
